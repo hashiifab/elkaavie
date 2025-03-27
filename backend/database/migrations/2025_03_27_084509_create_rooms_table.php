@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('number');
             $table->integer('floor');
             $table->enum('status', ['available', 'booked', 'maintenance'])->default('available');
+            $table->boolean('is_available')->default(true);
             $table->text('description')->nullable();
             $table->timestamps();
         });

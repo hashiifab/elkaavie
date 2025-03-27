@@ -1,6 +1,7 @@
 <?php
 
 use App\Console\Commands\TestCommand;
+use App\Http\Middleware\Admin;
 use App\Http\Middleware\Cors;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -25,6 +26,10 @@ return Application::configure(dirname(__DIR__))
         $middleware->group('api', [
             SubstituteBindings::class,
             Cors::class,
+        ]);
+        
+        $middleware->alias([
+            'admin' => Admin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

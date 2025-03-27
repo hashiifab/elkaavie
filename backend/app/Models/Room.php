@@ -18,6 +18,12 @@ class Room extends Model
         'floor',
         'status',
         'description',
+        'is_available',
+        'image_url',
+    ];
+
+    protected $casts = [
+        'is_available' => 'boolean',
     ];
 
     public function roomType(): BelongsTo
