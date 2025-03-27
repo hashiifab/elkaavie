@@ -13,14 +13,14 @@ class RoomController extends Controller
 {
     public function index(): JsonResponse
     {
-        $rooms = Room::with(['roomType', 'amenities'])->get();
+        $rooms = Room::with('roomType')->get();
 
         return response()->json($rooms);
     }
 
     public function show(Room $room): JsonResponse
     {
-        $room->load(['roomType', 'amenities']);
+        $room->load('roomType');
 
         return response()->json($room);
     }
@@ -28,14 +28,21 @@ class RoomController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string',
+            'number' => 'required|string',
+            'floor' => 'required|integer|between:1,3',
             'type' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'capacity' => 'required|integer|min:1',
             'description' => 'nullable|string',
             'is_available' => 'boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+        
+        // Check if room number already exists
+        $existingRoom = Room::where('number', $validated['number'])->first();
+        if ($existingRoom) {
+            return response()->json([
+                'message' => 'Room with this number already exists',
+            ], 422);
+        }
         
         // Find or create room type
         $roomType = RoomType::firstOrCreate(
@@ -43,143 +50,108 @@ class RoomController extends Controller
             [
                 'description' => "A {$validated['type']} room",
                 'price' => $validated['price'],
-                'capacity' => $validated['capacity'],
+                'capacity' => 2, // Default capacity
             ]
         );
         
-        // Create room data
-        $roomData = [
-            'room_type_id' => $roomType->id,
-            'number' => 'R' . substr(uniqid(), -6), // Generate a unique room number
-            'floor' => rand(1, 5), // Random floor between 1-5
-            'description' => $validated['description'] ?? '',
-            'is_available' => $validated['is_available'] ?? true,
-        ];
-
-        $room = Room::create($roomData);
+        // Create room
+        $room = new Room();
+        $room->room_type_id = $roomType->id;
+        $room->number = $validated['number'];
+        $room->floor = $validated['floor'];
+        $room->status = 'available';
+        $room->description = $validated['description'] ?? null;
+        $room->is_available = $validated['is_available'] ?? true;
+        $room->save();
         
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = 'room_' . $room->id . '_' . time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/rooms', $imageName);
-            
-            // Update room with image URL
-            $room->update([
-                'image_url' => url('storage/rooms/' . $imageName),
-            ]);
-        }
-
-        return response()->json($room->load(['roomType', 'amenities']), 201);
+        return response()->json($room->load('roomType'), 201);
     }
 
     public function update(Request $request, Room $room): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'sometimes|string',
-            'type' => 'sometimes|string',
             'price' => 'sometimes|numeric|min:0',
-            'capacity' => 'sometimes|integer|min:1',
-            'description' => 'nullable|string',
             'is_available' => 'sometimes|boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
-        // Update room data directly
-        if (isset($validated['description'])) {
-            $room->description = $validated['description'];
-        }
-        
+        // Update room availability
         if (isset($validated['is_available'])) {
             $room->is_available = $validated['is_available'];
         }
         
-        // If type, price, or capacity is changed, update or create a new room type
-        if (isset($validated['type']) || isset($validated['price']) || isset($validated['capacity'])) {
-            // Get the existing room type
+        // Update room type price if provided
+        if (isset($validated['price'])) {
             $roomType = $room->roomType;
-            
-            // If type is changed, find or create a new room type
-            if (isset($validated['type']) && $validated['type'] !== $roomType->name) {
-                $roomType = RoomType::firstOrCreate(
-                    ['name' => $validated['type']],
-                    [
-                        'description' => "A {$validated['type']} room",
-                        'price' => $validated['price'] ?? $roomType->price,
-                        'capacity' => $validated['capacity'] ?? $roomType->capacity,
-                    ]
-                );
-                $room->room_type_id = $roomType->id;
-            } else {
-                // Update existing room type
-                if (isset($validated['price'])) {
-                    $roomType->price = $validated['price'];
-                }
-                
-                if (isset($validated['capacity'])) {
-                    $roomType->capacity = $validated['capacity'];
-                }
-                
-                $roomType->save();
-            }
-        }
-        
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($room->image_url) {
-                $oldImagePath = str_replace(url('storage/'), 'public/', $room->image_url);
-                Storage::delete($oldImagePath);
-            }
-            
-            $image = $request->file('image');
-            $imageName = 'room_' . $room->id . '_' . time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/rooms', $imageName);
-            
-            // Update room with image URL
-            $room->image_url = url('storage/rooms/' . $imageName);
+            $roomType->price = $validated['price'];
+            $roomType->save();
         }
         
         $room->save();
-
-        return response()->json($room->load(['roomType', 'amenities']));
+        
+        return response()->json($room->load('roomType'));
     }
 
     public function destroy(Room $room): JsonResponse
     {
-        // Delete image if exists
-        if ($room->image_url) {
-            $imagePath = str_replace(url('storage/'), 'public/', $room->image_url);
-            Storage::delete($imagePath);
-        }
-        
         $room->delete();
-
-        return response()->json(null, 204);
+        
+        return response()->json(['message' => 'Room deleted successfully']);
     }
 
-    public function available(Request $request): JsonResponse
+    public function toggleAvailability(Room $room): JsonResponse
     {
-        $validated = $request->validate([
-            'check_in' => 'required|date|after:today',
-            'check_out' => 'required|date|after:check_in',
+        $room->is_available = !$room->is_available;
+        $room->save();
+        
+        return response()->json(['is_available' => $room->is_available]);
+    }
+    
+    public function initialize(): JsonResponse
+    {
+        // Delete existing rooms first to avoid conflicts
+        Room::query()->delete();
+        
+        // Create a default room type with the standardized price of 1,500,000
+        $roomType = RoomType::firstOrCreate(
+            ['name' => 'Standard'],
+            [
+                'description' => 'Comfortable standard room, fully furnished',
+                'price' => 1500000, // Rp 1,500,000 per month as requested
+                'capacity' => 2,
+            ]
+        );
+        
+        // Update price if the room type already existed
+        if ($roomType->price != 1500000) {
+            $roomType->price = 1500000;
+            $roomType->save();
+        }
+        
+        // Create rooms using the floor-based naming scheme (A1-A5, B1-B5, C1-C5)
+        $rooms = [];
+        $floorPrefixes = [1 => 'A', 2 => 'B', 3 => 'C'];
+        
+        for ($floor = 1; $floor <= 3; $floor++) {
+            $prefix = $floorPrefixes[$floor];
+            
+            for ($i = 1; $i <= 5; $i++) {
+                $roomNumber = $prefix . $i; // This creates A1, A2, ..., B1, B2, ..., etc.
+                
+                $room = Room::create([
+                    'room_type_id' => $roomType->id,
+                    'number' => $roomNumber,
+                    'floor' => $floor,
+                    'status' => 'available',
+                    'is_available' => true,
+                    'description' => "Standard room on floor $floor",
+                ]);
+                $rooms[] = $room;
+            }
+        }
+        
+        return response()->json([
+            'message' => 'Rooms initialized successfully', 
+            'count' => count($rooms)
         ]);
-
-        $availableRooms = Room::where('status', 'available')
-            ->where('is_available', true)
-            ->whereDoesntHave('bookings', function ($query) use ($validated) {
-                $query->where(function ($q) use ($validated) {
-                    $q->whereBetween('check_in', [$validated['check_in'], $validated['check_out']])
-                        ->orWhereBetween('check_out', [$validated['check_in'], $validated['check_out']])
-                        ->orWhere(function ($q) use ($validated) {
-                            $q->where('check_in', '<=', $validated['check_in'])
-                                ->where('check_out', '>=', $validated['check_out']);
-                        });
-                });
-            })
-            ->with(['roomType', 'amenities'])
-            ->get();
-
-        return response()->json($availableRooms);
     }
 }

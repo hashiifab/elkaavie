@@ -18,8 +18,11 @@ return new class extends Migration
             $table->date('check_in');
             $table->date('check_out');
             $table->enum('status', ['pending', 'approved', 'rejected', 'completed', 'cancelled'])->default('pending');
-            $table->string('id_card_number');
-            $table->string('whatsapp_number');
+            $table->string('phone_number');
+            $table->string('identity_card');
+            $table->integer('guests');
+            $table->text('special_requests')->nullable();
+            $table->string('payment_method');
             $table->decimal('total_price', 10, 2);
             $table->text('payment_proof')->nullable();
             $table->timestamps();

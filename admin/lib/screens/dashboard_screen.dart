@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/web_enabled_api_service.dart';
 import 'login_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -149,18 +151,45 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
 
   Future<void> _logout() async {
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+    
     try {
       await _apiService.logout();
+      
+      // Close the loading indicator and navigate to login
       if (mounted) {
+        Navigator.pop(context); // Close loading dialog
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const LoginScreen()),
         );
       }
     } catch (e) {
+      // Close loading indicator
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      
+      // Still show the error but force navigation to login screen
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
+          SnackBar(content: Text('Error during logout: ${e.toString()}')),
         );
+        
+        // Navigate to login anyway since token is cleared
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const LoginScreen()),
+            );
+          }
+        });
       }
     }
   }
@@ -206,89 +235,61 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   
   Future<void> _showRoomDialog({Map<String, dynamic>? room}) async {
     final formKey = GlobalKey<FormState>();
-    final nameController = TextEditingController(text: room?['name']);
-    final typeController = TextEditingController(text: room?['type']);
     final priceController = TextEditingController(
-        text: room?['price']?.toString());
-    final capacityController = TextEditingController(
-        text: room?['capacity']?.toString());
-    final descriptionController = TextEditingController(text: room?['description']);
+        text: (room?['roomType']?['price'] ?? 500000).toString());
     bool isAvailable = room?['is_available'] ?? true;
-    String? imageUrl = room?['image_url'];
     
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(room == null ? 'Add Room' : 'Edit Room'),
+        title: Text(room == null ? 'Room Details' : 'Edit Room'),
         content: Form(
           key: formKey,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Room Name'),
-                  validator: (value) => value?.isEmpty ?? true 
-                      ? 'Please enter room name' : null,
-                ),
-                TextFormField(
-                  controller: typeController,
-                  decoration: const InputDecoration(labelText: 'Room Type'),
-                  validator: (value) => value?.isEmpty ?? true 
-                      ? 'Please enter room type' : null,
-                ),
+                // Room info (non-editable)
+                if (room != null) ...[
+                  ListTile(
+                    title: Text('Room Number'),
+                    subtitle: Text(room['number'] ?? ''),
+                    leading: Icon(Icons.hotel),
+                    dense: true,
+                  ),
+                  ListTile(
+                    title: Text('Floor'),
+                    subtitle: Text('Floor ${room['floor'] ?? ''}'),
+                    leading: Icon(Icons.layers),
+                    dense: true,
+                  ),
+                  ListTile(
+                    title: Text('Type'),
+                    subtitle: Text(room['roomType']?['name'] ?? 'Standard'),
+                    leading: Icon(Icons.category),
+                    dense: true,
+                  ),
+                  SizedBox(height: 16),
+                  Divider(),
+                  SizedBox(height: 16),
+                ],
+                
+                // Price field - editable
                 TextFormField(
                   controller: priceController,
-                  decoration: const InputDecoration(labelText: 'Price'),
+                  decoration: const InputDecoration(
+                    labelText: 'Price per Night', 
+                    prefixText: 'Rp ',
+                    border: OutlineInputBorder(),
+                  ),
                   keyboardType: TextInputType.number,
                   validator: (value) => value?.isEmpty ?? true 
                       ? 'Please enter price' : null,
                 ),
-                TextFormField(
-                  controller: capacityController,
-                  decoration: const InputDecoration(labelText: 'Capacity'),
-                  keyboardType: TextInputType.number,
-                  validator: (value) => value?.isEmpty ?? true 
-                      ? 'Please enter capacity' : null,
-                ),
-                TextFormField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  maxLines: 3,
-                  validator: (value) => value?.isEmpty ?? true 
-                      ? 'Please enter description' : null,
-                ),
-                if (imageUrl != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Current Image:', style: TextStyle(
-                          color: Colors.grey.shade700,
-                          fontSize: 12,
-                        )),
-                        const SizedBox(height: 4),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            imageUrl,
-                            height: 100,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => 
-                              Container(
-                                height: 100,
-                                color: Colors.grey.shade200,
-                                child: const Center(child: Text('Image not available')),
-                              ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                const SizedBox(height: 16),
+                
+                SizedBox(height: 16),
+                
+                // Available toggle
                 Row(
                   children: [
                     Text(
@@ -321,23 +322,19 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           ElevatedButton(
             onPressed: () async {
               if (formKey.currentState?.validate() ?? false) {
-                final roomData = {
-                  'name': nameController.text,
-                  'type': typeController.text,
-                  'price': int.parse(priceController.text),
-                  'capacity': int.parse(capacityController.text),
-                  'description': descriptionController.text,
-                  'is_available': isAvailable,
-                };
-                
                 try {
-                  if (room == null) {
-                    await _apiService.createRoom(roomData);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Room added successfully')),
-                    );
-                  } else {
-                    await _apiService.updateRoom(room['id'], roomData);
+                  if (room != null) {
+                    // Update price if changed
+                    final newPrice = int.parse(priceController.text);
+                    if (newPrice != room['roomType']['price']) {
+                      await _apiService.updateRoomPrice(room['id'], newPrice);
+                    }
+                    
+                    // Update availability if changed
+                    if (isAvailable != room['is_available']) {
+                      await _apiService.toggleRoomAvailability(room['id']);
+                    }
+                    
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Room updated successfully')),
                     );
@@ -351,7 +348,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                 }
               }
             },
-            child: Text(room == null ? 'Add' : 'Update'),
+            child: Text('Save'),
           ),
         ],
       ),
@@ -424,6 +421,19 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             ),
           ),
           const SizedBox(height: 32),
+          
+          // Initialize rooms button - always show this now
+          ElevatedButton.icon(
+            onPressed: () => _initializeRooms(),
+            icon: const Icon(Icons.add_business),
+            label: const Text('Initialize Hotel Rooms'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue.shade800,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+          ),
+          const SizedBox(height: 16),
+          
           _buildDashboardCard(
             title: 'Total Users',
             value: _users.length.toString(),
@@ -543,223 +553,240 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
-              onPressed: _loadRooms,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Reload'),
+              onPressed: _initializeRooms,
+              icon: const Icon(Icons.add_business),
+              label: const Text('Initialize Hotel Rooms'),
             ),
           ],
         ),
       );
     }
     
+    // Group rooms by floor
+    Map<int, List<dynamic>> roomsByFloor = {};
+    for (var room in _rooms) {
+      int floor = room['floor'] ?? 0;
+      if (!roomsByFloor.containsKey(floor)) {
+        roomsByFloor[floor] = [];
+      }
+      roomsByFloor[floor]!.add(room);
+    }
+    
+    // Sort floors
+    List<int> sortedFloors = roomsByFloor.keys.toList()..sort();
+    
     return RefreshIndicator(
       onRefresh: _loadRooms,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: _rooms.length,
-        itemBuilder: (context, index) {
-          final room = _rooms[index];
-          final bool isAvailable = room['is_available'] ?? true;
-          
-          return Card(
-            elevation: 2,
-            margin: const EdgeInsets.only(bottom: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (room['image_url'] != null)
-                  Stack(
-                    children: [
-                      Image.network(
-                        room['image_url'],
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            height: 120,
-                            color: Colors.grey.shade200,
-                            child: const Icon(Icons.image_not_supported, size: 64),
-                          );
-                        },
-                      ),
-                      Positioned(
-                        top: 10,
-                        right: 10,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: isAvailable ? Colors.green : Colors.red,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            isAvailable ? 'Available' : 'Unavailable',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                else
-                  Container(
-                    height: 40,
-                    width: double.infinity,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: isAvailable ? Colors.green : Colors.red,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        isAvailable ? 'Available' : 'Unavailable',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              room['name'] ?? 'Unnamed Room',
-                              style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            _formatCurrency(room['price']),
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.blue.shade800,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Chip(
-                            label: Text(room['type'] ?? 'Standard'),
-                            backgroundColor: Colors.blue.shade100,
-                            labelStyle: TextStyle(color: Colors.blue.shade900),
-                          ),
-                          const SizedBox(width: 8),
-                          Chip(
-                            label: Text('${room['capacity'] ?? 2} Person'),
-                            backgroundColor: Colors.green.shade100,
-                            labelStyle: TextStyle(color: Colors.green.shade900),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        room['description'] ?? 'No description available',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.grey.shade700,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () async {
-                                try {
-                                  await _apiService.updateRoom(room['id'], {
-                                    'is_available': !isAvailable,
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(
-                                      'Room marked as ${!isAvailable ? 'available' : 'unavailable'}'
-                                    )),
-                                  );
-                                  _loadRooms();
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(e.toString())),
-                                  );
-                                }
-                              },
-                              icon: Icon(isAvailable ? Icons.do_not_disturb_alt : Icons.check_circle),
-                              label: Text(isAvailable ? 'Mark Unavailable' : 'Mark Available'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: isAvailable ? Colors.red.shade300 : Colors.green,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          OutlinedButton.icon(
-                            onPressed: () => _showRoomDialog(room: room),
-                            icon: const Icon(Icons.edit),
-                            label: const Text('Edit'),
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton.icon(
-                            onPressed: () => showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Confirm Delete'),
-                                content: Text('Are you sure you want to delete ${room['name']}?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      _deleteRoom(room['id']);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                    ),
-                                    child: const Text('Delete'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            icon: const Icon(Icons.delete),
-                            label: const Text('Delete'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header with legend
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildLegendItem(Colors.green, 'Available'),
+                  const SizedBox(width: 24),
+                  _buildLegendItem(Colors.red, 'Unavailable'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            
+            // Each floor
+            for (int floor in sortedFloors) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade900,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  'Floor $floor',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-              ],
-            ),
-          );
-        },
+              ),
+              const SizedBox(height: 16),
+              
+              // Rooms in a grid that looks like cinema seats
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  children: [
+                    // Hallway label
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        'Hallway',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey.shade700),
+                      ),
+                    ),
+                    
+                    // Room grid
+                    GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 5,
+                        childAspectRatio: 2.0,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: roomsByFloor[floor]!.length,
+                      itemBuilder: (context, index) {
+                        final room = roomsByFloor[floor]![index];
+                        final bool isAvailable = room['is_available'] ?? true;
+                        final String roomNumber = room['number'] ?? '';
+                        
+                        return GestureDetector(
+                          onTap: () async {
+                            try {
+                              bool newStatus = await _apiService.toggleRoomAvailability(room['id']);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Room marked as ${newStatus ? 'available' : 'unavailable'}')),
+                              );
+                              _loadRooms();
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.toString())),
+                              );
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isAvailable ? Colors.green : Colors.red,
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Room ${roomNumber}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ],
+        ),
       ),
     );
+  }
+
+  Widget _buildLegendItem(Color color, String label) {
+    return Row(
+      children: [
+        Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: TextStyle(fontWeight: FontWeight.w500),
+        ),
+      ],
+    );
+  }
+  
+  // Separate function for room initialization with simple error handling
+  Future<void> _initializeRooms() async {
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+      
+      // Direct HTTP request without going through the service
+      final response = await http.post(
+        Uri.parse('http://localhost:8000/api/rooms/initialize'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+      
+      // Close loading dialog
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      
+      if (response.statusCode == 200) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Rooms initialized successfully')),
+        );
+        
+        // Reload rooms data
+        await _loadRooms();
+      } else {
+        // Show error message
+        final errorData = json.decode(response.body);
+        final errorMessage = errorData['message'] ?? 'Failed to initialize rooms';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      }
+    } catch (e) {
+      // Close loading dialog if still showing
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      
+      // Show error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
   }
 
   Widget _buildBookingsTab() {

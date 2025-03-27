@@ -23,10 +23,13 @@ class BookingRequest extends FormRequest
     {
         return [
             'room_id' => 'required|exists:rooms,id',
-            'check_in' => 'required|date|after:today',
+            'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
-            'id_card_number' => 'required|string|size:16',
-            'whatsapp_number' => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'guests' => 'required|integer|min:1',
+            'special_requests' => 'nullable|string',
+            'payment_method' => 'required|in:credit_card,bank_transfer',
+            'phone_number' => 'required|string',
+            'identity_card' => 'required|image|max:5120', // Max 5MB
         ];
     }
 }

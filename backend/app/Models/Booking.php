@@ -16,8 +16,11 @@ class Booking extends Model
         'check_in',
         'check_out',
         'status',
-        'id_card_number',
-        'whatsapp_number',
+        'guests',
+        'special_requests',
+        'payment_method',
+        'phone_number',
+        'identity_card',
         'total_price',
         'payment_proof',
     ];

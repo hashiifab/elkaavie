@@ -28,16 +28,44 @@ class WebEnabledApiService {
     await prefs.remove(tokenKey);
   }
 
-  // Get common headers
-  Future<Map<String, String>> _getAuthHeaders() async {
-    final token = await getToken();
-    if (token == null) throw Exception('Not authenticated');
+  // Helper method to check if token is expired or invalid
+  Future<bool> isTokenValid() async {
+    try {
+      final headers = await _getAuthHeaders(skipErrorHandle: true);
+      if (headers['Authorization'] == null) {
+        return false;
+      }
+      
+      final response = await http.get(
+        Uri.parse('$baseUrl/user'),
+        headers: headers,
+      );
+      
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Token validation error: $e');
+      return false;
+    }
+  }
+  
+  // Get auth headers with option to skip error handling
+  Future<Map<String, String>> _getAuthHeaders({bool skipErrorHandle = false}) async {
+    String? token = await getToken();
     
-    return {
-      'Authorization': 'Bearer $token',
-      'Content-Type': 'application/json',
+    // Create base headers
+    Map<String, String> headers = {
       'Accept': 'application/json',
+      'Content-Type': 'application/json',
     };
+    
+    // Add auth token if exists
+    if (token != null) {
+      headers['Authorization'] = 'Bearer $token';
+    } else if (!skipErrorHandle) {
+      throw Exception('Unauthorized: No token found');
+    }
+    
+    return headers;
   }
 
   // Login
@@ -80,10 +108,16 @@ class WebEnabledApiService {
         Uri.parse('$baseUrl/logout'),
         headers: headers,
       );
-    } catch (e) {
-      print('Logout error: ${e.toString()}');
-    } finally {
+      
+      // Clear the token from storage
       await removeToken();
+      
+      print('Logged out successfully');
+    } catch (e) {
+      print('Logout error: $e');
+      // Still clear the token even if the API call fails
+      await removeToken();
+      throw Exception('Failed to logout: $e');
     }
   }
 
@@ -406,6 +440,81 @@ class WebEnabledApiService {
     } catch (e) {
       print('Update room with image error: ${e.toString()}');
       throw Exception('Failed to update room with image: ${e.toString()}');
+    }
+  }
+
+  // Toggle room availability
+  Future<bool> toggleRoomAvailability(int id) async {
+    try {
+      final headers = await _getAuthHeaders();
+      final response = await http.post(
+        Uri.parse('$baseUrl/rooms/$id/toggle-availability'),
+        headers: headers,
+      );
+      
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['is_available'] ?? false;
+      } else {
+        throw Exception('Failed to toggle room availability');
+      }
+    } catch (e) {
+      print('Toggle room availability error: $e');
+      throw Exception('Failed to toggle room availability: $e');
+    }
+  }
+
+  Future<void> updateRoomPrice(int id, int price) async {
+    try {
+      final headers = await _getAuthHeaders();
+      final response = await http.put(
+        Uri.parse('$baseUrl/rooms/$id'),
+        headers: {
+          ...headers,
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'price': price,
+        }),
+      );
+      
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update room price');
+      }
+    } catch (e) {
+      print('Update room price error: $e');
+      throw Exception('Failed to update room price: $e');
+    }
+  }
+
+  Future<void> initializeRooms() async {
+    try {
+      // No longer requires authentication headers
+      final response = await http.post(
+        Uri.parse('$baseUrl/rooms/initialize'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      );
+      
+      if (response.statusCode != 200) {
+        final error = jsonDecode(response.body);
+        throw Exception(error['message'] ?? 'Failed to initialize rooms');
+      }
+    } catch (e) {
+      print('Initialize rooms error: $e');
+      throw Exception('Failed to initialize rooms: $e');
+    }
+  }
+
+  // Add a method to check if rooms are already initialized
+  Future<bool> hasRoomsInitialized() async {
+    try {
+      final rooms = await getRooms();
+      return rooms.isNotEmpty;
+    } catch (e) {
+      return false;
     }
   }
 } 

@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('rooms', function (Blueprint $table) {
-            $table->boolean('is_available')->default(true)->after('status');
+            if (!Schema::hasColumn('rooms', 'is_available')) {
+                $table->boolean('is_available')->default(true)->after('status');
+            }
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('rooms', function (Blueprint $table) {
-            $table->dropColumn('is_available');
+            if (Schema::hasColumn('rooms', 'is_available')) {
+                $table->dropColumn('is_available');
+            }
         });
     }
 };
