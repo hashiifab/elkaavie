@@ -351,29 +351,30 @@ class WebEnabledApiService {
   
   // Update booking status
   Future<Map<String, dynamic>> updateBookingStatus(int id, String status) async {
+    print('Updating booking status: $id to $status');
     try {
       final headers = await _getAuthHeaders();
-      
       final response = await http.put(
         Uri.parse('$baseUrl/bookings/$id/status'),
         headers: headers,
-        body: jsonEncode({'status': status}),
+        body: jsonEncode({
+          'status': status,
+          '_method': 'PUT'
+        }),
       );
 
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        // Check if the response has the new structure with 'success', 'message', and 'data' fields
-        if (responseData is Map && responseData.containsKey('data')) {
-          return responseData['data'];
-        }
-        return responseData;
+        final data = jsonDecode(response.body);
+        return data;
       } else {
-        final error = jsonDecode(response.body);
-        throw Exception(error['message'] ?? 'Failed to update booking status');
+        throw Exception('Failed to update booking status: ${response.body}');
       }
     } catch (e) {
-      print('Update booking status error: ${e.toString()}');
-      throw Exception('Failed to update booking status: ${e.toString()}');
+      print('Error updating booking status: $e');
+      rethrow;
     }
   }
   

@@ -281,7 +281,9 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     );
     
     try {
-      await _apiService.updateBookingStatus(id, status);
+      print('Attempting to update booking status...');
+      final response = await _apiService.updateBookingStatus(id, status);
+      print('Update response received: $response');
       
       // Close loading dialog
       if (mounted && Navigator.canPop(context)) {
@@ -289,43 +291,46 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       }
       
       // Show success message
-      if (mounted) {
-        String message = 'Booking ';
-        if (status == 'confirmed') {
-          message += 'approved successfully';
-        } else if (status == 'cancelled') {
-          message += 'rejected successfully';
-        } else if (status == 'completed') {
-          message += 'marked as completed';
-        } else {
-          message += 'status updated to $status';
-        }
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: status == 'confirmed' ? Colors.green : status == 'cancelled' ? Colors.red : Colors.blue,
-          ),
-        );
+      String message = 'Booking ';
+      if (status == 'approved') {
+        message += 'approved successfully';
+      } else if (status == 'rejected') {
+        message += 'rejected successfully';
+      } else if (status == 'completed') {
+        message += 'marked as completed';
+      } else if (status == 'cancelled') {
+        message += 'cancelled successfully';
+      } else {
+        message += 'status updated to $status';
       }
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: status == 'approved' ? Colors.green : 
+                         status == 'rejected' ? Colors.red : 
+                         status == 'completed' ? Colors.blue : Colors.orange,
+        ),
+      );
       
       // Reload bookings
       await _loadBookings();
     } catch (e) {
+      print('Error updating booking status: $e');
+      
       // Close loading dialog
       if (mounted && Navigator.canPop(context)) {
         Navigator.pop(context);
       }
       
       // Show error message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
     }
   }
   
@@ -886,7 +891,14 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       return const Center(child: CircularProgressIndicator());
     }
     
-    if (_bookings.isEmpty) {
+    // Filter out bookings without real users
+    final validBookings = _bookings.where((booking) => 
+      booking['user'] != null && 
+      booking['user']['id'] != null && 
+      booking['user']['name'] != null
+    ).toList();
+    
+    if (validBookings.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -894,7 +906,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             const Icon(Icons.book_online_outlined, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              'No bookings found',
+              'No valid bookings found',
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 color: Colors.grey.shade700,
@@ -915,9 +927,9 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       onRefresh: _loadBookings,
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
-        itemCount: _bookings.length,
+        itemCount: validBookings.length,
         itemBuilder: (context, index) {
-          final booking = _bookings[index];
+          final booking = validBookings[index];
           final checkIn = booking['check_in'] != null 
               ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_in']))
               : 'N/A';
@@ -937,10 +949,10 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           
           Color statusColor;
           switch(booking['status']) {
-            case 'confirmed':
+            case 'approved':
               statusColor = Colors.green;
               break;
-            case 'cancelled':
+            case 'rejected':
               statusColor = Colors.red;
               break;
             case 'completed':
@@ -1267,7 +1279,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton.icon(
-                          onPressed: () => _updateBookingStatus(booking['id'], 'confirmed'),
+                          onPressed: () => _updateBookingStatus(booking['id'], 'approved'),
                           icon: const Icon(Icons.check_circle),
                           label: const Text('Approve'),
                           style: ElevatedButton.styleFrom(
@@ -1276,7 +1288,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                           ),
                         ),
                         OutlinedButton.icon(
-                          onPressed: () => _updateBookingStatus(booking['id'], 'cancelled'),
+                          onPressed: () => _updateBookingStatus(booking['id'], 'rejected'),
                           icon: const Icon(Icons.cancel),
                           label: const Text('Reject'),
                           style: OutlinedButton.styleFrom(
@@ -1286,7 +1298,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                         ),
                       ],
                     ),
-                  if (booking['status'] == 'confirmed')
+                  if (booking['status'] == 'approved')
                     Center(
                       child: ElevatedButton.icon(
                         onPressed: () => _updateBookingStatus(booking['id'], 'completed'),

@@ -15,30 +15,49 @@ class BookingController extends Controller
 {
     public function __construct()
     {
-        // Remove auth middleware since we want public access
+        // Remove auth middleware since we want public access for store
+    }
+
+    private function formatBookingData($booking)
+    {
+        // Format identity card URL
+        if ($booking->identity_card) {
+            $booking->identity_card_url = asset('storage/' . $booking->identity_card);
+        }
+        
+        // Add room info directly to booking object for easier access
+        if ($booking->room) {
+            $booking->room_number = $booking->room->number;
+            $booking->room_floor = $booking->room->floor;
+            $booking->room_type = $booking->room->roomType->name ?? 'Standard';
+            $booking->room_capacity = $booking->room->roomType->capacity ?? 1;
+        }
+
+        // Add user info if available
+        if ($booking->user) {
+            $booking->user_name = $booking->user->name;
+            $booking->user_email = $booking->user->email;
+        }
+
+        return $booking;
     }
 
     public function index(): JsonResponse
     {
         try {
+            // Ensure only admin can access this
+            if (!auth()->user()->isAdmin()) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            // Only get bookings with real users
             $bookings = Booking::with(['user', 'room.roomType'])
+                ->whereNotNull('user_id')  // Only get bookings with user_id
+                ->whereHas('user')         // Ensure user exists
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($booking) {
-                    // Format identity card URL
-                    if ($booking->identity_card) {
-                        $booking->identity_card_url = asset('storage/' . $booking->identity_card);
-                    }
-                    
-                    // Add room info directly to booking object for easier access
-                    if ($booking->room) {
-                        $booking->room_number = $booking->room->number;
-                        $booking->room_floor = $booking->room->floor;
-                        $booking->room_type = $booking->room->roomType->name ?? 'Standard';
-                        $booking->room_capacity = $booking->room->roomType->capacity ?? 1;
-                    }
-                    
-                    return $booking;
+                    return $this->formatBookingData($booking);
                 });
 
             return response()->json([
@@ -58,6 +77,14 @@ class BookingController extends Controller
     public function store(BookingRequest $request): JsonResponse
     {
         try {
+            // Ensure user is authenticated
+            if (!auth()->check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User must be authenticated to create a booking'
+                ], 401);
+            }
+
             // Log the incoming request for debugging
             Log::info('Booking request received', $request->validated());
             
@@ -74,17 +101,19 @@ class BookingController extends Controller
             $data['status'] = 'pending';
             $data['total_price'] = 1500000 * $this->calculateMonths($data['check_in'], $data['check_out']);
             
-            // Set user_id to null for unauthenticated users
-            $data['user_id'] = auth()->check() ? auth()->id() : null;
+            // Always set user_id from authenticated user
+            $data['user_id'] = auth()->id();
 
             // Create the booking
             $booking = Booking::create($data);
             Log::info('Booking created successfully', ['id' => $booking->id]);
 
+            $booking = $this->formatBookingData($booking->load(['user', 'room.roomType']));
+
             return response()->json([
                 'success' => true,
                 'message' => 'Booking created successfully',
-                'data' => $booking->load(['room.roomType'])
+                'data' => $booking
             ], 201);
 
         } catch (\Exception $e) {
@@ -107,10 +136,16 @@ class BookingController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
 
-            return response()->json($booking->load(['user', 'room.roomType']));
+            $booking = $this->formatBookingData($booking->load(['user', 'room.roomType']));
+
+            return response()->json([
+                'success' => true,
+                'data' => $booking
+            ]);
         } catch (\Exception $e) {
             Log::error('Booking show error: ' . $e->getMessage());
             return response()->json([
+                'success' => false,
                 'message' => 'Failed to get booking details',
                 'error' => $e->getMessage()
             ], 500);
@@ -140,23 +175,44 @@ class BookingController extends Controller
     public function updateStatus(Request $request, Booking $booking): JsonResponse
     {
         try {
+            // Ensure only admin can update status
+            if (!auth()->user()->isAdmin()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized. Only admin can update booking status.'
+                ], 403);
+            }
+
             $validated = $request->validate([
-                'status' => 'required|in:pending,confirmed,cancelled,completed',
+                'status' => 'required|in:pending,approved,rejected,completed,cancelled',
             ]);
 
+            // Load the booking with relationships
+            $booking->load(['user', 'room.roomType']);
+
+            // Update booking status
             $booking->update($validated);
 
             // Update room availability based on booking status
-            if ($validated['status'] === 'confirmed') {
-                $booking->room->update(['is_available' => false]);
-            } elseif ($validated['status'] === 'cancelled' || $validated['status'] === 'completed') {
-                $booking->room->update(['is_available' => true]);
+            if ($validated['status'] === 'approved') {
+                // Check if room exists and is available before updating
+                if ($booking->room && $booking->room->is_available) {
+                    $booking->room->update(['is_available' => false]);
+                }
+            } elseif ($validated['status'] === 'rejected' || $validated['status'] === 'completed' || $validated['status'] === 'cancelled') {
+                // Check if room exists before updating
+                if ($booking->room) {
+                    $booking->room->update(['is_available' => true]);
+                }
             }
+
+            // Format the booking data
+            $booking = $this->formatBookingData($booking);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Booking status updated successfully',
-                'data' => $booking->load(['user', 'room.roomType'])
+                'data' => $booking
             ]);
         } catch (\Exception $e) {
             Log::error('Booking status update error: ' . $e->getMessage());
@@ -181,14 +237,24 @@ class BookingController extends Controller
     public function userBookings(): JsonResponse
     {
         try {
-            $bookings = auth()->user()->bookings()
+            $user = auth()->user();
+            
+            $bookings = Booking::where('user_id', $user->id)
                 ->with(['room.roomType'])
-                ->get();
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($booking) {
+                    return $this->formatBookingData($booking);
+                });
 
-            return response()->json($bookings);
+            return response()->json([
+                'success' => true,
+                'data' => $bookings
+            ]);
         } catch (\Exception $e) {
             Log::error('User bookings error: ' . $e->getMessage());
             return response()->json([
+                'success' => false,
                 'message' => 'Failed to get user bookings',
                 'error' => $e->getMessage()
             ], 500);
@@ -230,5 +296,41 @@ class BookingController extends Controller
         }
         
         return max(1, $months);
+    }
+
+    // Add new method to associate bookings with user after login
+    public function associateBookingsWithUser(Request $request): JsonResponse
+    {
+        try {
+            $user = auth()->user();
+            $email = $request->input('email');
+            $phoneNumber = $request->input('phone_number');
+
+            // Find bookings with matching email or phone number but no user_id
+            $bookings = Booking::whereNull('user_id')
+                ->where(function ($query) use ($email, $phoneNumber) {
+                    $query->where('email', $email)
+                        ->orWhere('phone_number', $phoneNumber);
+                })
+                ->get();
+
+            // Associate found bookings with the user
+            foreach ($bookings as $booking) {
+                $booking->update(['user_id' => $user->id]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bookings associated successfully',
+                'count' => $bookings->count()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Associate bookings error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to associate bookings',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
