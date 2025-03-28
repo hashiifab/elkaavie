@@ -22,9 +22,12 @@ class Room extends Model
         'image_url',
     ];
 
-    protected $casts = [
-        'is_available' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_available' => 'boolean',
+        ];
+    }
 
     public function roomType(): BelongsTo
     {

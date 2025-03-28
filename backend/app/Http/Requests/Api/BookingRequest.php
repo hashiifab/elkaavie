@@ -29,7 +29,23 @@ class BookingRequest extends FormRequest
             'special_requests' => 'nullable|string',
             'payment_method' => 'required|in:credit_card,bank_transfer',
             'phone_number' => 'required|string',
-            'identity_card' => 'required|image|max:5120', // Max 5MB
+            'identity_card' => 'required|file|mimes:jpeg,png,jpg|max:2048',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'room_id.required' => 'Room selection is required',
+            'check_in.required' => 'Check-in date is required',
+            'check_out.required' => 'Check-out date is required',
+            'guests.required' => 'Number of guests is required',
+            'payment_method.required' => 'Payment method is required',
+            'phone_number.required' => 'Phone number is required',
+            'identity_card.required' => 'Identity card is required',
+            'identity_card.file' => 'Identity card must be a file',
+            'identity_card.mimes' => 'Identity card must be a JPEG, PNG, or JPG file',
+            'identity_card.max' => 'Identity card file size cannot exceed 2MB',
         ];
     }
 }

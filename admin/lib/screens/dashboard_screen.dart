@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+// API base URL
+const String kApiBaseUrl = 'http://localhost:8000';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -194,15 +197,63 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     }
   }
   
-  // Helper to format currency
   String _formatCurrency(dynamic price) {
     if (price == null) return 'Rp 0';
-    final formatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp ',
-      decimalDigits: 0,
+    
+    try {
+      // Try to parse the price as a number
+      double numPrice = double.parse(price.toString());
+      // Format with thousand separators
+      final formatter = NumberFormat.currency(
+        locale: 'id_ID',
+        symbol: 'Rp ',
+        decimalDigits: 0,
+      );
+      return formatter.format(numPrice);
+    } catch (e) {
+      // If parsing fails, return the original with Rp prefix
+      return 'Rp $price';
+    }
+  }
+  
+  Widget _buildBookingInfoItem({
+    required String title,
+    required String value,
+    required IconData icon,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 16, color: Colors.grey.shade700),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
-    return formatter.format(price is int ? price : int.tryParse(price.toString()) ?? 0);
   }
   
   Future<void> _deleteRoom(int id) async {
@@ -220,16 +271,61 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   }
   
   Future<void> _updateBookingStatus(int id, String status) async {
+    // Show loading dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+    
     try {
-      await _apiService.updateBooking(id, {'status': status});
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Booking status updated to $status')),
-      );
-      _loadBookings();
+      await _apiService.updateBookingStatus(id, status);
+      
+      // Close loading dialog
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      
+      // Show success message
+      if (mounted) {
+        String message = 'Booking ';
+        if (status == 'confirmed') {
+          message += 'approved successfully';
+        } else if (status == 'cancelled') {
+          message += 'rejected successfully';
+        } else if (status == 'completed') {
+          message += 'marked as completed';
+        } else {
+          message += 'status updated to $status';
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: status == 'confirmed' ? Colors.green : status == 'cancelled' ? Colors.red : Colors.blue,
+          ),
+        );
+      }
+      
+      // Reload bookings
+      await _loadBookings();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update booking: ${e.toString()}')),
-      );
+      // Close loading dialog
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      
+      // Show error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
   
@@ -387,11 +483,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           indicatorColor: Colors.white,
         ),
       ),
-      floatingActionButton: _tabController.index == 2 ? 
-        FloatingActionButton(
-          onPressed: () => _showRoomDialog(),
-          child: const Icon(Icons.add),
-        ) : null,
+      
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : TabBarView(
@@ -833,6 +925,16 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_out']))
               : 'N/A';
           
+          // Default values if data is missing
+          final roomNumber = booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown';
+          final roomFloor = booking['room']?['floor'] ?? booking['room_floor'] ?? 'Unknown';
+          final roomType = booking['room']?['roomType']?['name'] ?? booking['room_type'] ?? 'Standard';
+          final guestName = booking['user']?['name'] ?? 'Guest';
+          final phoneNumber = booking['phone_number'] ?? 'N/A';
+          final guestCount = booking['guests']?.toString() ?? '1';
+          final identityCard = booking['identity_card'] ?? booking['identity_card_url'];
+          final specialRequests = booking['special_requests'] ?? 'None';
+          
           Color statusColor;
           switch(booking['status']) {
             case 'confirmed':
@@ -850,8 +952,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           }
           
           return Card(
-            elevation: 2,
-            margin: const EdgeInsets.only(bottom: 16),
+            elevation: 3,
+            margin: const EdgeInsets.only(bottom: 20),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -863,7 +965,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                       Text(
                         'Booking #${booking['id']}',
                         style: GoogleFonts.poppins(
-                          fontSize: 16,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -873,57 +975,293 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
+                            fontSize: 12,
                           ),
                         ),
                         backgroundColor: statusColor,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildBookingInfoItem(
-                          title: 'Room',
-                          value: booking['room']?['name'] ?? 'Unknown',
-                          icon: Icons.hotel,
+                  const Divider(height: 24),
+                  
+                  // Room information
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.apartment, size: 20, color: Colors.blue.shade800),
+                            SizedBox(width: 8),
+                            Text(
+                              'Room Details', 
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.blue.shade800,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Expanded(
-                        child: _buildBookingInfoItem(
-                          title: 'Guest',
-                          value: booking['user']?['name'] ?? 'Unknown',
-                          icon: Icons.person,
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Room Number',
+                                value: 'Room $roomNumber',
+                                icon: Icons.hotel,
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Floor',
+                                value: 'Floor $roomFloor',
+                                icon: Icons.layers,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Room Type',
+                                value: roomType,
+                                icon: Icons.category,
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Guests',
+                                value: '$guestCount person(s)',
+                                icon: Icons.people,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildBookingInfoItem(
-                          title: 'Check In',
-                          value: checkIn,
-                          icon: Icons.calendar_today,
+                  
+                  SizedBox(height: 16),
+                  
+                  // Guest information
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.person, size: 20, color: Colors.green.shade800),
+                            SizedBox(width: 8),
+                            Text(
+                              'Guest Information', 
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.green.shade800,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Expanded(
-                        child: _buildBookingInfoItem(
-                          title: 'Check Out',
-                          value: checkOut,
-                          icon: Icons.event_available,
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Guest Name',
+                                value: guestName,
+                                icon: Icons.person_outline,
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Phone Number',
+                                value: phoneNumber,
+                                icon: Icons.phone,
+                              ),
+                            ),
+                          ],
                         ),
+                      ],
+                    ),
+                  ),
+                  
+                  SizedBox(height: 16),
+                  
+                  // Date and Price information
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.date_range, size: 20, color: Colors.amber.shade800),
+                            SizedBox(width: 8),
+                            Text(
+                              'Schedule & Payment', 
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.amber.shade800,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Check In',
+                                value: checkIn,
+                                icon: Icons.calendar_today,
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Check Out',
+                                value: checkOut,
+                                icon: Icons.event_available,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Payment Method',
+                                value: booking['payment_method'] ?? 'Credit Card',
+                                icon: Icons.payment,
+                              ),
+                            ),
+                            Expanded(
+                              child: _buildBookingInfoItem(
+                                title: 'Total Amount',
+                                value: _formatCurrency(booking['total_price']),
+                                icon: Icons.attach_money,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  // Identity Card Display
+                  if (identityCard != null)
+                    Container(
+                      margin: const EdgeInsets.only(top: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.purple.shade50,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _buildBookingInfoItem(
-                    title: 'Total Amount',
-                    value: _formatCurrency(booking['total_price']),
-                    icon: Icons.attach_money,
-                  ),
-                  const SizedBox(height: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.card_membership, size: 20, color: Colors.purple.shade800),
+                              SizedBox(width: 8),
+                              Text(
+                                'Identity Card', 
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.purple.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          identityCard.toString().startsWith('http') ?
+                            Image.network(
+                              identityCard,
+                              height: 150,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) => 
+                                Text("Cannot load image: $identityCard"),
+                            ) :
+                            identityCard.toString().contains('identity-cards/') ?
+                            Image.network(
+                              '$kApiBaseUrl/storage/$identityCard',
+                              height: 150,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) => 
+                                Text("Cannot load image: $identityCard"),
+                            ) :
+                            Text(
+                              '$identityCard',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    
+                  // Special Requests
+                  if (specialRequests != null && specialRequests != '' && specialRequests != 'None')
+                    Container(
+                      margin: const EdgeInsets.only(top: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.note_alt, size: 20, color: Colors.orange.shade800),
+                              SizedBox(width: 8),
+                              Text(
+                                'Special Requests', 
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.orange.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            specialRequests,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Action buttons
                   if (booking['status'] == 'pending')
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -931,17 +1269,19 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                         ElevatedButton.icon(
                           onPressed: () => _updateBookingStatus(booking['id'], 'confirmed'),
                           icon: const Icon(Icons.check_circle),
-                          label: const Text('Confirm'),
+                          label: const Text('Approve'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
+                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
                         ),
                         OutlinedButton.icon(
                           onPressed: () => _updateBookingStatus(booking['id'], 'cancelled'),
                           icon: const Icon(Icons.cancel),
-                          label: const Text('Cancel'),
+                          label: const Text('Reject'),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.red,
+                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
                         ),
                       ],
@@ -954,6 +1294,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                         label: const Text('Mark as Completed'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
+                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         ),
                       ),
                     ),
@@ -1020,38 +1361,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           ],
         ),
       ),
-    );
-  }
-  
-  Widget _buildBookingInfoItem({
-    required String title,
-    required String value,
-    required IconData icon,
-  }) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: Colors.blue.shade700),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade600,
-              ),
-            ),
-            Text(
-              value,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 } 

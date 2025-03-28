@@ -266,19 +266,62 @@ class WebEnabledApiService {
   
   // BOOKINGS API
   
+  // Helper method to format image URLs
+  String formatImageUrl(String? path) {
+    if (path == null || path.isEmpty) return '';
+    if (path.startsWith('http')) return path;
+    // Extract filename from path
+    final filename = path.split('/').last;
+    // Use the API endpoint to serve the image
+    return '$baseUrl/identity-cards/$filename';
+  }
+
   // Get all bookings
   Future<List<dynamic>> getBookings() async {
     try {
       final headers = await _getAuthHeaders();
+      
+      print('Getting bookings...');
       final response = await http.get(
         Uri.parse('$baseUrl/bookings'),
         headers: headers,
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        print('Got bookings successfully');
+        final responseData = jsonDecode(response.body);
+        
+        // Handle Laravel API response format
+        if (responseData is Map) {
+          if (responseData.containsKey('data')) {
+            final data = responseData['data'];
+            if (data is List) {
+              // Format image URLs in the list
+              return data.map((booking) {
+                if (booking is Map) {
+                  if (booking.containsKey('identity_card')) {
+                    booking['identity_card'] = formatImageUrl(booking['identity_card']);
+                  }
+                }
+                return booking;
+              }).toList();
+            } else if (data is Map) {
+              // Format image URL for single booking
+              if (data.containsKey('identity_card')) {
+                data['identity_card'] = formatImageUrl(data['identity_card']);
+              }
+              return [data];
+            }
+          }
+        }
+        
+        // If we get here, something unexpected happened
+        print('Unexpected response format: $responseData');
+        throw Exception('Unexpected response format from server');
       } else {
-        throw Exception('Failed to get bookings');
+        final error = response.body;
+        print('Error getting bookings: $error');
+        throw Exception('Failed to get bookings: ${response.statusCode}');
       }
     } catch (e) {
       print('Get bookings error: ${e.toString()}');
@@ -307,24 +350,30 @@ class WebEnabledApiService {
   }
   
   // Update booking status
-  Future<Map<String, dynamic>> updateBooking(int id, Map<String, dynamic> bookingData) async {
+  Future<Map<String, dynamic>> updateBookingStatus(int id, String status) async {
     try {
       final headers = await _getAuthHeaders();
+      
       final response = await http.put(
-        Uri.parse('$baseUrl/bookings/$id'),
+        Uri.parse('$baseUrl/bookings/$id/status'),
         headers: headers,
-        body: jsonEncode(bookingData),
+        body: jsonEncode({'status': status}),
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final responseData = jsonDecode(response.body);
+        // Check if the response has the new structure with 'success', 'message', and 'data' fields
+        if (responseData is Map && responseData.containsKey('data')) {
+          return responseData['data'];
+        }
+        return responseData;
       } else {
         final error = jsonDecode(response.body);
-        throw Exception(error['message'] ?? 'Failed to update booking');
+        throw Exception(error['message'] ?? 'Failed to update booking status');
       }
     } catch (e) {
-      print('Update booking error: ${e.toString()}');
-      throw Exception('Failed to update booking: ${e.toString()}');
+      print('Update booking status error: ${e.toString()}');
+      throw Exception('Failed to update booking status: ${e.toString()}');
     }
   }
   

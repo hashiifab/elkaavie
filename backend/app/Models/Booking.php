@@ -25,11 +25,14 @@ class Booking extends Model
         'payment_proof',
     ];
 
-    protected $casts = [
-        'check_in' => 'date',
-        'check_out' => 'date',
-        'total_price' => 'decimal:2',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'check_in' => 'date',
+            'check_out' => 'date',
+            'total_price' => 'decimal:2',
+        ];
+    }
 
     public function user(): BelongsTo
     {
