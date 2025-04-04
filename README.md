@@ -1,6 +1,6 @@
 # 🌟 Elkaavie Platform
 
-Aplikasi fullstack untuk manajemen kamar dengan 3 bagian terintegrasi:
+Fullstack application for room management with 3 integrated components:
 - **Backend**: Laravel (PHP)
 - **Frontend**: React + TypeScript
 - **Admin Panel**: Flutter (Mobile)
@@ -25,15 +25,15 @@ Aplikasi fullstack untuk manajemen kamar dengan 3 bagian terintegrasi:
 - Riverpod (State Management)
 - Dio (HTTP Client)
 
-## 🚀 Fitur Utama
+## 🚀 Key Features
 
-- Autentikasi multi-role (User & Admin)
-- Manajemen konten (CRUD operations)
-- API endpoints terproteksi
+- Multi-role authentication (User & Admin)
+- Content management (CRUD operations)
+- Protected API endpoints
 - Responsive web interface
 - Mobile admin panel
 
-## 📂 Struktur Folder
+## 📂 Folder Structure
 
 ```
 elkaavie/
@@ -50,7 +50,7 @@ elkaavie/
     └── test/
 ```
 
-## 🖥 Menjalankan Lokal
+## 🖥 Local Setup
 
 **Backend (Laravel):**
 ```bash
@@ -78,7 +78,7 @@ flutter run
 
 ## 🔑 Environment Variables
 
-Buat file `.env` di folder backend:
+Create `.env` file in backend folder:
 ```
 DB_DATABASE=elkaavie
 DB_USERNAME=root
@@ -87,6 +87,6 @@ APP_KEY=
 SANCTUM_STATEFUL_DOMAINS=localhost:3000
 ```
 
-## 👨💻 Penulis
+## 👨💻 Author
 - GitHub: [@hashiifabdillah](https://github.com/hashiifab)
 - LinkedIn: [Hashiif Abdillah](https://www.linkedin.com/in/hashiif-abdillah-665373297/)
