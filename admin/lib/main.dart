@@ -5,6 +5,8 @@ import 'screens/dashboard_screen.dart';
 import 'services/web_enabled_api_service.dart';
 
 void main() {
+   // Disable shader warm-up
+  PaintingBinding.shaderWarmUp = null;
   runApp(const MyApp());
 }
 

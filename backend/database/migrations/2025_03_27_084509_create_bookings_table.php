@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('payment_method');
             $table->decimal('total_price', 10, 2);
             $table->text('payment_proof')->nullable();
+            $table->timestamp('payment_due_at')->nullable();
             $table->timestamps();
         });
     }

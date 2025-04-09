@@ -7,7 +7,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class WebEnabledApiService {
-  static const String baseUrl = 'http://localhost:8000/api';
+  static String get baseUrl => kIsWeb ? 'http://localhost:8000/api' : 'http://10.0.2.2:8000/api';
   static const String tokenKey = 'admin_token';
 
   // Get stored token
@@ -567,4 +567,4 @@ class WebEnabledApiService {
       return false;
     }
   }
-} 
+}

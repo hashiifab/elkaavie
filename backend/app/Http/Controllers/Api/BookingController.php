@@ -193,8 +193,11 @@ class BookingController extends Controller
             // Update booking status
             $booking->update($validated);
 
-            // Update room availability based on booking status
+            // Set payment due date when booking is approved
             if ($validated['status'] === 'approved') {
+                // Set payment due date to 24 hours from now
+                $booking->update(['payment_due_at' => now()->addHours(24)]);
+                
                 // Check if room exists and is available before updating
                 if ($booking->room && $booking->room->is_available) {
                     $booking->room->update(['is_available' => false]);

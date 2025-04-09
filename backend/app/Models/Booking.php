@@ -23,6 +23,7 @@ class Booking extends Model
         'identity_card',
         'total_price',
         'payment_proof',
+        'payment_due_at',
     ];
 
     protected function casts(): array
@@ -31,6 +32,7 @@ class Booking extends Model
             'check_in' => 'date',
             'check_out' => 'date',
             'total_price' => 'decimal:2',
+            'payment_due_at' => 'datetime',
         ];
     }
 
