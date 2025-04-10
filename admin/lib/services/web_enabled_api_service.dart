@@ -7,7 +7,21 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class WebEnabledApiService {
-  static String get baseUrl => kIsWeb ? 'http://localhost:8000/api' : 'http://10.0.2.2:8000/api';
+  String? _token;
+  
+  // Get the appropriate base URL based on platform
+  String get baseUrl {
+    if (kIsWeb) {
+      return 'http://localhost:8000/api';
+    } else {
+      // For Android emulator, use 10.0.2.2 instead of localhost
+      return 'http://10.0.2.2:8000/api';
+    }
+  }
+
+  // Add token getter
+  String? get token => _token;
+
   static const String tokenKey = 'admin_token';
 
   // Get stored token
@@ -71,6 +85,8 @@ class WebEnabledApiService {
   // Login
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
+      print('Attempting login to: $baseUrl/login');
+      
       // Prepare headers for web
       final headers = {
         'Content-Type': 'application/json',
@@ -350,31 +366,30 @@ class WebEnabledApiService {
   }
   
   // Update booking status
-  Future<Map<String, dynamic>> updateBookingStatus(int id, String status) async {
-    print('Updating booking status: $id to $status');
-    try {
-      final headers = await _getAuthHeaders();
-      final response = await http.put(
-        Uri.parse('$baseUrl/bookings/$id/status'),
-        headers: headers,
-        body: jsonEncode({
-          'status': status,
-          '_method': 'PUT'
-        }),
-      );
+  Future<Map<String, dynamic>> updateBookingStatus(String bookingId, String status) async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('No authentication token found');
+    }
+    print('Using token for status update: $token');
+    
+    final response = await http.put(
+      Uri.parse('$baseUrl/bookings/$bookingId/status'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'status': status}),
+    );
 
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data;
-      } else {
-        throw Exception('Failed to update booking status: ${response.body}');
-      }
-    } catch (e) {
-      print('Error updating booking status: $e');
-      rethrow;
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print('Successfully updated booking status: $data');
+      return data;
+    } else {
+      print('Error updating booking status: ${response.body}');
+      throw Exception('Failed to update booking status: ${response.body}');
     }
   }
   
@@ -565,6 +580,31 @@ class WebEnabledApiService {
       return rooms.isNotEmpty;
     } catch (e) {
       return false;
+    }
+  }
+
+  // Update booking payment due date
+  Future<Map<String, dynamic>> updateBookingPaymentDue(String bookingId, DateTime? dueDate) async {
+    final token = await getToken();
+    if (token == null) {
+      throw Exception('No authentication token found');
+    }
+    print('Using token for payment due update: $token');
+    
+    final response = await http.post(
+      Uri.parse('$baseUrl/bookings/$bookingId/payment-due'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({'payment_due_at': dueDate?.toIso8601String()}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to update payment due date: ${response.body}');
     }
   }
 }

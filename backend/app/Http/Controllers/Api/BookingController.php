@@ -184,7 +184,7 @@ class BookingController extends Controller
             }
 
             $validated = $request->validate([
-                'status' => 'required|in:pending,approved,rejected,completed,cancelled',
+                'status' => 'required|in:pending,approved,rejected,completed,cancelled,paid',
             ]);
 
             // Load the booking with relationships
@@ -202,6 +202,9 @@ class BookingController extends Controller
                 if ($booking->room && $booking->room->is_available) {
                     $booking->room->update(['is_available' => false]);
                 }
+            } elseif ($validated['status'] === 'paid') {
+                // When payment is verified, clear the payment due date
+                $booking->update(['payment_due_at' => null]);
             } elseif ($validated['status'] === 'rejected' || $validated['status'] === 'completed' || $validated['status'] === 'cancelled') {
                 // Check if room exists before updating
                 if ($booking->room) {

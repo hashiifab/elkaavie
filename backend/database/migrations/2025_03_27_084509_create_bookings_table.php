@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('room_id')->constrained()->onDelete('cascade');
             $table->date('check_in');
             $table->date('check_out');
-            $table->enum('status', ['pending', 'approved', 'rejected', 'completed', 'cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'completed', 'cancelled', 'paid'])->default('pending');
             $table->string('phone_number');
             $table->string('identity_card');
             $table->integer('guests');
