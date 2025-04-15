@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+// Email verification routes
+Route::post('/email/verify', [AuthController::class, 'verifyEmail']);
+Route::post('/email/verify-and-login', [AuthController::class, 'verifyEmailAndLogin']);
+Route::post('/email/verification-notification', [AuthController::class, 'resendVerificationEmail'])
+    ->middleware('auth:sanctum');
+Route::post('/email/verification-notification/unverified', [AuthController::class, 'resendVerificationEmailForUnverified']);
+
 // Room routes - public access
 Route::get('/rooms', [RoomController::class, 'index']);
 Route::post('/rooms/initialize', [RoomController::class, 'initialize']);

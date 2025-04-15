@@ -501,13 +501,35 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Welcome, ${_userData?['name'] ?? 'Admin'}',
-            style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Welcome, ${_userData?['name'] ?? 'Admin'}',
+                style: GoogleFonts.poppins(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  _loadAllData().then((_) {
+                    if (mounted) {
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    }
+                  });
+                },
+                icon: const Icon(Icons.refresh),
+                tooltip: 'Refresh data',
+                color: AppColors.primary,
+              ),
+            ],
           ),
           const SizedBox(height: 24),
           _buildDashboardStats(),
@@ -623,50 +645,99 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   ],
                 ),
               )
-            : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _users.length,
-                itemBuilder: (context, index) {
-                  final user = _users[index];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(16),
-                      leading: CircleAvatar(
-                        backgroundColor: AppColors.primary,
-                        child: Text(
-                          user['name']?[0]?.toUpperCase() ?? 'U',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+            : RefreshIndicator(
+                onRefresh: _loadUsers,
+                child: Column(
+                  children: [
+                    // Refresh button at the top
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              setState(() {
+                                _loadingUsers = true;
+                              });
+                              _loadUsers().then((_) {
+                                if (mounted) {
+                                  setState(() {
+                                    _loadingUsers = false;
+                                  });
+                                }
+                              });
+                            },
+                            icon: _loadingUsers 
+                                ? const SizedBox(
+                                    width: 16, 
+                                    height: 16, 
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    ),
+                                  )
+                                : const Icon(Icons.refresh, size: 16),
+                            label: Text(_loadingUsers ? 'Refreshing...' : 'Refresh Users'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                            ),
                           ),
-                        ),
-                      ),
-                      title: Text(
-                        user['name'] ?? 'Unknown',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(user['email'] ?? 'No email'),
-                      trailing: Chip(
-                        label: Text(
-                          user['role'] ?? 'user',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                        backgroundColor: user['role'] == 'admin'
-                            ? AppColors.primary
-                            : AppColors.secondary,
+                        ],
                       ),
                     ),
-                  );
-                },
+                    
+                    // Users list
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: _users.length,
+                        itemBuilder: (context, index) {
+                          final user = _users[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(16),
+                              leading: CircleAvatar(
+                                backgroundColor: AppColors.primary,
+                                child: Text(
+                                  user['name']?[0]?.toUpperCase() ?? 'U',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                user['name'] ?? 'Unknown',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(user['email'] ?? 'No email'),
+                              trailing: Chip(
+                                label: Text(
+                                  user['role'] ?? 'user',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                backgroundColor: user['role'] == 'admin'
+                                    ? AppColors.primary
+                                    : AppColors.secondary,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               );
   }
 
@@ -720,6 +791,43 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Refresh button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _loadingRooms = true;
+                    });
+                    _loadRooms().then((_) {
+                      if (mounted) {
+                        setState(() {
+                          _loadingRooms = false;
+                        });
+                      }
+                    });
+                  },
+                  icon: _loadingRooms 
+                      ? const SizedBox(
+                          width: 16, 
+                          height: 16, 
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Icon(Icons.refresh, size: 16),
+                  label: Text(_loadingRooms ? 'Refreshing...' : 'Refresh Rooms'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            
             // Header with legend
             Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -942,356 +1050,433 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       return (b['id'] as int).compareTo(a['id'] as int);
     });
 
+    if (_loadingBookings) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     if (validBookings.isEmpty) {
-      return const Center(
-        child: Text('No bookings found'),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.book_online_outlined,
+              size: 64,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No bookings found',
+              style: TextStyle(
+                fontSize: 18,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _loadBookings,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Refresh Bookings'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        ),
       );
     }
 
     return RefreshIndicator(
       onRefresh: _loadBookings,
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: validBookings.length,
-        itemBuilder: (context, index) {
-          final booking = validBookings[index];
-          print('Building booking card for ID: ${booking['id']}');
-          print('Booking status: ${booking['status']}');
-          print('Payment proof: ${booking['payment_proof']}');
-          
-          // Debug logging for payment verification conditions
-          final isApproved = booking['status'] == 'approved';
-          final hasPaymentProof = booking['payment_proof'] != null && booking['payment_proof'].toString().isNotEmpty;
-          print('Payment verification conditions:');
-          print('- Is approved: $isApproved');
-          print('- Has payment proof: $hasPaymentProof');
-          print('- Should show verify button: ${isApproved && hasPaymentProof}');
-          
-          return Card(
-            margin: const EdgeInsets.only(bottom: 16),
-            child: Column(
+      child: Column(
+        children: [
+          // Refresh button
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(booking['status']).withOpacity(0.1),
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Booking #${booking['id']}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                ElevatedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _loadingBookings = true;
+                    });
+                    _loadBookings().then((_) {
+                      if (mounted) {
+                        setState(() {
+                          _loadingBookings = false;
+                        });
+                      }
+                    });
+                  },
+                  icon: _loadingBookings 
+                      ? const SizedBox(
+                          width: 16, 
+                          height: 16, 
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _getStatusColor(booking['status']),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          booking['status'].toString().toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                
-                // Main content
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Room and Guest Info
-                      _buildInfoSection(
-                        icon: Icons.hotel,
-                        title: 'Room Information',
-                        color: Colors.blue,
-                        children: [
-                          _buildInfoRow('Room Number', 'Room ${booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown'}'),
-                          _buildInfoRow('Floor', 'Floor ${booking['room']?['floor'] ?? booking['room_floor'] ?? 'Unknown'}'),
-                          _buildInfoRow('Type', booking['room']?['roomType']?['name'] ?? booking['room_type'] ?? 'Standard'),
-                        ],
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      _buildInfoSection(
-                        icon: Icons.person,
-                        title: 'Guest Information',
-                        color: Colors.green,
-                        children: [
-                          _buildInfoRow('Name', booking['user']?['name'] ?? 'Guest'),
-                          _buildInfoRow('Phone', booking['phone_number'] ?? 'N/A'),
-                          _buildInfoRow('Guests', '${booking['guests']?.toString() ?? '1'} person(s)'),
-                        ],
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Dates and Payment Info
-                      _buildInfoSection(
-                        icon: Icons.calendar_today,
-                        title: 'Booking Details',
-                        color: Colors.orange,
-                        children: [
-                          _buildInfoRow('Check In', booking['check_in'] != null ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_in'])) : 'N/A'),
-                          _buildInfoRow('Check Out', booking['check_out'] != null ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_out'])) : 'N/A'),
-                          _buildInfoRow('Payment Method', booking['payment_method'] ?? 'Credit Card'),
-                          _buildInfoRow('Total Amount', _formatCurrency(booking['total_price'])),
-                        ],
-                      ),
-                      
-                      // Special Requests if any
-                      if (booking['special_requests'] != null && booking['special_requests'] != '' && booking['special_requests'] != 'None')
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: _buildInfoSection(
-                            icon: Icons.note_alt,
-                            title: 'Special Requests',
-                            color: Colors.purple,
-                            children: [
-                              Text(
-                                booking['special_requests'],
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade700,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      
-                      // Identity Card if available
-                      if (booking['identity_card'] != null && booking['identity_card'] != '')
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: _buildInfoSection(
-                            icon: Icons.badge,
-                            title: 'Identity Card',
-                            color: Colors.blue,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  booking['identity_card'],
-                                  width: double.infinity,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      width: double.infinity,
-                                      height: 200,
-                                      color: Colors.grey.shade200,
-                                      child: const Center(
-                                        child: Text('Failed to load image'),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                      // Payment Proof Section
-                      if (booking['payment_proof'] != null) ...[
-                        const Divider(),
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Payment Proof',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  booking['payment_proof'],
-                                  width: double.infinity,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      width: double.infinity,
-                                      height: 200,
-                                      color: Colors.grey[200],
-                                      child: const Center(
-                                        child: Icon(Icons.error_outline),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              if (isApproved && hasPaymentProof) ...[
-                                const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          print('Verify payment button clicked for booking ${booking['id']}');
-                                          _updateBookingStatus(
-                                            booking['id'].toString(),
-                                            'paid',
-                                          );
-                                        },
-                                        icon: const Icon(Icons.check_circle_outline),
-                                        label: const Text('Verify Payment'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: AppColors.success,
-                                          foregroundColor: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: OutlinedButton.icon(
-                                        onPressed: () {
-                                          print('Reject payment button clicked for booking ${booking['id']}');
-                                          _updateBookingStatus(
-                                            booking['id'].toString(),
-                                            'rejected',
-                                          );
-                                        },
-                                        icon: const Icon(Icons.cancel_outlined),
-                                        label: const Text('Reject Payment'),
-                                        style: OutlinedButton.styleFrom(
-                                          foregroundColor: AppColors.error,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ],
-                      
-                      const SizedBox(height: 24),
-                      
-                      // Action Buttons
-                      if (booking['status'] == 'pending')
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () => _updateBookingStatus(booking['id'].toString(), 'approved'),
-                                icon: const Icon(Icons.check_circle),
-                                label: const Text('Approve'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () => _updateBookingStatus(booking['id'].toString(), 'rejected'),
-                                icon: const Icon(Icons.cancel),
-                                label: const Text('Reject'),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.red,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      if (booking['status'] == 'approved')
-                        Column(
-                          children: [
-                            Center(
-                              child: ElevatedButton.icon(
-                                onPressed: () => _updateBookingStatus(booking['id'].toString(), 'completed'),
-                                icon: const Icon(Icons.done_all),
-                                label: const Text('Mark as Completed'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                    vertical: 12,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Center(
-                              child: ElevatedButton.icon(
-                                onPressed: () => _updateBookingStatus(booking['id'].toString(), 'paid'),
-                                icon: const Icon(Icons.payment),
-                                label: const Text('Verify Payment'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                    vertical: 12,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      if (booking['status'] == 'paid')
-                        Center(
-                          child: ElevatedButton.icon(
-                            onPressed: () => _updateBookingStatus(booking['id'].toString(), 'completed'),
-                            icon: const Icon(Icons.done_all),
-                            label: const Text('Mark as Completed'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+                        )
+                      : const Icon(Icons.refresh, size: 16),
+                  label: Text(_loadingBookings ? 'Refreshing...' : 'Refresh Bookings'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
                   ),
                 ),
               ],
             ),
-          );
-        },
+          ),
+          
+          // Bookings list
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: validBookings.length,
+              itemBuilder: (context, index) {
+                final booking = validBookings[index];
+                print('Building booking card for ID: ${booking['id']}');
+                print('Booking status: ${booking['status']}');
+                print('Payment proof: ${booking['payment_proof']}');
+                
+                // Debug logging for payment verification conditions
+                final isApproved = booking['status'] == 'approved';
+                final hasPaymentProof = booking['payment_proof'] != null && booking['payment_proof'].toString().isNotEmpty;
+                print('Payment verification conditions:');
+                print('- Is approved: $isApproved');
+                print('- Has payment proof: $hasPaymentProof');
+                print('- Should show verify button: ${isApproved && hasPaymentProof}');
+                
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: _getStatusColor(booking['status']).withOpacity(0.1),
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(12),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Booking #${booking['id']}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: _getStatusColor(booking['status']),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                booking['status'].toString().toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      // Main content
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Room and Guest Info
+                            _buildInfoSection(
+                              icon: Icons.hotel,
+                              title: 'Room Information',
+                              color: Colors.blue,
+                              children: [
+                                _buildInfoRow('Room Number', 'Room ${booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown'}'),
+                                _buildInfoRow('Floor', 'Floor ${booking['room']?['floor'] ?? booking['room_floor'] ?? 'Unknown'}'),
+                                _buildInfoRow('Type', booking['room']?['roomType']?['name'] ?? booking['room_type'] ?? 'Standard'),
+                              ],
+                            ),
+                            
+                            const SizedBox(height: 16),
+                            
+                            _buildInfoSection(
+                              icon: Icons.person,
+                              title: 'Guest Information',
+                              color: Colors.green,
+                              children: [
+                                _buildInfoRow('Name', booking['user']?['name'] ?? 'Guest'),
+                                _buildInfoRow('Phone', booking['phone_number'] ?? 'N/A'),
+                                _buildInfoRow('Guests', '${booking['guests']?.toString() ?? '1'} person(s)'),
+                              ],
+                            ),
+                            
+                            const SizedBox(height: 16),
+                            
+                            // Dates and Payment Info
+                            _buildInfoSection(
+                              icon: Icons.calendar_today,
+                              title: 'Booking Details',
+                              color: Colors.orange,
+                              children: [
+                                _buildInfoRow('Check In', booking['check_in'] != null ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_in'])) : 'N/A'),
+                                _buildInfoRow('Check Out', booking['check_out'] != null ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_out'])) : 'N/A'),
+                                _buildInfoRow('Payment Method', booking['payment_method'] ?? 'Credit Card'),
+                                _buildInfoRow('Total Amount', _formatCurrency(booking['total_price'])),
+                              ],
+                            ),
+                            
+                            // Special Requests if any
+                            if (booking['special_requests'] != null && booking['special_requests'] != '' && booking['special_requests'] != 'None')
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: _buildInfoSection(
+                                  icon: Icons.note_alt,
+                                  title: 'Special Requests',
+                                  color: Colors.purple,
+                                  children: [
+                                    Text(
+                                      booking['special_requests'],
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            
+                            // Identity Card if available
+                            if (booking['identity_card'] != null && booking['identity_card'] != '')
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: _buildInfoSection(
+                                  icon: Icons.badge,
+                                  title: 'Identity Card',
+                                  color: Colors.blue,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.network(
+                                        booking['identity_card'],
+                                        width: double.infinity,
+                                        height: 200,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            width: double.infinity,
+                                            height: 200,
+                                            color: Colors.grey.shade200,
+                                            child: const Center(
+                                              child: Text('Failed to load image'),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                            // Payment Proof Section
+                            if (booking['payment_proof'] != null) ...[
+                              const Divider(),
+                              Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Payment Proof',
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.network(
+                                        booking['payment_proof'],
+                                        width: double.infinity,
+                                        height: 200,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            width: double.infinity,
+                                            height: 200,
+                                            color: Colors.grey[200],
+                                            child: const Center(
+                                              child: Icon(Icons.error_outline),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    if (isApproved && hasPaymentProof) ...[
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {
+                                                print('Verify payment button clicked for booking ${booking['id']}');
+                                                _updateBookingStatus(
+                                                  booking['id'].toString(),
+                                                  'paid',
+                                                );
+                                              },
+                                              icon: const Icon(Icons.check_circle_outline),
+                                              label: const Text('Verify Payment'),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: AppColors.success,
+                                                foregroundColor: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: OutlinedButton.icon(
+                                              onPressed: () {
+                                                print('Reject payment button clicked for booking ${booking['id']}');
+                                                _updateBookingStatus(
+                                                  booking['id'].toString(),
+                                                  'rejected',
+                                                );
+                                              },
+                                              icon: const Icon(Icons.cancel_outlined),
+                                              label: const Text('Reject Payment'),
+                                              style: OutlinedButton.styleFrom(
+                                                foregroundColor: AppColors.error,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ],
+                            
+                            const SizedBox(height: 24),
+                            
+                            // Action Buttons
+                            if (booking['status'] == 'pending')
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () => _updateBookingStatus(booking['id'].toString(), 'approved'),
+                                      icon: const Icon(Icons.check_circle),
+                                      label: const Text('Approve'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: OutlinedButton.icon(
+                                      onPressed: () => _updateBookingStatus(booking['id'].toString(), 'rejected'),
+                                      icon: const Icon(Icons.cancel),
+                                      label: const Text('Reject'),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.red,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            if (booking['status'] == 'approved')
+                              Column(
+                                children: [
+                                  Center(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () => _updateBookingStatus(booking['id'].toString(), 'completed'),
+                                      icon: const Icon(Icons.done_all),
+                                      label: const Text('Mark as Completed'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.blue,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 24,
+                                          vertical: 12,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Center(
+                                    child: ElevatedButton.icon(
+                                      onPressed: () => _updateBookingStatus(booking['id'].toString(), 'paid'),
+                                      icon: const Icon(Icons.payment),
+                                      label: const Text('Verify Payment'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 24,
+                                          vertical: 12,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            if (booking['status'] == 'paid')
+                              Center(
+                                child: ElevatedButton.icon(
+                                  onPressed: () => _updateBookingStatus(booking['id'].toString(), 'completed'),
+                                  icon: const Icon(Icons.done_all),
+                                  label: const Text('Mark as Completed'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 24,
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
