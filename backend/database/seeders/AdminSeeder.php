@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@elkaavie.com',
             'password' => Hash::make('password123'),
-            'is_admin' => true,
+            'role' => 'admin',
         ]);
 
         $this->command->info('Admin user created successfully!');
