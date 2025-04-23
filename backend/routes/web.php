@@ -23,3 +23,8 @@ Route::get('/login', function () {
         'message' => 'Please use POST request to /api/login with email and password'
     ]);
 })->name('login');
+
+// Password Reset Routes
+Route::get('/reset-password/{token}', function (string $token) {
+    return redirect(env('APP_FRONTEND_URL', 'http://localhost:3000') . '/reset-password/' . $token);
+})->name('password.reset');

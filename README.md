@@ -84,7 +84,7 @@ DB_DATABASE=elkaavie
 DB_USERNAME=root
 DB_PASSWORD=
 APP_KEY=
-SANCTUM_STATEFUL_DOMAINS=localhost:8080
+SANCTUM_STATEFUL_DOMAINS=localhost:3000
 ```
 
 ## 👨💻 Author

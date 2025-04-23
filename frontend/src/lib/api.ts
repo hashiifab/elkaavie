@@ -199,7 +199,22 @@ export const authApi = {
       password,
     });
     return response.data;
-  }
+  },
+
+  forgotPassword: async (email: string) => {
+    const response = await api.post("/forgot-password", { email });
+    return response.data;
+  },
+
+  resetPassword: async (data: { 
+    email: string; 
+    password: string; 
+    password_confirmation: string; 
+    token: string 
+  }) => {
+    const response = await api.post("/reset-password", data);
+    return response.data;
+  },
 };
 
 export const roomApi = {

@@ -15,6 +15,8 @@ import Profile from "./pages/Profile";
 import BookingDetails from "./pages/BookingDetails";
 import PaymentGuide from "./pages/PaymentGuide";
 import EmailVerification from "./pages/EmailVerification";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/bookings/:id" element={<BookingDetails />} />
           <Route path="/bookings/:id/payment-guide" element={<PaymentGuide />} />
           <Route path="/verify-email" element={<EmailVerification />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
