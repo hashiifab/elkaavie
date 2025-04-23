@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:typed_data';
 import 'package:http_parser/http_parser.dart';
-import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class WebEnabledApiService {

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -100,6 +102,31 @@ class AuthController extends Controller
     public function user(): JsonResponse
     {
         return response()->json(Auth::user());
+    }
+
+    public function update(Request $request): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+            
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            ]);
+
+            $user->update($validated);
+
+            return response()->json([
+                'message' => 'Profile updated successfully',
+                'user' => $user
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Profile update failed: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Failed to update profile',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function resendVerificationEmail(): JsonResponse
@@ -217,6 +244,75 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Email verification and login failed',
             ], 500);
+        }
+    }
+
+    public function redirectToGoogle(): JsonResponse
+    {
+        try {
+            $url = Socialite::driver('google')
+                ->stateless()
+                ->redirect()
+                ->getTargetUrl();
+            
+            return response()->json(['url' => $url]);
+        } catch (\Exception $e) {
+            Log::error('Google redirect failed: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Google redirect failed. Please try again.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function handleGoogleCallback(Request $request)
+    {
+        try {
+            \Log::info('Google callback received', ['request' => $request->all()]);
+            
+            // Use stateless to avoid session issues
+            $googleUser = Socialite::driver('google')->stateless()->user();
+            \Log::info('Google user data received', ['email' => $googleUser->email]);
+            
+            $user = User::where('email', $googleUser->email)->first();
+            
+            if (!$user) {
+                \Log::info('Creating new user from Google data');
+                $user = User::create([
+                    'name' => $googleUser->name,
+                    'email' => $googleUser->email,
+                    'password' => Hash::make(Str::random(16)),
+                    'email_verified_at' => now(),
+                    'google_id' => $googleUser->id
+                ]);
+            } else if (!$user->google_id) {
+                \Log::info('Updating existing user with Google ID');
+                $user->update([
+                    'google_id' => $googleUser->id
+                ]);
+            }
+            
+            $token = $user->createToken('auth_token')->plainTextToken;
+            \Log::info('Auth token created for user', ['user_id' => $user->id]);
+            
+            // Redirect to frontend with token
+            $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+            $redirectUrl = $frontendUrl . '/auth/google/callback?token=' . $token;
+            \Log::info('Redirecting to frontend', ['url' => $redirectUrl]);
+            
+            return redirect($redirectUrl);
+            
+        } catch (\Exception $e) {
+            \Log::error('Google callback error: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+            $redirectUrl = $frontendUrl . '/login?error=google_login_failed';
+            \Log::info('Redirecting to login with error', ['url' => $redirectUrl]);
+            
+            return redirect($redirectUrl);
         }
     }
 }

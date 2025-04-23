@@ -65,8 +65,6 @@ class MyApp extends StatelessWidget {
           onTertiaryContainer: Colors.white,
           error: AppColors.error,
           onError: Colors.white,
-          background: AppColors.background,
-          onBackground: AppColors.textPrimary,
           surface: AppColors.surface,
           onSurface: AppColors.textPrimary,
         ),

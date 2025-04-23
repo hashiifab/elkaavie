@@ -12,11 +12,13 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RoomBooking from "./pages/RoomBooking";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import BookingDetails from "./pages/BookingDetails";
 import PaymentGuide from "./pages/PaymentGuide";
 import EmailVerification from "./pages/EmailVerification";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
+import GoogleCallback from './pages/GoogleCallback';
 
 const queryClient = new QueryClient();
 
@@ -35,11 +37,13 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/bookings/:id" element={<BookingDetails />} />
           <Route path="/bookings/:id/payment-guide" element={<PaymentGuide />} />
           <Route path="/verify-email" element={<EmailVerification />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -137,6 +137,40 @@ const Login = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const { url } = await authApi.googleLogin();
+      window.location.href = url;
+    } catch (error) {
+      console.error("Google login failed:", error);
+      setErrorMessage("Failed to initiate Google login. Please try again.");
+    }
+  };
+
+  // Handle Google OAuth callback
+  React.useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const token = searchParams.get('token');
+    const error = searchParams.get('error');
+
+    if (error === 'google_login_failed') {
+      setErrorMessage("Google login failed. Please try again.");
+      return;
+    }
+
+    if (token) {
+      // Store the token
+      localStorage.setItem('auth_token', token);
+      
+      // Get redirect path from localStorage or default to home
+      const redirectPath = localStorage.getItem('redirect_after_login') || '/';
+      localStorage.removeItem('redirect_after_login');
+      
+      // Navigate to the redirect path
+      navigate(redirectPath);
+    }
+  }, [navigate]);
+
   return (
     <>
       <Header />
@@ -275,6 +309,17 @@ const Login = () => {
                   <Link to="/forgot-password" className="text-sm text-elkaavie-600 hover:text-elkaavie-700">
                     Forgot password?
                   </Link>
+                </div>
+
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    className="w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50"
+                  >
+                    <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
+                    Continue with Google
+                  </button>
                 </div>
 
                 <button

@@ -157,6 +157,11 @@ export const authApi = {
     return response.data;
   },
 
+  updateProfile: async (data: { name: string; email: string }) => {
+    const response = await api.put("/user", data);
+    return response.data;
+  },
+
   associateBookings: async (email: string, phoneNumber: string) => {
     const response = await api.post("/bookings/associate", { email, phone_number: phoneNumber });
     return response.data;
@@ -214,6 +219,34 @@ export const authApi = {
   }) => {
     const response = await api.post("/reset-password", data);
     return response.data;
+  },
+
+  googleLogin: async () => {
+    try {
+      console.log('Starting Google login process...');
+      // Store the current URL to redirect back after login
+      localStorage.setItem('redirect_after_login', window.location.pathname);
+      console.log('Stored redirect path:', window.location.pathname);
+      
+      // Use the backend's Google OAuth endpoint
+      console.log('Calling backend Google OAuth endpoint...');
+      const response = await api.get('/auth/google');
+      console.log('Backend response:', response.data);
+      
+      if (!response.data || !response.data.url) {
+        console.error('Invalid response from backend:', response.data);
+        throw new Error('Invalid response from backend');
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error('Google login failed:', error);
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+      }
+      throw error;
+    }
   },
 };
 

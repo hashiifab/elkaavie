@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Route;
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::middleware(['web'])->group(function () {
+    Route::get('/auth/google', [AuthController::class, 'redirectToGoogle']);
+    Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+});
 
 // Email verification routes
 Route::post('/email/verify', [AuthController::class, 'verifyEmail']);
@@ -28,6 +32,7 @@ Route::get('/rooms/{room}', [RoomController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     // User profile and authentication
     Route::get('/user', [AuthController::class, 'user']);
+    Route::put('/user', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
     // User bookings - with full data but filtered by user

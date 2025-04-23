@@ -201,7 +201,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       await _loadRooms();
       return newStatus;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
