@@ -120,6 +120,13 @@ const categoryConfig: Record<FAQCategory | 'all', { label: string; icon: React.R
   location: { label: "Location", icon: <Building size={18} /> },
 };
 
+interface FormData {
+  name: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
 const HelpCenter = () => {
   // States for FAQ interaction
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
@@ -128,11 +135,11 @@ const HelpCenter = () => {
   const [filteredFaqs, setFilteredFaqs] = useState<FAQ[]>(faqs);
 
   // States for contact form
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    phone: '',
+    subject: '',
+    message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -178,23 +185,35 @@ const HelpCenter = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitError('');
-    
+
     try {
-      // Simulate API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Format pesan untuk WhatsApp
+      const message = `*New Help Request*\n
+*Name:* ${formData.name}\n
+*Subject:* ${formData.subject}\n
+*Message:* ${formData.message}`;
+
+      // Encode pesan untuk URL WhatsApp
+      const encodedMessage = encodeURIComponent(message);
       
-      // In a real application, you would send this data to your backend
-      console.log("Form submitted:", formData);
+      // Nomor WhatsApp admin
+      const adminPhone = "6282220760272";
       
-      // Reset form and show success
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      // Buka WhatsApp dengan pesan yang sudah disiapkan
+      window.open(`https://wa.me/${adminPhone}?text=${encodedMessage}`, '_blank');
+      
       setSubmitSuccess(true);
+      setSubmitError(null);
       
-      // Reset success message after 5 seconds
-      setTimeout(() => setSubmitSuccess(false), 5000);
+      // Reset form
+      setFormData({
+        name: '',
+        phone: '',
+        subject: '',
+        message: ''
+      });
     } catch (error) {
-      setSubmitError('There was an error submitting your message. Please try again.');
+      setSubmitError('Failed to send message. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -397,22 +416,22 @@ const HelpCenter = () => {
                       </div>
                       
                       <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                          Email Address
+                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                          WhatsApp Number
                         </label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Mail className="h-4 w-4 text-gray-400" />
+                            <Phone className="h-4 w-4 text-gray-400" />
                           </div>
                           <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            value={formData.phone}
                             onChange={handleInputChange}
                             required
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
-                            placeholder="your.email@example.com"
+                            placeholder="e.g., 081234567890"
                           />
                         </div>
                       </div>
@@ -430,11 +449,11 @@ const HelpCenter = () => {
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
                         >
                           <option value="">Select a topic</option>
-                          <option value="booking">Booking Inquiry</option>
-                          <option value="cancellation">Cancellation</option>
-                          <option value="payment">Payment Issue</option>
-                          <option value="feedback">Feedback</option>
-                          <option value="other">Other</option>
+                          <option value="Booking Inquiry">Booking Inquiry</option>
+                          <option value="Cancellation">Cancellation</option>
+                          <option value="Payment Issue">Payment Issue</option>
+                          <option value="Feedback">Feedback</option>
+                          <option value="Other">Other</option>
                         </select>
                       </div>
                       
