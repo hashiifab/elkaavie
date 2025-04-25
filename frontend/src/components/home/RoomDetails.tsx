@@ -23,9 +23,9 @@ const RoomDetails = () => {
 
   const roomRules = [
     { rule: "Maksimal 1 orang/kamar", allowed: false },
-    { rule: "Tidak menerima pasutri", allowed: false },
+    { rule: "Tidak menerima pasangan belum kawin", allowed: false },
     { rule: "Tidak boleh membawa anak", allowed: false },
-    { rule: "Hanya untuk karyawan dan mahasiswa S2", allowed: true },
+    { rule: "Hanya untuk karyawan dan mahasiswa", allowed: true },
     { rule: "Parkir motor & mobil tersedia", allowed: true },
   ];
 

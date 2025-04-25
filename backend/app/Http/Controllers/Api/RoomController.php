@@ -127,15 +127,15 @@ class RoomController extends Controller
             $roomType->save();
         }
         
-        // Create rooms using the floor-based naming scheme (A1-A5, B1-B5, C1-C5)
+        // Create rooms using the floor-based naming scheme (A1-A5, B1-B5)
         $rooms = [];
-        $floorPrefixes = [1 => 'A', 2 => 'B', 3 => 'C'];
+        $floorPrefixes = [1 => 'A', 2 => 'B'];
         
-        for ($floor = 1; $floor <= 3; $floor++) {
+        for ($floor = 1; $floor <= 2; $floor++) {
             $prefix = $floorPrefixes[$floor];
             
             for ($i = 1; $i <= 5; $i++) {
-                $roomNumber = $prefix . $i; // This creates A1, A2, ..., B1, B2, ..., etc.
+                $roomNumber = $prefix . $i; // This creates A1, A2, ..., B1, B2, etc.
                 
                 $room = Room::create([
                     'room_type_id' => $roomType->id,

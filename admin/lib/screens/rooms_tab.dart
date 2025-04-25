@@ -109,7 +109,7 @@ class RoomsTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'Floor $floor',
+                  floor == 3 ? 'Laundry Area' : 'Floor $floor',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontSize: 18,
@@ -125,79 +125,97 @@ class RoomsTab extends StatelessWidget {
                   color: Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'Hallway',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey.shade700),
-                      ),
-                    ),
-                    GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5,
-                        childAspectRatio: 2.0,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: roomsByFloor[floor]!.length,
-                      itemBuilder: (context, index) {
-                        final room = roomsByFloor[floor]![index];
-                        final bool isAvailable = room['is_available'] ?? true;
-                        final String roomNumber = room['number'] ?? '';
-
-                        return GestureDetector(
-                          onTap: () async {
-                            try {
-                              bool newStatus = await onToggleRoomAvailability(room['id']);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Room marked as ${newStatus ? 'available' : 'unavailable'}')),
-                              );
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(e.toString())),
-                              );
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isAvailable ? Colors.green : Colors.red,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Room $roomNumber',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                child: floor == 3
+                    ? Column(
+                        children: [
+                          Icon(
+                            Icons.local_laundry_service,
+                            size: 48,
+                            color: Colors.blue.shade900,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Laundry Area',
+                            style: GoogleFonts.poppins(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade900,
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Area penjemuran dan cuci pakaian untuk penghuni',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              'Hallway',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.grey.shade700),
+                            ),
+                          ),
+                          GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 5,
+                              childAspectRatio: 2.0,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: roomsByFloor[floor]!.length,
+                            itemBuilder: (context, index) {
+                              final room = roomsByFloor[floor]![index];
+                              final bool isAvailable = room['is_available'] ?? true;
+                              final String roomNumber = room['number'] ?? '';
+
+                              return GestureDetector(
+                                onTap: () async {
+                                  try {
+                                    bool newStatus = await onToggleRoomAvailability(room['id']);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Room marked as ${newStatus ? 'available' : 'unavailable'}')),
+                                    );
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(e.toString())),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: isAvailable ? Colors.green : Colors.red.withOpacity(0.7),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      roomNumber,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
               ),
               const SizedBox(height: 24),
             ],

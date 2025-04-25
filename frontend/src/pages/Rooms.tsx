@@ -354,7 +354,7 @@ const Rooms = () => {
               {floors.map(floor => (
                 <div key={floor} className="mb-8">
                   <h2 className="text-xl font-semibold bg-blue-900 text-white py-3 px-6 rounded-t-xl mb-0 text-center">
-                    Floor {floor}
+                    {floor === 3 ? 'Laundry Area' : `Floor ${floor}`}
                   </h2>
                   
                   <div className="border border-gray-200 rounded-b-xl bg-white p-8">
@@ -363,32 +363,43 @@ const Rooms = () => {
                       Hallway
                     </div>
                     
-                    {/* Room grid */}
-                    <div className="grid grid-cols-5 gap-6 max-w-3xl mx-auto">
-                      {roomsByFloor[floor].map(room => (
-                        <div
-                          key={room.id}
-                          className={`aspect-square rounded-lg shadow-sm cursor-pointer flex items-center justify-center transition-transform hover:scale-105 ${
-                            !room.is_available && 'cursor-not-allowed'
-                          } ${
-                            room.is_available 
-                              ? "bg-green-500 hover:bg-green-600" 
-                              : "bg-red-500 hover:bg-red-600 opacity-70"
-                          } ${selectedRoom?.id === room.id ? "ring-4 ring-blue-500 transform scale-105" : ""}`}
-                          onClick={() => {
-                            if (room.is_available) {
-                              setSelectedRoom(prev => prev?.id === room.id ? null : room);
-                            }
-                          }}
-                        >
-                          <div className="text-center">
-                            <span className="text-white font-bold text-lg">
-                              {room.number}
-                            </span>
-                          </div>
+                    {floor === 3 ? (
+                      <div className="text-center py-8">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-elkaavie-100 rounded-full mb-4">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 7V5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V7M3 7H21M3 7V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V7M8 11H16M8 15H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
                         </div>
-                      ))}
-                    </div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">Laundry Area</h3>
+                        <p className="text-gray-600">Area penjemuran dan cuci pakaian untuk penghuni</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-5 gap-6 max-w-3xl mx-auto">
+                        {roomsByFloor[floor].map((room) => (
+                          <div
+                            key={room.id}
+                            className={`aspect-square rounded-lg shadow-sm cursor-pointer flex items-center justify-center transition-transform hover:scale-105 ${
+                              !room.is_available && 'cursor-not-allowed'
+                            } ${
+                              room.is_available 
+                                ? "bg-green-500 hover:bg-green-600" 
+                                : "bg-red-500 hover:bg-red-600 opacity-70"
+                            } ${selectedRoom?.id === room.id ? "ring-4 ring-blue-500 transform scale-105" : ""}`}
+                            onClick={() => {
+                              if (room.is_available) {
+                                setSelectedRoom(prev => prev?.id === room.id ? null : room);
+                              }
+                            }}
+                          >
+                            <div className="text-center">
+                              <span className="text-white font-bold text-lg">
+                                {room.number}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

@@ -122,16 +122,20 @@ const Location = () => {
 
           <div className="order-1 lg:order-2">
             <div className="relative rounded-2xl overflow-hidden shadow-lg h-[400px] md:h-[500px] animate-scale-in">
-              <img
-                src="https://maps.googleapis.com/maps/api/staticmap?center=Mlati,Sleman,Yogyakarta&zoom=14&size=600x600&maptype=roadmap&markers=color:green%7Clabel:A%7CMlati,Sleman,Yogyakarta&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"
-                alt="Peta Lokasi Elkaavie"
-                className="w-full h-full object-cover"
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.2217300641523!2d110.3646763!3d-7.7662954!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a58453c3f9ca1%3A0xf0e252b6131c38ba!2sKOS%20EXCLUSIVE%20ELKAAVIE!5e0!3m2!1sen!2sid!4v1745549796972!5m2!1sen!2sid"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={true}
                 loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex flex-col justify-end p-6">
-                <h3 className="text-xl font-bold text-white mb-2">Elkaavie Kost</h3>
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 to-transparent flex flex-col justify-end p-6">
+                <h3 className="text-xl font-bold text-white mb-2">KOS EXCLUSIVE ELKAAVIE</h3>
                 <p className="text-white/90">
-                  Mlati, Kabupaten Sleman, Jogja
+                  Kutu Dukuh, Sinduadi, Mlati, Sleman Regency, Special Region of Yogyakarta 55284
                 </p>
               </div>
             </div>
