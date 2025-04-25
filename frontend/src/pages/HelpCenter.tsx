@@ -480,16 +480,6 @@ const HelpCenter = () => {
                     <div className="space-y-4">
                       <div className="flex items-center">
                         <div className="w-8 h-8 bg-elkaavie-100 rounded-full flex items-center justify-center text-elkaavie-600 mr-3">
-                          <Phone className="h-4 w-4" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">Phone Support</p>
-                          <p className="text-sm text-gray-600">+62 812 3456 7890</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 bg-elkaavie-100 rounded-full flex items-center justify-center text-elkaavie-600 mr-3">
                           <Mail className="h-4 w-4" />
                         </div>
                         <div>
@@ -500,11 +490,11 @@ const HelpCenter = () => {
                       
                       <div className="flex items-center">
                         <div className="w-8 h-8 bg-elkaavie-100 rounded-full flex items-center justify-center text-elkaavie-600 mr-3">
-                          <MessageSquare className="h-4 w-4" />
+                          <Phone className="h-4 w-4" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">Live Chat</p>
-                          <p className="text-sm text-gray-600">Available 9 AM - 5 PM (GMT+7)</p>
+                          <p className="text-sm font-medium text-gray-900">Phone</p>
+                          <p className="text-sm text-gray-600">+62 812-3456-7890</p>
                         </div>
                       </div>
                       

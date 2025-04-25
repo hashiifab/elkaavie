@@ -6,7 +6,6 @@ import 'dashboard_tab.dart';
 import 'users_tab.dart';
 import 'rooms_tab.dart';
 import 'bookings_tab.dart';
-import '../utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../main.dart';
@@ -37,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _loadUserData();
     _loadAllData();
   }

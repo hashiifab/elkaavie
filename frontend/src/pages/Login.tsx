@@ -86,13 +86,9 @@ const Login = () => {
       // Attempt login
       const response = await authApi.login(email, password);
       
-      // Try to associate any pending bookings with the user
-      try {
-        await authApi.associateBookings(email, response.user.phone_number);
-      } catch (err) {
-        console.error("Failed to associate bookings:", err);
-      }
-
+      // Store auth token
+      localStorage.setItem('auth_token', response.token);
+      
       // Navigate based on redirect or pending booking
       const pendingBooking = sessionStorage.getItem('pendingBooking');
       if (pendingBooking) {

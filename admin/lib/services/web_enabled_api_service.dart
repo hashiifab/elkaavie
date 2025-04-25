@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class WebEnabledApiService {
   String? _token;
+  Map<String, dynamic>? userData;
   
   // Get the appropriate base URL based on platform
   String get baseUrl {
@@ -82,19 +83,11 @@ class WebEnabledApiService {
   }
 
   // Login
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<void> login(String email, String password) async {
     try {
-      print('Attempting login to: $baseUrl/login');
-      
-      // Prepare headers for web
-      final headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
-
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
-        headers: headers,
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': email,
           'password': password,
@@ -103,15 +96,23 @@ class WebEnabledApiService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        
+        // Check if user is admin
+        if (data['user']['role'] != 'admin') {
+          throw Exception('Unauthorized: Admin access required');
+        }
+        
+        userData = data['user'];
+        // Store token and user data
         await setToken(data['token']);
-        return data;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userData', jsonEncode(data['user']));
       } else {
         final errorData = jsonDecode(response.body);
-        throw Exception(errorData['message'] ?? 'Login failed');
+        throw Exception(errorData['message'] ?? 'Failed to login');
       }
     } catch (e) {
-      print('Login error: ${e.toString()}');
-      throw Exception('Failed to connect to server: ${e.toString()}');
+      throw Exception('Failed to login: $e');
     }
   }
 
@@ -146,13 +147,14 @@ class WebEnabledApiService {
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        userData = data;
+        return data;
       } else {
         throw Exception('Failed to get user data');
       }
     } catch (e) {
-      print('Get user error: ${e.toString()}');
-      throw Exception('Failed to connect to server: ${e.toString()}');
+      throw Exception('Failed to get user data: $e');
     }
   }
   
@@ -605,5 +607,19 @@ class WebEnabledApiService {
     } else {
       throw Exception('Failed to update payment due date: ${response.body}');
     }
+  }
+
+  // Get common headers
+  Map<String, String> getCommonHeaders({String? token}) {
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    if (token != null) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+
+    return headers;
   }
 }

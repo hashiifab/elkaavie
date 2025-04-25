@@ -15,6 +15,7 @@ const Rooms = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [showFloatingCard, setShowFloatingCard] = useState(false);
 
   // Check authentication status
   useEffect(() => {
@@ -57,6 +58,15 @@ const Rooms = () => {
   useEffect(() => {
     fetchRooms();
   }, []);
+
+  // Handle room selection
+  useEffect(() => {
+    if (selectedRoom) {
+      setShowFloatingCard(true);
+    } else {
+      setShowFloatingCard(false);
+    }
+  }, [selectedRoom]);
 
   // Format price to Indonesian Rupiah
   const formatPrice = (price: number) => {
@@ -163,6 +173,68 @@ const Rooms = () => {
   return (
     <>
       <Header />
+      
+      {/* Floating Card */}
+      {selectedRoom && showFloatingCard && (
+        <div className="fixed bottom-6 left-0 right-0 z-50 mx-auto px-4 max-w-lg">
+          <div className="bg-white rounded-xl shadow-2xl border border-gray-200 relative">
+            {/* Close button - sekarang di pojok kanan atas */}
+            <button 
+              onClick={() => setSelectedRoom(null)}
+              className="absolute -top-2 -right-2 p-1 bg-white hover:bg-gray-100 rounded-full transition-colors shadow-md border border-gray-200"
+            >
+              <X className="h-4 w-4 text-gray-500" />
+            </button>
+
+            {/* Body */}
+            <div className="p-4">
+              {/* Room Title */}
+              <h3 className="font-semibold text-gray-900 mb-4">
+                {selectedRoom.roomType?.name || `Room ${selectedRoom.number}`}
+              </h3>
+
+              {/* Room Info */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
+                  <Users className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">{selectedRoom.roomType?.capacity || 2} guests</span>
+                </div>
+                <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
+                  <BedDouble className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-600">Room {selectedRoom.number}</span>
+                </div>
+              </div>
+
+              {/* Price and Book Button */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Price per month</p>
+                  <p className="text-xl font-semibold text-elkaavie-600">
+                    Rp 1.500.000
+                  </p>
+                </div>
+                <button
+                  onClick={handleBookNow}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition shadow-sm"
+                >
+                  {isLoggedIn ? (
+                    <>
+                      <CreditCard className="h-4 w-4" />
+                      <span>Book Now</span>
+                    </>
+                  ) : (
+                    <>
+                      <LogIn className="h-4 w-4" />
+                      <span>Login to Book</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="pt-24 pb-16">
         {/* Hero section with image */}
         <div className="relative">
@@ -276,61 +348,6 @@ const Rooms = () => {
                 </div>
               </div>
             </div>
-
-            {/* Selected room details */}
-            {selectedRoom && (
-              <div className="max-w-3xl mx-auto mb-12 overflow-hidden">
-                <div className="bg-white rounded-xl shadow-md">
-                  <div className="p-6 border-b border-gray-100">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                          {selectedRoom.roomType?.name || `Room ${selectedRoom.number}`}
-                        </h3>
-                        <div className="flex items-center gap-4 mb-2 text-gray-600">
-                          <div className="flex items-center">
-                            <Users className="h-4 w-4 mr-1" />
-                            <span className="text-sm">{selectedRoom.roomType?.capacity || 2} guests</span>
-                          </div>
-                          <div className="flex items-center">
-                            <BedDouble className="h-4 w-4 mr-1" />
-                            <span className="text-sm">Room {selectedRoom.number}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-500">Price per month</p>
-                        <p className="text-2xl font-semibold text-elkaavie-600">
-                          Rp 1.500.000
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6 bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <p className="text-gray-600 max-w-md">{selectedRoom.description || "A comfortable room designed for your perfect stay. Includes standard amenities and professional service."}</p>
-                      <button
-                        onClick={handleBookNow}
-                        className="flex items-center gap-2 px-6 py-3 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition shadow-sm"
-                      >
-                        {isLoggedIn ? (
-                          <>
-                            <CreditCard className="h-4 w-4" />
-                            <span>Book Now</span>
-                          </>
-                        ) : (
-                          <>
-                            <LogIn className="h-4 w-4" />
-                            <span>Login to Book</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Cinema-style floor layout */}
             <div className="space-y-12 max-w-3xl mx-auto">

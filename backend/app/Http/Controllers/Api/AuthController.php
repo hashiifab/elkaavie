@@ -62,11 +62,18 @@ class AuthController extends Controller
 
             $user = User::where('email', $request->email)->firstOrFail();
 
-            // Check if email is verified
+            // Check if email is verified for non-admin users
             if (!$user->email_verified_at && $user->role !== 'admin') {
                 return response()->json([
                     'message' => 'Please verify your email address first.',
                     'code' => 'EMAIL_NOT_VERIFIED'
+                ], 403);
+            }
+
+            // Check if user is admin for admin routes
+            if ($request->is('api/admin/*') && $user->role !== 'admin') {
+                return response()->json([
+                    'message' => 'Unauthorized: Admin access required',
                 ], 403);
             }
 
