@@ -3,8 +3,16 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
-import { roomApi, Room, authApi } from "@/lib/api";
-import { ChevronRight, BedDouble, Users, ArrowRight, Check, X, CreditCard, LogIn, RefreshCw } from "lucide-react";
+import { roomApi, Room, authApi, bookingApi } from "@/lib/api";
+import { ChevronRight, BedDouble, Users, ArrowRight, Check, X, CreditCard, LogIn, RefreshCw, Info } from "lucide-react";
+import { toast } from "react-hot-toast";
+
+// Interface for user bookings
+interface UserBooking {
+  id: number;
+  room_id: number;
+  status: string;
+}
 
 const Rooms = () => {
   const navigate = useNavigate();
@@ -16,6 +24,8 @@ const Rooms = () => {
   const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showFloatingCard, setShowFloatingCard] = useState(false);
+  const [userBookedRooms, setUserBookedRooms] = useState<number[]>([]);
+  const [userBookings, setUserBookings] = useState<UserBooking[]>([]);
 
   // Check authentication status
   useEffect(() => {
@@ -25,6 +35,8 @@ const Rooms = () => {
         if (token) {
           await authApi.getCurrentUser();
           setIsLoggedIn(true);
+          // Fetch user's bookings after confirming they're logged in
+          fetchUserBookings();
         } else {
           setIsLoggedIn(false);
         }
@@ -38,6 +50,31 @@ const Rooms = () => {
     checkAuth();
   }, []);
 
+  // Fetch user's bookings to identify rooms they've booked
+  const fetchUserBookings = async () => {
+    try {
+      const response = await bookingApi.getUserBookings();
+      // Extract room IDs from active bookings (not cancelled or rejected)
+      const bookings = response.data || [];
+      const activeBookings = bookings.filter(booking => 
+        ['pending', 'approved', 'paid'].includes(booking.status)
+      );
+      
+      // Store full booking objects to access booking IDs later
+      setUserBookings(activeBookings.map(booking => ({
+        id: booking.id,
+        room_id: booking.room_id,
+        status: booking.status
+      })));
+      
+      // Extract just the room IDs for quick lookup
+      const bookedRoomIds = activeBookings.map(booking => booking.room_id);
+      setUserBookedRooms(bookedRoomIds);
+    } catch (err) {
+      console.error("Failed to fetch user bookings:", err);
+    }
+  };
+
   // Fetch rooms function
   const fetchRooms = async () => {
     try {
@@ -45,6 +82,11 @@ const Rooms = () => {
       const data = await roomApi.getAll();
       setRooms(data);
       setError(null);
+      
+      // Refresh user bookings if logged in
+      if (isLoggedIn) {
+        await fetchUserBookings();
+      }
     } catch (err) {
       setError("Failed to fetch rooms. Please try again later.");
       console.error("Error fetching rooms:", err);
@@ -125,6 +167,68 @@ const Rooms = () => {
       }));
       // Redirect to login with return URL
       navigate(`/login?redirect=/room-booking&room=${selectedRoom.id}`);
+    }
+  };
+
+  // Check if room is booked by the current user
+  const isRoomBookedByUser = (roomId: number) => {
+    return userBookedRooms.includes(roomId);
+  };
+
+  // Get booking ID for a specific room
+  const getBookingIdForRoom = (roomId: number): number | null => {
+    const booking = userBookings.find(b => b.room_id === roomId);
+    return booking ? booking.id : null;
+  };
+
+  // Handle room selection
+  const handleRoomClick = (room: Room) => {
+    // If room is already booked by this user, navigate to booking details
+    if (isRoomBookedByUser(room.id)) {
+      const bookingId = getBookingIdForRoom(room.id);
+      
+      if (bookingId) {
+        // Navigate directly to the booking details page
+        navigate(`/bookings/${bookingId}`);
+      } else {
+        // Fallback to profile if we can't find the specific booking
+        navigate('/profile');
+        
+        // Show toast to inform user
+        toast.custom((t) => (
+          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
+            <div className="flex-1 w-0 p-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 pt-0.5">
+                  <Info className="h-5 w-5 text-blue-500" />
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    Room {room.number} is already yours
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Check your bookings for details
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex border-l border-gray-200">
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-500 focus:outline-none"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        ), { duration: 3000 });
+      }
+      return;
+    }
+    
+    // If available, set as selected
+    if (room.is_available) {
+      setSelectedRoom(prev => prev?.id === room.id ? null : room);
     }
   };
 
@@ -333,7 +437,7 @@ const Rooms = () => {
             {/* Legend */}
             <div className="max-w-3xl mx-auto mb-8 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
               <h3 className="text-lg font-medium text-gray-900 mb-4">Room Availability</h3>
-              <div className="flex items-center justify-center gap-8">
+              <div className="flex items-center justify-center gap-8 flex-wrap">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm"></div>
                   <span className="text-sm">Available</span>
@@ -341,6 +445,10 @@ const Rooms = () => {
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-red-500 rounded mr-3 shadow-sm opacity-70"></div>
                   <span className="text-sm">Unavailable</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-blue-300 rounded mr-3 shadow-sm"></div>
+                  <span className="text-sm">Rooms You've Booked</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm ring-2 ring-blue-500"></div>
@@ -374,31 +482,38 @@ const Rooms = () => {
                         <p className="text-gray-600">Area penjemuran dan cuci pakaian untuk penghuni</p>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-5 gap-6 max-w-3xl mx-auto">
-                        {roomsByFloor[floor].map((room) => (
-                          <div
-                            key={room.id}
-                            className={`aspect-square rounded-lg shadow-sm cursor-pointer flex items-center justify-center transition-transform hover:scale-105 ${
-                              !room.is_available && 'cursor-not-allowed'
-                            } ${
-                              room.is_available 
-                                ? "bg-green-500 hover:bg-green-600" 
-                                : "bg-red-500 hover:bg-red-600 opacity-70"
-                            } ${selectedRoom?.id === room.id ? "ring-4 ring-blue-500 transform scale-105" : ""}`}
-                            onClick={() => {
-                              if (room.is_available) {
-                                setSelectedRoom(prev => prev?.id === room.id ? null : room);
-                              }
-                            }}
-                          >
-                            <div className="text-center">
-                              <span className="text-white font-bold text-lg">
-                                {room.number}
-                              </span>
+                    <div className="grid grid-cols-5 gap-6 max-w-3xl mx-auto">
+                        {roomsByFloor[floor].map((room) => {
+                          // Determine if this room is booked by the user
+                          const isUserBooked = isRoomBookedByUser(room.id);
+                          
+                          return (
+                            <div
+                              key={room.id}
+                              className={`aspect-square rounded-lg shadow-sm flex items-center justify-center ${
+                                !room.is_available && !isUserBooked 
+                                  ? 'cursor-not-allowed opacity-70 bg-red-500' 
+                                  : isUserBooked 
+                                    ? "cursor-pointer bg-blue-300 hover:bg-blue-400 hover:shadow-md transition-all hover:scale-105" 
+                                    : room.is_available 
+                                      ? "cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-md transition-all hover:scale-105" 
+                                      : ""
+                              } ${selectedRoom?.id === room.id ? "ring-4 ring-blue-500 transform scale-105" : ""}`}
+                              onClick={() => {
+                                if (room.is_available || isUserBooked) {
+                                  handleRoomClick(room);
+                                }
+                              }}
+                            >
+                              <div className="text-center">
+                                <span className={`font-bold text-lg text-white`}>
+                                  {room.number}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          );
+                        })}
+                    </div>
                     )}
                   </div>
                 </div>

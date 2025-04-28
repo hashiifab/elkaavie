@@ -28,19 +28,18 @@ class Cors
         ];
         
         // If the origin is in our allowed list, set it specifically
-        // This is better for cookies and credentials than using wildcard '*'
         if (in_array($origin, $allowed_origins)) {
             $response->header('Access-Control-Allow-Origin', $origin);
+            $response->header('Access-Control-Allow-Credentials', 'true');
         } else {
-            // For development, you can use wildcard
-            // In production, you should specify exact origins
+            // For requests without credentials, we can use wildcard
             $response->header('Access-Control-Allow-Origin', '*');
+            // Don't set Allow-Credentials when using wildcard
         }
 
         return $response
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
             ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-XSRF-TOKEN, Accept')
-            ->header('Access-Control-Allow-Credentials', 'true')
             ->header('Access-Control-Max-Age', '86400'); // 24 hours
     }
 } 

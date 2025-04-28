@@ -76,7 +76,7 @@ export interface Booking {
   user_id: number;
   check_in: string;
   check_out: string;
-  status: "pending" | "approved" | "rejected" | "completed" | "cancelled";
+  status: "pending" | "approved" | "rejected" | "completed" | "cancelled" | "paid";
   total_price: number;
   payment_proof?: string;
   guests?: number;
@@ -95,6 +95,7 @@ export interface Booking {
   };
   created_at: string;
   updated_at: string;
+  payment_due_at?: string;
 }
 
 export interface BookingCreateParams {

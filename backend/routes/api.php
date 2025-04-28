@@ -3,7 +3,6 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\RoomController;
-use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
     Route::post('/bookings/associate', [BookingController::class, 'associateBookingsWithUser']);
+    Route::post('/bookings/{booking}/payment-proof', [BookingController::class, 'uploadPaymentProof']);
     
     // Create booking - now requires authentication
     Route::post('/bookings', [BookingController::class, 'store']);
@@ -48,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // Admin routes
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Users management
-    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users', [AuthController::class, 'getUsers']);
     
     // Rooms management
     Route::post('/rooms', [RoomController::class, 'store']);

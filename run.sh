@@ -21,7 +21,17 @@ kill_port 5173  # Frontend (alternate port)
 echo "Starting Laravel backend..."
 cd backend
 php artisan serve &
-php artisan queue:work &
+
+# Start queue worker with proper output
+echo "Starting queue worker..."
+php artisan queue:work --tries=3 > storage/logs/queue.log 2>&1 &
+
+# Set up scheduler to run every minute for automatic tasks
+echo "Setting up Laravel scheduler..."
+while true; do
+    php artisan schedule:run >> storage/logs/schedule.log 2>&1
+    sleep 60
+done &
 
 # Start Admin (Flutter)
 echo "Starting Flutter admin..."

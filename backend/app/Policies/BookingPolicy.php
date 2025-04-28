@@ -22,6 +22,12 @@ class BookingPolicy
 
     public function update(User $user, Booking $booking): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() || $user->id === $booking->user_id;
+    }
+
+    public function uploadPaymentProof(User $user, Booking $booking): bool
+    {
+        // Only booking owner can upload payment proof
+        return $user->id === $booking->user_id;
     }
 }

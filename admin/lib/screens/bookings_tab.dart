@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
 import '../utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BookingsTab extends StatelessWidget {
   final List<dynamic> bookings;
@@ -267,7 +268,20 @@ class BookingsTab extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: ElevatedButton.icon(
-                                      onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'approved'),
+                                      onPressed: () async {
+                                        // Send WhatsApp message
+                                        final phoneNumber = booking['phone_number']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
+                                        if (phoneNumber.isNotEmpty) {
+                                          final message = 'Your booking #${booking['id']} has been approved! Room ${booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown'} is now confirmed for your stay.';
+                                          final encodedMessage = Uri.encodeComponent(message);
+                                          final whatsappUrl = 'https://wa.me/$phoneNumber?text=$encodedMessage';
+                                          if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
+                                            await launchUrl(Uri.parse(whatsappUrl));
+                                          }
+                                        }
+                                        // Update booking status
+                                        await onUpdateBookingStatus(booking['id'].toString(), 'approved');
+                                      },
                                       icon: const Icon(Icons.check_circle),
                                       label: const Text('Approve'),
                                       style: ElevatedButton.styleFrom(

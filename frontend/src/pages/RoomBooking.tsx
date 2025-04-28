@@ -16,17 +16,30 @@ import {
   Phone,
 } from "lucide-react";
 
+/**
+ * RoomBooking Component
+ * 
+ * Handles the room booking process including:
+ * - Fetching room details
+ * - Date selection for check-in and check-out
+ * - User information collection
+ * - ID verification upload
+ * - Form submission to create booking
+ */
 const RoomBooking = () => {
+  // Get room ID from URL parameters and setup navigation
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const roomId = searchParams.get("room");
 
+  // Component state management
   const [room, setRoom] = useState<Room | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
 
+  // Form data state with all booking fields
   const [formData, setFormData] = useState({
     check_in: "",
     check_out: "",
@@ -38,25 +51,31 @@ const RoomBooking = () => {
     identity_card_preview: "",
   });
 
-  // Calculate minimum dates for check-in and check-out
+  // Date calculations for setting defaults and validation
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  // Set default check-out to 1 month from today
+  // Set default check-out to 1 month from today (monthly rental model)
   const defaultCheckOut = new Date(today);
   defaultCheckOut.setMonth(defaultCheckOut.getMonth() + 1);
 
+  /**
+   * Format date object to YYYY-MM-DD format for input fields
+   */
   const formatDateForInput = (date: Date) => {
     return date.toISOString().split("T")[0];
   };
 
+  // Calculate date constraints for the form
   const minCheckIn = formatDateForInput(today);
   const minCheckOut = formatDateForInput(tomorrow);
   const defaultCheckInDate = formatDateForInput(today);
   const defaultCheckOutDate = formatDateForInput(defaultCheckOut);
 
-  // Format price to Indonesian Rupiah
+  /**
+   * Format price to Indonesian Rupiah currency format
+   */
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -64,7 +83,10 @@ const RoomBooking = () => {
     }).format(price);
   };
 
-  // Calculate number of months and total price
+  /**
+   * Calculate the number of months between check-in and check-out dates
+   * Used for price calculation (monthly rental model)
+   */
   const calculateMonths = () => {
     if (!formData.check_in || !formData.check_out) return 0;
 
@@ -92,13 +114,20 @@ const RoomBooking = () => {
     return months;
   };
 
+  /**
+   * Calculate total booking price based on number of months
+   * Standard rate is 1.5 million IDR per month
+   */
   const calculateTotal = () => {
     const months = calculateMonths();
     // Standard price per month is 1.5 million
     return months * 1500000;
   };
 
-  // Fetch room data
+  /**
+   * Fetch room data from API on component mount
+   * Handles pending booking data from session storage (after login redirect)
+   */
   useEffect(() => {
     const fetchRoom = async () => {
       // Check if user is coming from login with pending booking
@@ -125,8 +154,10 @@ const RoomBooking = () => {
           return;
         }
 
+        // Fetch room data from API
         const data = await roomApi.getById(parseInt(selectedRoomId));
 
+        // Check if room is still available
         if (!data.is_available) {
           setError(
             "This room is no longer available. Please select another room."
@@ -158,7 +189,9 @@ const RoomBooking = () => {
     fetchRoom();
   }, [roomId]);
 
-  // Handle form input changes
+  /**
+   * Handle form input changes for all text/select inputs
+   */
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -171,11 +204,14 @@ const RoomBooking = () => {
     }));
   };
 
-  // Handle identity card upload
+  /**
+   * Handle ID card file upload with validation
+   * Creates preview URL for displaying the image
+   */
   const handleIdentityCardUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Check file type
+      // Check file type - only accept images
       if (!file.type.startsWith("image/")) {
         setError("Please upload an image file");
         return;
@@ -187,6 +223,7 @@ const RoomBooking = () => {
         return;
       }
 
+      // Update state with file and create preview URL
       setFormData((prev) => ({
         ...prev,
         identity_card: file,
@@ -196,7 +233,10 @@ const RoomBooking = () => {
     }
   };
 
-  // Handle form submission
+  /**
+   * Handle form submission to create a booking
+   * Uses FormData for file upload along with other booking details
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -212,11 +252,12 @@ const RoomBooking = () => {
       formDataToSend.append("payment_method", formData.payment_method);
       formDataToSend.append("phone_number", formData.phone_number);
 
+      // Only append ID card if provided
       if (formData.identity_card) {
         formDataToSend.append("identity_card", formData.identity_card);
       }
 
-      // Type assertion to handle FormData
+      // Submit booking to API
       await bookingApi.create(formDataToSend as unknown as BookingCreateParams);
       setBookingSuccess(true);
       window.scrollTo(0, 0);
@@ -228,6 +269,7 @@ const RoomBooking = () => {
     }
   };
 
+  // Display loading state while fetching room data
   if (loading) {
     return (
       <>
@@ -244,6 +286,7 @@ const RoomBooking = () => {
     );
   }
 
+  // Display error state if room not found or no longer available
   if (error) {
     return (
       <>

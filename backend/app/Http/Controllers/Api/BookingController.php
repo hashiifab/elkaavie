@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\BookingRequest;
+use App\Http\Requests\Api\UpdateBookingStatusRequest;
 use App\Models\Booking;
 use App\Models\Room;
+use App\Notifications\BookingApproved;
+use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -13,11 +16,24 @@ use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
-    public function __construct()
+    protected $bookingService;
+
+    /**
+     * Constructor - no auth middleware used to allow public access for store method
+     */
+    public function __construct(BookingService $bookingService)
     {
         // Remove auth middleware since we want public access for store
+        $this->bookingService = $bookingService;
     }
 
+    /**
+     * Format booking data for API response
+     * Adds computed properties and asset URLs for easier frontend consumption
+     *
+     * @param Booking $booking - The booking model to format
+     * @return Booking - The formatted booking with additional data
+     */
     private function formatBookingData($booking)
     {
         // Format identity card URL
@@ -42,6 +58,12 @@ class BookingController extends Controller
         return $booking;
     }
 
+    /**
+     * List all bookings in the system (admin only)
+     * Returns a paginated list of bookings with related user and room data
+     *
+     * @return JsonResponse - JSON formatted list of bookings
+     */
     public function index(): JsonResponse
     {
         try {
@@ -65,6 +87,7 @@ class BookingController extends Controller
                 'data' => $bookings
             ]);
         } catch (\Exception $e) {
+            // Log and return error
             Log::error('Booking index error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
@@ -74,6 +97,13 @@ class BookingController extends Controller
         }
     }
 
+    /**
+     * Create a new booking
+     * Handles validation, file uploads, and creation of booking record
+     *
+     * @param BookingRequest $request - Validated booking request data
+     * @return JsonResponse - Success/failure response
+     */
     public function store(BookingRequest $request): JsonResponse
     {
         try {
@@ -91,23 +121,24 @@ class BookingController extends Controller
             // Get the validated data
             $data = $request->validated();
 
-            // Handle file upload
+            // Handle ID card file upload and store in public storage
             if ($request->hasFile('identity_card')) {
                 $data['identity_card'] = $request->file('identity_card')->store('identity-cards', 'public');
                 Log::info('File uploaded successfully', ['path' => $data['identity_card']]);
             }
 
-            // Set default values
-            $data['status'] = 'pending';
-            $data['total_price'] = 1500000 * $this->calculateMonths($data['check_in'], $data['check_out']);
+            // Set default status and calculate price
+            $data['status'] = BookingService::STATUS_PENDING;
+            $data['total_price'] = 1500000 * $this->bookingService->calculateMonths($data['check_in'], $data['check_out']);
             
             // Always set user_id from authenticated user
             $data['user_id'] = auth()->id();
 
-            // Create the booking
+            // Create the booking record in database
             $booking = Booking::create($data);
             Log::info('Booking created successfully', ['id' => $booking->id]);
 
+            // Format response with relationships loaded
             $booking = $this->formatBookingData($booking->load(['user', 'room.roomType']));
 
             return response()->json([
@@ -117,6 +148,7 @@ class BookingController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+            // Log error and return failure response
             Log::error('Booking creation error: ' . $e->getMessage());
             
             return response()->json([
@@ -127,15 +159,24 @@ class BookingController extends Controller
         }
     }
 
+    /**
+     * Get details for a specific booking
+     * Accessible by admin or the booking owner only
+     *
+     * @param Booking $booking - The booking to view (auto-resolved by Laravel route model binding)
+     * @return JsonResponse - Booking details
+     */
     public function show(Booking $booking): JsonResponse
     {
         try {
             $user = auth()->user();
             
+            // Authorization check - only allow admin or booking owner
             if (!$user->isAdmin() && $user->id !== $booking->user_id) {
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
 
+            // Format booking data with relationships loaded
             $booking = $this->formatBookingData($booking->load(['user', 'room.roomType']));
 
             return response()->json([
@@ -143,6 +184,7 @@ class BookingController extends Controller
                 'data' => $booking
             ]);
         } catch (\Exception $e) {
+            // Log and return error response
             Log::error('Booking show error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
@@ -152,12 +194,22 @@ class BookingController extends Controller
         }
     }
 
+    /**
+     * Update booking details (admin only)
+     * Allows modification of booking dates, guests, and other details
+     *
+     * @param Request $request - Update data
+     * @param Booking $booking - The booking to update
+     * @return JsonResponse - Updated booking data
+     */
     public function update(Request $request, Booking $booking): JsonResponse
     {
+        // Admin-only endpoint
         if (!auth()->user()->isAdmin()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        // Validate update data
         $validated = $request->validate([
             'check_in' => 'sometimes|date',
             'check_out' => 'sometimes|date|after:check_in',
@@ -167,60 +219,37 @@ class BookingController extends Controller
             'phone_number' => 'sometimes|string',
         ]);
 
+        // Update booking with validated data
         $booking->update($validated);
 
+        // Return updated booking with relationships
         return response()->json($booking->load(['user', 'room.roomType']));
     }
 
-    public function updateStatus(Request $request, Booking $booking): JsonResponse
+    /**
+     * Update booking status (admin only)
+     * Handles workflow state transitions and related actions
+     *
+     * @param UpdateBookingStatusRequest $request - Contains validated status change
+     * @param Booking $booking - The booking to update
+     * @return JsonResponse - Updated booking with new status
+     */
+    public function updateStatus(UpdateBookingStatusRequest $request, Booking $booking): JsonResponse
     {
         try {
-            // Ensure only admin can update status
-            if (!auth()->user()->isAdmin()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Unauthorized. Only admin can update booking status.'
-                ], 403);
-            }
+            // Get validated data
+            $validated = $request->validated();
 
-            $validated = $request->validate([
-                'status' => 'required|in:pending,approved,rejected,completed,cancelled,paid',
-            ]);
-
-            // Load the booking with relationships
-            $booking->load(['user', 'room.roomType']);
-
-            // Update booking status
-            $booking->update($validated);
-
-            // Set payment due date when booking is approved
-            if ($validated['status'] === 'approved') {
-                // Set payment due date to 24 hours from now
-                $booking->update(['payment_due_at' => now()->addHours(24)]);
-                
-                // Check if room exists and is available before updating
-                if ($booking->room && $booking->room->is_available) {
-                    $booking->room->update(['is_available' => false]);
-                }
-            } elseif ($validated['status'] === 'paid') {
-                // When payment is verified, clear the payment due date
-                $booking->update(['payment_due_at' => null]);
-            } elseif ($validated['status'] === 'rejected' || $validated['status'] === 'completed' || $validated['status'] === 'cancelled') {
-                // Check if room exists before updating
-                if ($booking->room) {
-                    $booking->room->update(['is_available' => true]);
-                }
-            }
-
-            // Format the booking data
-            $booking = $this->formatBookingData($booking);
+            // Use the service to handle status update logic
+            $booking = $this->bookingService->updateStatus($booking, $validated['status']);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Booking status updated successfully',
-                'data' => $booking
+                'data' => $this->formatBookingData($booking)
             ]);
         } catch (\Exception $e) {
+            // Log and return error
             Log::error('Booking status update error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
@@ -230,12 +259,21 @@ class BookingController extends Controller
         }
     }
 
+    /**
+     * Delete a booking
+     * Can be performed by admin or booking owner
+     *
+     * @param Booking $booking - The booking to delete
+     * @return JsonResponse - Success message
+     */
     public function destroy(Booking $booking): JsonResponse
     {
+        // Authorization check - only admin or booking owner can delete
         if (!auth()->user()->isAdmin() && auth()->id() !== $booking->user_id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        // Delete the booking
         $booking->delete();
         return response()->json(['message' => 'Booking deleted successfully']);
     }
@@ -269,39 +307,32 @@ class BookingController extends Controller
 
     public function uploadPaymentProof(Request $request, Booking $booking): JsonResponse
     {
-        $this->authorize('update', $booking);
+        try {
+            // Use Gate facade instead of $this->authorize
+            Gate::authorize('uploadPaymentProof', $booking);
 
-        $request->validate([
-            'payment_proof' => 'required|image|max:2048',
-        ]);
+            $request->validate([
+                'payment_proof' => 'required|image|max:2048',
+            ]);
 
-        $path = $request->file('payment_proof')->store('payment-proofs', 'public');
-        $booking->update(['payment_proof' => $path]);
+            $path = $request->file('payment_proof')->store('payment-proofs', 'public');
+            $booking->update(['payment_proof' => $path]);
 
-        return response()->json($booking);
-    }
-
-    private function calculateMonths($checkIn, $checkOut): int
-    {
-        $checkInDate = \Carbon\Carbon::parse($checkIn);
-        $checkOutDate = \Carbon\Carbon::parse($checkOut);
-        
-        // If dates are in the same month and year, return 1
-        if ($checkInDate->month === $checkOutDate->month && 
-            $checkInDate->year === $checkOutDate->year) {
-            return 1;
+            // Return the full URL for the uploaded image
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment proof uploaded successfully',
+                'payment_proof' => $path,
+                'payment_proof_url' => asset('storage/' . $path)
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Payment proof upload error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to upload payment proof',
+                'error' => $e->getMessage()
+            ], 500);
         }
-        
-        // Calculate months difference
-        $months = ($checkOutDate->year - $checkInDate->year) * 12 + 
-                ($checkOutDate->month - $checkInDate->month);
-        
-        // If check-out day is less than check-in day, it's not a full month
-        if ($checkOutDate->day < $checkInDate->day) {
-            return max(1, $months);
-        }
-        
-        return max(1, $months);
     }
 
     // Add new method to associate bookings with user after login

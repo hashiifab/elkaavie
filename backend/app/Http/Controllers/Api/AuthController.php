@@ -322,4 +322,22 @@ class AuthController extends Controller
             return redirect($redirectUrl);
         }
     }
+
+    /**
+     * Get all users (admin only)
+     * 
+     * @return JsonResponse
+     */
+    public function getUsers(): JsonResponse
+    {
+        // Check if user is admin
+        if (!auth()->user()->isAdmin()) {
+            return response()->json([
+                'message' => 'Unauthorized. Admin access required.'
+            ], 403);
+        }
+
+        $users = User::all();
+        return response()->json($users);
+    }
 }
