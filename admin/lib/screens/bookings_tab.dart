@@ -363,34 +363,17 @@ class BookingsTab extends StatelessWidget {
           ],
         );
       case 'approved':
-        return Column(
-          children: [
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'completed'),
-                icon: const Icon(Icons.done_all),
-                label: const Text('Mark as Completed'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
+        return Center(
+          child: ElevatedButton.icon(
+            onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'completed'),
+            icon: const Icon(Icons.done_all),
+            label: const Text('Mark as Completed'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
-            const SizedBox(height: 8),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'paid'),
-                icon: const Icon(Icons.payment),
-                label: const Text('Verify Payment'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            ),
-          ],
+          ),
         );
       case 'paid':
         return Center(

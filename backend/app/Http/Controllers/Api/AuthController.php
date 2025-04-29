@@ -330,14 +330,25 @@ class AuthController extends Controller
      */
     public function getUsers(): JsonResponse
     {
-        // Check if user is admin
-        if (!auth()->user()->isAdmin()) {
-            return response()->json([
-                'message' => 'Unauthorized. Admin access required.'
-            ], 403);
-        }
+        try {
+            // Check if user is admin
+            if (!auth()->user()->isAdmin()) {
+                return response()->json([
+                    'message' => 'Unauthorized. Admin access required.'
+                ], 403);
+            }
 
-        $users = User::all();
-        return response()->json($users);
+            $users = User::all();
+            return response()->json([
+                'message' => 'Users retrieved successfully',
+                'data' => $users
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Failed to get users: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Failed to get users',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

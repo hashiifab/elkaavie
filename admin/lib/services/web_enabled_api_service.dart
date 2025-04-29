@@ -168,9 +168,15 @@ class WebEnabledApiService {
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final responseData = jsonDecode(response.body);
+        if (responseData['data'] != null) {
+          return responseData['data'];
+        } else {
+          throw Exception('Invalid response format');
+        }
       } else {
-        throw Exception('Failed to get users');
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['message'] ?? 'Failed to get users');
       }
     } catch (e) {
       print('Get users error: ${e.toString()}');
