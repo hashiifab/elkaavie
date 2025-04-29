@@ -27,8 +27,8 @@ class SimpleEmailVerification extends Notification implements ShouldQueue
             $notifiable->verification_code = $code;
             $notifiable->save();
 
-            // Create the frontend URL
-            $frontendUrl = 'http://localhost:8080/verify-email?code=' . $code;
+            // Get the frontend URL from environment variable
+            $frontendUrl = 'http://localhost:3000/verify-email?code=' . $code;
 
             Log::info('Generated verification code: ' . $code);
             Log::info('Frontend URL: ' . $frontendUrl);
