@@ -49,8 +49,14 @@ class RoomsTab extends StatelessWidget {
     Map<int, List<dynamic>> roomsByFloor = {};
     for (var room in rooms) {
       int floor = room['floor'] ?? 0;
+      
+      // Skip kamar di lantai 3 untuk grouping reguler
+      if (floor == 3) continue;
+      
       roomsByFloor.putIfAbsent(floor, () => []).add(room);
     }
+    // Tambahkan lantai 3 untuk laundry area
+    roomsByFloor.putIfAbsent(3, () => []);
     List<int> sortedFloors = roomsByFloor.keys.toList()..sort();
 
     return RefreshIndicator(

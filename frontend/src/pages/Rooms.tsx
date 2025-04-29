@@ -130,11 +130,17 @@ const Rooms = () => {
     
     rooms.forEach(room => {
       const floor = room.floor || 1;
+      
+      if (floor === 3) return;
+
       if (!roomsByFloor[floor]) {
         roomsByFloor[floor] = [];
       }
       roomsByFloor[floor].push(room);
     });
+    
+    // Tambahkan lantai 3 untuk laundry area
+    roomsByFloor[3] = [];
     
     // Sort rooms within each floor by room number
     Object.keys(roomsByFloor).forEach(floorKey => {
@@ -527,4 +533,4 @@ const Rooms = () => {
   );
 };
 
-export default Rooms; 
+export default Rooms;
