@@ -6,6 +6,64 @@ import Container from "@/components/ui/Container";
 import { bookingApi } from "@/lib/api";
 import { Calendar, MapPin, User, Clock, CreditCard, ChevronRight, Phone, FileText, Home } from "lucide-react";
 
+// Countdown Timer Component
+const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
+  const [timeLeft, setTimeLeft] = useState<{
+    hours: number;
+    minutes: number;
+    seconds: number;
+  }>({ hours: 0, minutes: 0, seconds: 0 });
+  const [expired, setExpired] = useState(false);
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const due = new Date(dueDate).getTime();
+      const now = new Date().getTime();
+      const difference = due - now;
+
+      if (difference <= 0) {
+        setExpired(true);
+        return { hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      const hours = Math.floor(difference / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      return { hours, minutes, seconds };
+    };
+
+    // Initial calculation
+    setTimeLeft(calculateTimeLeft());
+
+    // Update every second
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [dueDate]);
+
+  if (expired) {
+    return (
+      <div className="text-red-600 text-sm font-medium">
+        Payment deadline expired
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-sm">
+      <span className="font-medium text-gray-700">Payment due in: </span>
+      <span className="font-semibold text-elkaavie-600">
+        {timeLeft.hours.toString().padStart(2, '0')}:
+        {timeLeft.minutes.toString().padStart(2, '0')}:
+        {timeLeft.seconds.toString().padStart(2, '0')}
+      </span>
+    </div>
+  );
+};
+
 interface Booking {
   id: number;
   room_id: number;
@@ -18,6 +76,7 @@ interface Booking {
   special_requests?: string;
   payment_method?: string;
   identity_card?: string;
+  payment_due_at?: string;
   room?: {
     id: number;
     number: string;
@@ -230,6 +289,11 @@ const BookingDetails = () => {
                   <p className="text-lg font-semibold text-elkaavie-600">
                     {formatPrice(booking.total_price)}
                   </p>
+                  {booking.status === "approved" && booking.payment_due_at && (
+                    <div className="mt-2">
+                      <CountdownTimer dueDate={booking.payment_due_at} />
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -309,4 +373,4 @@ const BookingDetails = () => {
   );
 };
 
-export default BookingDetails; 
+export default BookingDetails;

@@ -16,6 +16,7 @@ import {
   Phone,
 } from "lucide-react";
 
+
 /**
  * RoomBooking Component
  * 
@@ -500,28 +501,86 @@ const RoomBooking = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Identity Card
                       </label>
-                      <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-                        <div className="space-y-1 text-center">
-                          {formData.identity_card_preview ? (
-                            <div className="relative">
+                      <div 
+                        className={`mt-1 border-2 border-dashed rounded-lg p-6 transition-all duration-200 ${formData.identity_card_preview ? 'bg-gray-50' : 'hover:border-elkaavie-400'} ${error ? 'border-red-300' : 'border-gray-300'}`}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (!formData.identity_card_preview) {
+                            e.currentTarget.classList.add('border-elkaavie-500', 'bg-elkaavie-50');
+                          }
+                        }}
+                        onDragLeave={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (!formData.identity_card_preview) {
+                            e.currentTarget.classList.remove('border-elkaavie-500', 'bg-elkaavie-50');
+                          }
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          e.currentTarget.classList.remove('border-elkaavie-500', 'bg-elkaavie-50');
+                          
+                          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                            const file = e.dataTransfer.files[0];
+                            
+                            // Check file type - only accept images
+                            if (!file.type.startsWith("image/")) {
+                              setError("Please upload an image file");
+                              return;
+                            }
+                            
+                            // Check file size (max 5MB)
+                            if (file.size > 5 * 1024 * 1024) {
+                              setError("File size should be less than 5MB");
+                              return;
+                            }
+                            
+                            // Update state with file and create preview URL
+                            setFormData((prev) => ({
+                              ...prev,
+                              identity_card: file,
+                              identity_card_preview: URL.createObjectURL(file),
+                            }));
+                            setError(null);
+                          }
+                        }}
+                      >
+                        <input
+                          id="identity_card"
+                          name="identity_card"
+                          type="file"
+                          accept="image/jpeg,image/png,image/jpg"
+                          onChange={handleIdentityCardUpload}
+                          className="hidden"
+                          required
+                        />
+                        
+                        {formData.identity_card_preview ? (
+                          <div className="space-y-4">
+                            <div className="relative mx-auto max-w-sm overflow-hidden rounded-lg border shadow-sm">
                               <img
                                 src={formData.identity_card_preview}
                                 alt="Identity Card Preview"
-                                className="mx-auto h-32 w-auto rounded-lg"
+                                className="h-auto w-full object-contain max-h-64"
                               />
                               <button
                                 type="button"
                                 onClick={() => {
+                                  if (formData.identity_card_preview) {
+                                    URL.revokeObjectURL(formData.identity_card_preview);
+                                  }
                                   setFormData((prev) => ({
                                     ...prev,
                                     identity_card: null,
                                     identity_card_preview: "",
                                   }));
                                 }}
-                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full shadow hover:bg-white transition-colors"
                               >
                                 <svg
-                                  className="w-4 h-4"
+                                  className="w-5 h-5 text-red-500"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -535,43 +594,47 @@ const RoomBooking = () => {
                                 </svg>
                               </button>
                             </div>
-                          ) : (
-                            <>
-                              <div className="flex flex-col items-center">
-                                <div className="flex items-center gap-2 text-gray-400">
-                                  <Camera className="h-8 w-8" />
-                                  <Upload className="h-8 w-8" />
-                                </div>
-                                <div className="flex text-sm text-gray-600">
-                                  <label
-                                    htmlFor="identity_card"
-                                    className="relative cursor-pointer rounded-md font-medium text-elkaavie-600 hover:text-elkaavie-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-elkaavie-500 focus-within:ring-offset-2"
-                                  >
-                                    <span>Upload a file</span>
-                                    <input
-                                      id="identity_card"
-                                      name="identity_card"
-                                      type="file"
-                                      accept="image/*"
-                                      capture="environment"
-                                      onChange={handleIdentityCardUpload}
-                                      className="sr-only"
-                                      required
-                                    />
-                                  </label>
-                                  <p className="pl-1">or drag and drop</p>
-                                </div>
-                                <p className="text-xs text-gray-500">
-                                  PNG, JPG, GIF up to 5MB
-                                </p>
-                              </div>
-                            </>
-                          )}
-                        </div>
+                            <p className="text-sm text-gray-600 text-center">
+                              {formData.identity_card?.name} - {formData.identity_card ? (formData.identity_card.size / 1024 / 1024).toFixed(2) : 0}MB
+                            </p>
+                          </div>
+                        ) : (
+                          <label
+                            htmlFor="identity_card"
+                            className="flex flex-col items-center justify-center gap-3 cursor-pointer py-6"
+                          >
+                            <div className="p-4 bg-elkaavie-100 rounded-full">
+                              <Camera className="h-8 w-8 text-elkaavie-600" />
+                            </div>
+                            <div className="text-center space-y-1">
+                              <p className="font-semibold text-gray-800">
+                                Click to upload or drag & drop
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                JPG or PNG (Max 5MB)
+                              </p>
+                            </div>
+                          </label>
+                        )}
                       </div>
                       {error && (
-                        <p className="mt-2 text-sm text-red-600">{error}</p>
+                        <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-sm text-red-600 flex items-center">
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            {error}
+                          </p>
+                        </div>
                       )}
+                      <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-xs text-blue-700 flex items-center">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Upload a clear photo of your ID card (KTP/SIM/Passport)
+                        </p>
+                      </div>
                     </div>
 
                     <div>

@@ -28,7 +28,7 @@ class SimpleEmailVerification extends Notification implements ShouldQueue
             $notifiable->save();
 
             // Create the frontend URL
-            $frontendUrl = config('app.frontend_url') . '/verify-email?code=' . $code;
+            $frontendUrl = 'http://localhost:8080/verify-email?code=' . $code;
 
             Log::info('Generated verification code: ' . $code);
             Log::info('Frontend URL: ' . $frontendUrl);
@@ -49,4 +49,4 @@ class SimpleEmailVerification extends Notification implements ShouldQueue
             throw $e;
         }
     }
-}
+} 
