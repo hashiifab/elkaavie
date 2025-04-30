@@ -302,7 +302,7 @@ class _BookingsTabState extends State<BookingsTab> {
             children: [
               _buildInfoRow('Room Number', booking['room']?['number']?.toString() ?? booking['room_number']?.toString() ?? 'Unknown'),
               _buildInfoRow('Floor', booking['room']?['floor']?.toString() ?? booking['room_floor']?.toString() ?? 'Unknown'),
-              _buildInfoRow('Type', booking['room']?['roomType']?['name']?.toString() ?? booking['room_type']?.toString() ?? 'Standard'),
+              _buildInfoRow('Type', 'Standard'),
             ],
           ),
           const SizedBox(height: 16),

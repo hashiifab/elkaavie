@@ -69,7 +69,7 @@ interface Booking {
   room_id: number;
   check_in: string;
   check_out: string;
-  status: "pending" | "approved" | "rejected" | "completed" | "cancelled";
+  status: "pending" | "approved" | "rejected" | "completed" | "cancelled" | "paid";
   total_price: number;
   guests?: number;
   phone_number?: string;
@@ -145,6 +145,8 @@ const BookingDetails = () => {
         return "bg-red-100 text-red-800";
       case "completed":
         return "bg-blue-100 text-blue-800";
+      case "paid":
+        return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -217,7 +219,7 @@ const BookingDetails = () => {
                 </div>
                 <div className="ml-4">
                   <h3 className="font-medium text-gray-900">
-                    {booking.room?.name || booking.room?.roomType?.name || `Room ${booking.room?.number}`}
+                    {booking.room?.roomType?.name || `Room ${booking.room?.number}`}
                   </h3>
                   <p className="text-sm text-gray-600">
                     Booking ID: #{booking.id}
@@ -307,6 +309,21 @@ const BookingDetails = () => {
                     <CreditCard className="h-5 w-5 mr-2" />
                     Continue Payment
                   </button>
+                )}
+
+                {booking.status === "paid" && (
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <div className="flex items-start">
+                      <FileText className="h-5 w-5 text-green-600 mt-0.5 mr-3" />
+                      <div>
+                        <p className="text-sm font-medium text-green-800">Payment Verified</p>
+                        <p className="text-sm text-green-700">
+                          Your payment has been verified. You can now proceed with check-in on {formatDate(booking.check_in)}. 
+                          Please bring your ID card and payment receipt for verification.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 {booking.status === "pending" && (

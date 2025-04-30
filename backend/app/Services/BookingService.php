@@ -45,7 +45,7 @@ class BookingService
     public function updateStatus(Booking $booking, string $status): Booking
     {
         // Load the booking with relationships
-        $booking->load(['user', 'room.roomType']);
+        $booking->load(['user', 'room']);
 
         // Update booking status
         $booking->update(['status' => $status]);
