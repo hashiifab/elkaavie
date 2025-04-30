@@ -40,7 +40,8 @@ const App = () => {
   useEffect(() => {
     // Check if user is logged in
     const storedUser = localStorage.getItem('user_data');
-    const storedToken = localStorage.getItem('auth_token');
+    // Check both localStorage and sessionStorage for the token
+    const storedToken = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     
     if (storedUser && storedToken) {
       try {

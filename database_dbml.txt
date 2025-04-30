@@ -1,0 +1,80 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users {
+  id integer [primary key]
+  name varchar
+  email varchar [unique]
+  email_verified_at timestamp
+  password varchar
+  remember_token varchar
+  role varchar [default: 'user']
+  verification_code varchar [note: 'For email verification']
+  google_id varchar [note: 'For Google OAuth login']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table rooms {
+  id integer [primary key]
+  number varchar
+  floor integer
+  price decimal(10,2) [default: 1500000]
+  capacity integer [default: 2]
+  status enum [note: 'available, booked, maintenance']
+  is_available boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table bookings {
+  id integer [primary key]
+  user_id integer [null]
+  room_id integer [not null]
+  check_in date
+  check_out date
+  status enum [note: 'pending, approved, rejected, completed, cancelled, paid']
+  phone_number varchar
+  identity_card varchar [note: 'Path to uploaded identity card file']
+  guests integer
+  special_requests text
+  payment_method varchar
+  total_price decimal(10,2)
+  payment_proof text [note: 'Path to uploaded payment proof file']
+  payment_due_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table password_reset_tokens {
+  email varchar [primary key]
+  token varchar
+  created_at timestamp
+}
+
+Table sessions {
+  id varchar [primary key]
+  user_id integer
+  ip_address varchar(45)
+  user_agent text
+  payload longtext
+  last_activity integer
+}
+
+Table personal_access_tokens {
+  id integer [primary key]
+  tokenable_type varchar
+  tokenable_id integer
+  name varchar
+  token varchar(64) [unique]
+  abilities text
+  last_used_at timestamp
+  expires_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+// Define relationships
+Ref: bookings.user_id > users.id [delete: set null]
+Ref: bookings.room_id > rooms.id [delete: cascade]
+Ref: sessions.user_id > users.id 

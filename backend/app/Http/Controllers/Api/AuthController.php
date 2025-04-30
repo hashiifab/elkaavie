@@ -257,6 +257,11 @@ class AuthController extends Controller
     public function redirectToGoogle(): JsonResponse
     {
         try {
+            // Save remember_me preference from query parameter if present
+            if (request()->has('remember_me')) {
+                session(['google_remember_me' => request()->get('remember_me')]);
+            }
+            
             $url = Socialite::driver('google')
                 ->stateless()
                 ->redirect()
@@ -302,9 +307,13 @@ class AuthController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
             \Log::info('Auth token created for user', ['user_id' => $user->id]);
             
-            // Redirect to frontend with token
+            // Get remember_me preference from session
+            $rememberMe = session('google_remember_me', 'false');
+            \Log::info('Remember me preference', ['remember_me' => $rememberMe]);
+            
+            // Redirect to frontend with token and remember_me parameter
             $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
-            $redirectUrl = $frontendUrl . '/auth/google/callback?token=' . $token;
+            $redirectUrl = $frontendUrl . '/auth/google/callback?token=' . $token . '&remember_me=' . $rememberMe;
             \Log::info('Redirecting to frontend', ['url' => $redirectUrl]);
             
             return redirect($redirectUrl);

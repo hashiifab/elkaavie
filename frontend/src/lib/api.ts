@@ -13,7 +13,8 @@ const api = axios.create({
 // Request interceptor for API calls
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("auth_token");
+    // Check localStorage first, then sessionStorage
+    const token = localStorage.getItem("auth_token") || sessionStorage.getItem("auth_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,6 +32,7 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       localStorage.removeItem("auth_token");
+      sessionStorage.removeItem("auth_token");
       localStorage.removeItem("user_data");
       window.location.href = "/login";
     }
@@ -52,22 +54,44 @@ export interface RegisterData {
 
 export interface Room {
   id: number;
-  room_type_id: number;
-  roomType?: RoomType;
+  name: string;
   number: string;
   floor: number;
   description?: string;
   status?: string;
   is_available: boolean;
+  price: number;
+  capacity: number;
   image_url?: string;
   amenities?: Amenity[];
   created_at?: string;
   updated_at?: string;
+  
+  // Untuk kompatibilitas dengan kode yang menggunakan roomType
+  roomType?: {
+    id: number;
+    name: string;
+    price: number;
+    capacity: number;
+  };
 }
 
 export interface RoomAvailabilityParams {
   check_in: string;
   check_out: string;
+}
+
+export interface BookingRoom {
+  id: number;
+  number: string;
+  floor: number;
+  name?: string;
+  price?: number;
+  capacity?: number;
+  roomType?: {
+    name: string;
+    price: number;
+  }
 }
 
 export interface Booking {
@@ -84,15 +108,7 @@ export interface Booking {
   payment_method?: string;
   phone_number?: string;
   identity_card?: string;
-  room?: {
-    id: number;
-    number: string;
-    floor: number;
-    roomType?: {
-      name: string;
-      price: number;
-    }
-  };
+  room?: BookingRoom;
   created_at: string;
   updated_at: string;
   payment_due_at?: string;
@@ -132,12 +148,16 @@ export interface Amenity {
 }
 
 export const authApi = {
-  login: async (email: string, password: string) => {
+  login: async (email: string, password: string, rememberMe = false) => {
     const response = await api.post("/login", { email, password });
     const { token, user } = response.data;
     
-    // Store token and user data
-    localStorage.setItem("auth_token", token);
+    // Store token based on rememberMe setting
+    if (rememberMe) {
+      localStorage.setItem("auth_token", token);
+    } else {
+      sessionStorage.setItem("auth_token", token);
+    }
     localStorage.setItem("user_data", JSON.stringify(user));
     
     return response.data;
@@ -183,12 +203,16 @@ export const authApi = {
     return response.data;
   },
 
-  authenticateWithVerificationCode: async (code: string) => {
+  authenticateWithVerificationCode: async (code: string, rememberMe = false) => {
     const response = await api.post("/email/verify-and-login", { code });
     const { token, user } = response.data;
     
-    // Store token and user data
-    localStorage.setItem("auth_token", token);
+    // Store token based on rememberMe setting
+    if (rememberMe) {
+      localStorage.setItem("auth_token", token);
+    } else {
+      sessionStorage.setItem("auth_token", token);
+    }
     localStorage.setItem("user_data", JSON.stringify(user));
     
     return response.data;
@@ -222,16 +246,18 @@ export const authApi = {
     return response.data;
   },
 
-  googleLogin: async () => {
+  googleLogin: async (rememberMe = false) => {
     try {
       console.log('Starting Google login process...');
       // Store the current URL to redirect back after login
       localStorage.setItem('redirect_after_login', window.location.pathname);
       console.log('Stored redirect path:', window.location.pathname);
       
-      // Use the backend's Google OAuth endpoint
+      // Use the backend's Google OAuth endpoint with remember_me parameter
       console.log('Calling backend Google OAuth endpoint...');
-      const response = await api.get('/auth/google');
+      const response = await api.get('/auth/google', { 
+        params: { remember_me: rememberMe ? 'true' : 'false' } 
+      });
       console.log('Backend response:', response.data);
       
       if (!response.data || !response.data.url) {

@@ -31,7 +31,7 @@ const Rooms = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem("auth_token");
+        const token = localStorage.getItem("auth_token") || sessionStorage.getItem("auth_token");
         if (token) {
           await authApi.getCurrentUser();
           setIsLoggedIn(true);
@@ -167,8 +167,9 @@ const Rooms = () => {
       sessionStorage.setItem('pendingBooking', JSON.stringify({
         roomId: selectedRoom.id,
         roomNumber: selectedRoom.number,
+        name: selectedRoom.name,
         roomType: selectedRoom.roomType?.name,
-        price: selectedRoom.roomType?.price,
+        price: selectedRoom.price || selectedRoom.roomType?.price,
         floor: selectedRoom.floor
       }));
       // Redirect to login with return URL
@@ -300,14 +301,14 @@ const Rooms = () => {
             <div className="p-4">
               {/* Room Title */}
               <h3 className="font-semibold text-gray-900 mb-4">
-                {selectedRoom.roomType?.name || `Room ${selectedRoom.number}`}
+                {selectedRoom.name || selectedRoom.roomType?.name || `Room ${selectedRoom.number}`}
               </h3>
 
               {/* Room Info */}
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
                   <Users className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{selectedRoom.roomType?.capacity || 2} guests</span>
+                  <span className="text-sm text-gray-600">{selectedRoom.capacity || selectedRoom.roomType?.capacity || 2} guests</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
                   <BedDouble className="h-4 w-4 text-gray-500" />

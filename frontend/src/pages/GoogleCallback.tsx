@@ -13,9 +13,11 @@ export default function GoogleCallback() {
     
     const token = searchParams.get('token');
     const error = searchParams.get('error');
+    const rememberMe = searchParams.get('remember_me') === 'true';
     
     console.log('Token from URL:', token ? 'Present' : 'Not present');
     console.log('Error from URL:', error || 'None');
+    console.log('Remember me from URL:', rememberMe);
     
     if (error) {
       console.error('Error in URL:', error);
@@ -27,9 +29,13 @@ export default function GoogleCallback() {
     }
     
     if (token) {
-      console.log('Token found, storing in localStorage');
-      // Store the token
-      localStorage.setItem('auth_token', token);
+      console.log('Token found, storing in ' + (rememberMe ? 'localStorage' : 'sessionStorage'));
+      // Store the token based on remember me setting
+      if (rememberMe) {
+        localStorage.setItem('auth_token', token);
+      } else {
+        sessionStorage.setItem('auth_token', token);
+      }
       
       // Get user data
       console.log('Fetching user data...');

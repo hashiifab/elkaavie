@@ -29,7 +29,7 @@ const PaymentGuide = () => {
   const [dragActive, setDragActive] = useState(false);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('auth_token');
+    const savedToken = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     if (!savedToken) {
       toast({
         title: "Authentication required",

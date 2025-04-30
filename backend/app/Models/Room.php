@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -13,25 +12,33 @@ class Room extends Model
     use HasFactory;
 
     protected $fillable = [
-        'room_type_id',
         'number',
         'floor',
+        'price',
+        'capacity',
         'status',
-        'description',
         'is_available',
-        'image_url',
     ];
 
     protected function casts(): array
     {
         return [
             'is_available' => 'boolean',
+            'price' => 'decimal:2',
+            'capacity' => 'integer',
         ];
     }
 
-    public function roomType(): BelongsTo
+    // Untuk kompatibilitas dengan frontend, metode ini akan mengembalikan 
+    // data yang mirip dengan RoomType
+    public function getRoomTypeAttribute()
     {
-        return $this->belongsTo(RoomType::class);
+        return [
+            'id' => $this->id,
+            'name' => 'Standard',
+            'price' => $this->price,
+            'capacity' => $this->capacity,
+        ];
     }
 
     public function bookings(): HasMany

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Room;
-use App\Models\RoomType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,15 +12,12 @@ class RoomController extends Controller
 {
     public function index(): JsonResponse
     {
-        $rooms = Room::with('roomType')->get();
-
+        $rooms = Room::all();
         return response()->json($rooms);
     }
 
     public function show(Room $room): JsonResponse
     {
-        $room->load('roomType');
-
         return response()->json($room);
     }
 
@@ -30,9 +26,8 @@ class RoomController extends Controller
         $validated = $request->validate([
             'number' => 'required|string',
             'floor' => 'required|integer|between:1,3',
-            'type' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'description' => 'nullable|string',
+            'capacity' => 'required|integer|min:1',
             'is_available' => 'boolean',
         ]);
         
@@ -44,51 +39,43 @@ class RoomController extends Controller
             ], 422);
         }
         
-        // Find or create room type
-        $roomType = RoomType::firstOrCreate(
-            ['name' => $validated['type']],
-            [
-                'description' => "A {$validated['type']} room",
-                'price' => $validated['price'],
-                'capacity' => 2, // Default capacity
-            ]
-        );
-        
-        // Create room
+        // Create room with standardized info
         $room = new Room();
-        $room->room_type_id = $roomType->id;
         $room->number = $validated['number'];
         $room->floor = $validated['floor'];
+        $room->price = $validated['price'];
+        $room->capacity = $validated['capacity'];
         $room->status = 'available';
-        $room->description = $validated['description'] ?? null;
         $room->is_available = $validated['is_available'] ?? true;
         $room->save();
         
-        return response()->json($room->load('roomType'), 201);
+        return response()->json($room, 201);
     }
 
     public function update(Request $request, Room $room): JsonResponse
     {
         $validated = $request->validate([
             'price' => 'sometimes|numeric|min:0',
+            'capacity' => 'sometimes|integer|min:1',
             'is_available' => 'sometimes|boolean',
         ]);
         
-        // Update room availability
+        // Update room fields directly
+        if (isset($validated['price'])) {
+            $room->price = $validated['price'];
+        }
+        
+        if (isset($validated['capacity'])) {
+            $room->capacity = $validated['capacity'];
+        }
+        
         if (isset($validated['is_available'])) {
             $room->is_available = $validated['is_available'];
         }
         
-        // Update room type price if provided
-        if (isset($validated['price'])) {
-            $roomType = $room->roomType;
-            $roomType->price = $validated['price'];
-            $roomType->save();
-        }
-        
         $room->save();
         
-        return response()->json($room->load('roomType'));
+        return response()->json($room);
     }
 
     public function destroy(Room $room): JsonResponse
@@ -111,22 +98,6 @@ class RoomController extends Controller
         // Delete existing rooms first to avoid conflicts
         Room::query()->delete();
         
-        // Create a default room type with the standardized price of 1,500,000
-        $roomType = RoomType::firstOrCreate(
-            ['name' => 'Standard'],
-            [
-                'description' => 'Comfortable standard room, fully furnished',
-                'price' => 1500000, // Rp 1,500,000 per month as requested
-                'capacity' => 2,
-            ]
-        );
-        
-        // Update price if the room type already existed
-        if ($roomType->price != 1500000) {
-            $roomType->price = 1500000;
-            $roomType->save();
-        }
-        
         // Create rooms using the floor-based naming scheme (A1-A5, B1-B5)
         $rooms = [];
         $floorPrefixes = [1 => 'A', 2 => 'B'];
@@ -138,12 +109,12 @@ class RoomController extends Controller
                 $roomNumber = $prefix . $i; // This creates A1, A2, ..., B1, B2, etc.
                 
                 $room = Room::create([
-                    'room_type_id' => $roomType->id,
                     'number' => $roomNumber,
                     'floor' => $floor,
+                    'price' => 1500000, // Rp 1,500,000 per month as standardized
+                    'capacity' => 2,
                     'status' => 'available',
                     'is_available' => true,
-                    'description' => "Standard room on floor $floor",
                 ]);
                 $rooms[] = $room;
             }

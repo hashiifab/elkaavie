@@ -45,8 +45,8 @@ class BookingController extends Controller
         if ($booking->room) {
             $booking->room_number = $booking->room->number;
             $booking->room_floor = $booking->room->floor;
-            $booking->room_type = $booking->room->roomType->name ?? 'Standard';
-            $booking->room_capacity = $booking->room->roomType->capacity ?? 1;
+            $booking->room_type = 'Standard';
+            $booking->room_capacity = $booking->room->capacity ?? 1;
         }
 
         // Add user info if available
@@ -73,7 +73,7 @@ class BookingController extends Controller
             }
 
             // Only get bookings with real users
-            $bookings = Booking::with(['user', 'room.roomType'])
+            $bookings = Booking::with(['user', 'room'])
                 ->whereNotNull('user_id')  // Only get bookings with user_id
                 ->whereHas('user')         // Ensure user exists
                 ->orderBy('created_at', 'desc')
@@ -139,7 +139,7 @@ class BookingController extends Controller
             Log::info('Booking created successfully', ['id' => $booking->id]);
 
             // Format response with relationships loaded
-            $booking = $this->formatBookingData($booking->load(['user', 'room.roomType']));
+            $booking = $this->formatBookingData($booking->load(['user', 'room']));
 
             return response()->json([
                 'success' => true,
@@ -177,7 +177,7 @@ class BookingController extends Controller
             }
 
             // Format booking data with relationships loaded
-            $booking = $this->formatBookingData($booking->load(['user', 'room.roomType']));
+            $booking = $this->formatBookingData($booking->load(['user', 'room']));
 
             return response()->json([
                 'success' => true,
@@ -223,7 +223,7 @@ class BookingController extends Controller
         $booking->update($validated);
 
         // Return updated booking with relationships
-        return response()->json($booking->load(['user', 'room.roomType']));
+        return response()->json($booking->load(['user', 'room']));
     }
 
     /**
@@ -284,7 +284,7 @@ class BookingController extends Controller
             $user = auth()->user();
             
             $bookings = Booking::where('user_id', $user->id)
-                ->with(['room.roomType'])
+                ->with(['room'])
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($booking) {

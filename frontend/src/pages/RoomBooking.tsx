@@ -171,7 +171,7 @@ const RoomBooking = () => {
             ...prev,
             check_in: defaultCheckInDate,
             check_out: defaultCheckOutDate,
-            guests: data.roomType?.capacity || 1,
+            guests: data.capacity || data.roomType?.capacity || 1,
           }));
         }
 
@@ -463,7 +463,7 @@ const RoomBooking = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
                       >
                         {Array.from(
-                          { length: room?.roomType?.capacity || 1 },
+                          { length: room?.capacity || room?.roomType?.capacity || 1 },
                           (_, i) => (
                             <option key={i + 1} value={i + 1}>
                               {i + 1} {i === 0 ? "Guest" : "Guests"}
@@ -753,7 +753,7 @@ const RoomBooking = () => {
                       <BedDouble className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
                       <div>
                         <h3 className="font-medium">
-                          {room?.roomType?.name || `Room ${room?.number}`}
+                          {room?.name || room?.roomType?.name || `Room ${room?.number}`}
                         </h3>
                         <p className="text-sm text-gray-600">
                           Room {room?.number}, Floor {room?.floor}
@@ -769,7 +769,7 @@ const RoomBooking = () => {
                           {formData.guests === 1 ? "Guest" : "Guests"}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          Max capacity: {room?.roomType?.capacity}
+                          Max capacity: {room?.capacity || room?.roomType?.capacity}
                         </p>
                       </div>
                     </div>

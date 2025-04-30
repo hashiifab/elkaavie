@@ -217,7 +217,7 @@ const BookingDetails = () => {
                 </div>
                 <div className="ml-4">
                   <h3 className="font-medium text-gray-900">
-                    {booking.room?.roomType?.name || `Room ${booking.room?.number}`}
+                    {booking.room?.name || booking.room?.roomType?.name || `Room ${booking.room?.number}`}
                   </h3>
                   <p className="text-sm text-gray-600">
                     Booking ID: #{booking.id}

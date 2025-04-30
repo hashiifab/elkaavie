@@ -39,7 +39,7 @@ const Header = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem("auth_token");
+        const token = localStorage.getItem("auth_token") || sessionStorage.getItem("auth_token");
         if (token) {
           const user = await authApi.getUser();
           setIsAuthenticated(true);
@@ -52,6 +52,7 @@ const Header = () => {
         setIsAuthenticated(false);
         setUserData(null);
         localStorage.removeItem("auth_token");
+        sessionStorage.removeItem("auth_token");
         localStorage.removeItem("user_data");
       } finally {
         setIsLoading(false);

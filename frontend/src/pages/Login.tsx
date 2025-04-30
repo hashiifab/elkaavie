@@ -10,6 +10,7 @@ import { Clock, User, CreditCard, Key, Eye, EyeOff, AlertCircle } from "lucide-r
 interface PendingBooking {
   roomId: number;
   roomNumber: string;
+  name?: string;
   roomType?: string;
   price?: number;
   floor?: number;
@@ -45,6 +46,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   
   // Error handling
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -83,11 +85,8 @@ const Login = () => {
     
     setLoading(true);
     try {
-      // Attempt login
-      const response = await authApi.login(email, password);
-      
-      // Store auth token
-      localStorage.setItem('auth_token', response.token);
+      // Attempt login with rememberMe setting
+      const response = await authApi.login(email, password, rememberMe);
       
       // Navigate based on redirect or pending booking
       const pendingBooking = sessionStorage.getItem('pendingBooking');
@@ -135,7 +134,7 @@ const Login = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      const { url } = await authApi.googleLogin();
+      const { url } = await authApi.googleLogin(rememberMe);
       window.location.href = url;
     } catch (error) {
       console.error("Google login failed:", error);
@@ -155,8 +154,12 @@ const Login = () => {
     }
 
     if (token) {
-      // Store the token
-      localStorage.setItem('auth_token', token);
+      // Store the token based on remember me setting
+      if (rememberMe) {
+        localStorage.setItem('auth_token', token);
+      } else {
+        sessionStorage.setItem('auth_token', token);
+      }
       
       // Get redirect path from localStorage or default to home
       const redirectPath = localStorage.getItem('redirect_after_login') || '/';
@@ -165,7 +168,7 @@ const Login = () => {
       // Navigate to the redirect path
       navigate(redirectPath);
     }
-  }, [navigate]);
+  }, [navigate, rememberMe]);
 
   return (
     <>
@@ -206,7 +209,7 @@ const Login = () => {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">
-                            {pendingBooking.roomType || `Room ${pendingBooking.roomNumber}`}
+                            {pendingBooking.name || pendingBooking.roomType || `Room ${pendingBooking.roomNumber}`}
                           </p>
                           <p className="text-gray-600">
                             Room {pendingBooking.roomNumber}, Floor {pendingBooking.floor}
@@ -296,6 +299,8 @@ const Login = () => {
                     <input
                       type="checkbox"
                       id="remember"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
                       className="h-4 w-4 text-elkaavie-600 focus:ring-elkaavie-500 border-gray-300 rounded"
                     />
                     <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
