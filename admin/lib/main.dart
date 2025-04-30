@@ -4,10 +4,8 @@ import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'services/web_enabled_api_service.dart';
 
-/**
- * Centralized color palette for consistent UI theming across the app
- * Follows a material design color scheme with primary, secondary, and accent colors
- */
+/// Centralized color palette for consistent UI theming across the app
+/// Follows a material design color scheme with primary, secondary, and accent colors
 class AppColors {
   // Primary colors - deep indigo color theme
   static const Color primary = Color(0xFF1A237E); // Deep indigo
@@ -38,19 +36,15 @@ class AppColors {
   static const Color divider = Color(0xFFBDBDBD);
 }
 
-/**
- * Application entry point - sets up the Flutter app
- */
+/// Application entry point - sets up the Flutter app
 void main() {
    // Disable shader warm-up for faster startup
   PaintingBinding.shaderWarmUp = null;
   runApp(const MyApp());
 }
 
-/**
- * Main application widget - sets up theme and initial route
- * Configures material design theme using consistent color palette
- */
+/// Main application widget - sets up theme and initial route
+/// Configures material design theme using consistent color palette
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -154,10 +148,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/**
- * Authentication wrapper component
- * Handles token validation and routes to appropriate screen based on auth status
- */
+/// Authentication wrapper component
+/// Handles token validation and routes to appropriate screen based on auth status
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
 
@@ -165,10 +157,8 @@ class AuthWrapper extends StatefulWidget {
   State<AuthWrapper> createState() => _AuthWrapperState();
 }
 
-/**
- * AuthWrapper state - manages authentication check logic
- * Determines whether to show login screen or dashboard based on token validity
- */
+/// AuthWrapper state - manages authentication check logic
+/// Determines whether to show login screen or dashboard based on token validity
 class _AuthWrapperState extends State<AuthWrapper> {
   final _apiService = WebEnabledApiService();
   bool _isLoading = true;
@@ -180,10 +170,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
     _checkAuth();
   }
 
-  /**
-   * Verifies if user has a valid authentication token
-   * Attempts to get user data with the token to confirm it's still valid
-   */
+  /// Verifies if user has a valid authentication token
+  /// Attempts to get user data with the token to confirm it's still valid
   Future<void> _checkAuth() async {
     try {
       final token = await _apiService.getToken();
