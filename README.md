@@ -68,6 +68,45 @@ elkaavie/
     └── test/         # Test files
 ```
 
+## 🐳 Docker Setup (Recommended)
+
+The project is now fully containerized with Docker for easy setup and deployment anywhere:
+
+```bash
+# Clone the repository
+git clone https://github.com/hashiifab/elkaavie.git
+cd elkaavie
+
+# Build and start all services with Docker
+docker-compose up -d
+
+# Run database migrations
+docker exec elkaavie_backend php artisan migrate --seed
+```
+
+### Accessing the Applications
+
+After starting the Docker containers, you can access the applications at:
+- **Frontend:** http://localhost
+- **Backend API:** http://localhost:8000
+- **Admin Panel:** http://localhost:82
+
+### Docker Management Commands
+
+```bash
+# View container logs
+docker-compose logs -f
+
+# Stop all containers
+docker-compose down
+
+# Restart a specific service
+docker-compose restart backend
+
+# View running containers
+docker-compose ps
+```
+
 ## 💻 Development Environment
 
 ### Using the Interactive Run Script

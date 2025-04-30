@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+docker-compose.yml
+Dockerfile*
+
+# Logs
+logs
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.*.example
+
+# Dependencies
+**/node_modules
+**/vendor
+**/build
+**/dist
+
+# Other
+**/.DS_Store
+**/.idea
+**/.vscode
+**/Thumbs.db 

@@ -12,3 +12,8 @@ Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
 10:24:59 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
 10:25:57 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+10:27:45 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+10:46:14 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+10:46:27 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:46:31 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:46:41 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css

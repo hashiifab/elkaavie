@@ -1,0 +1,63 @@
+# Docker volumes
+db_data
+
+# Environment variable files
+.env
+.env.*
+!.env.*.example
+
+# Backend specific
+/backend/vendor
+/backend/node_modules
+/backend/public/hot
+/backend/public/storage
+/backend/storage/*.key
+/backend/.env
+/backend/.phpunit.result.cache
+/backend/Homestead.json
+/backend/Homestead.yaml
+/backend/npm-debug.log
+/backend/yarn-error.log
+
+# Frontend specific
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.js
+/frontend/coverage
+/frontend/dist
+/frontend/build
+/frontend/.DS_Store
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+# Admin specific
+/admin/.dart_tool/
+/admin/.flutter-plugins
+/admin/.flutter-plugins-dependencies
+/admin/build/
+/admin/.packages
+/admin/.pub-cache/
+/admin/.pub/
+/admin/coverage/
+/admin/ios/Flutter/.last_build_id
+/admin/.DS_Store
+/admin/ios/.generated/
+/admin/ios/Flutter/App.framework
+/admin/ios/Flutter/Flutter.framework
+/admin/ios/Flutter/Flutter.podspec
+/admin/ios/Flutter/Generated.xcconfig
+/admin/ios/Flutter/ephemeral/
+/admin/ios/Flutter/app.flx
+/admin/ios/Flutter/app.zip
+/admin/ios/Flutter/flutter_assets/
+/admin/ios/ServiceDefinitions.json
+/admin/ios/Runner/GeneratedPluginRegistrant.*
+
+# System files
+.DS_Store
+*.pem 

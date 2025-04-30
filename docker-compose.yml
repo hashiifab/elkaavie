@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: elkaavie_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: elkaavie
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: elkaavie
+      MYSQL_PASSWORD: elkaavie
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - elkaavie_network
+
+  # Laravel Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: elkaavie_backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: elkaavie
+      DB_USERNAME: elkaavie
+      DB_PASSWORD: elkaavie
+      APP_ENV: production
+      APP_DEBUG: 'false'
+      APP_URL: http://localhost:8000
+      SANCTUM_STATEFUL_DOMAINS: localhost:80
+      SESSION_DOMAIN: localhost
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/backend
+    networks:
+      - elkaavie_network
+
+  # React Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: elkaavie_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - elkaavie_network
+
+  # Flutter Admin
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    container_name: elkaavie_admin
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "82:80"
+    networks:
+      - elkaavie_network
+
+networks:
+  elkaavie_network:
+    driver: bridge
+
+volumes:
+  db_data: 
