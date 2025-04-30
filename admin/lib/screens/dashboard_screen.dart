@@ -292,11 +292,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   rooms: _rooms,
                   bookings: _bookings,
                   onRefresh: _loadAllData,
+                  tabController: _tabController,
                 ),
                 UsersTab(
                   users: _users,
                   isLoading: _loadingUsers,
                   onRefresh: _loadUsers,
+                  bookings: _bookings,
                 ),
                 RoomsTab(
                   rooms: _rooms,
@@ -305,6 +307,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   onInitializeRooms: _initializeRooms,
                   onToggleRoomAvailability: _toggleRoomAvailability,
                   onDeleteRoom: _deleteRoom,
+                  bookings: _bookings,
                 ),
                 BookingsTab(
                   bookings: _bookings,

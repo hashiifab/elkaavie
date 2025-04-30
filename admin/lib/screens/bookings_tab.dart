@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../main.dart';
 import '../utils.dart';
 
-class BookingsTab extends StatelessWidget {
+class BookingsTab extends StatefulWidget {
   final List<dynamic> bookings;
   final bool isLoading;
   final Future<void> Function() onRefresh;
@@ -19,14 +19,45 @@ class BookingsTab extends StatelessWidget {
   });
 
   @override
+  State<BookingsTab> createState() => _BookingsTabState();
+}
+
+class _BookingsTabState extends State<BookingsTab> {
+  String _selectedFilter = 'all';
+  final Map<String, String> _filters = {
+    'all': 'All Bookings',
+    'pending': 'Pending',
+    'approved': 'Approved',
+    'paid': 'Paid',
+    'completed': 'Completed',
+    'rejected': 'Rejected',
+    'canceled': 'Canceled',
+  };
+  
+  Map<int, bool> _expandedBookings = {};
+  
+  // Method to set filter externally (can be called from dashboard)
+  void setFilter(String filter) {
+    if (_filters.containsKey(filter)) {
+      setState(() {
+        _selectedFilter = filter;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Filter dan sort booking dengan null-safety
-    final validBookings = bookings
+    final validBookings = widget.bookings
         .where((booking) => booking['user']?['name'] != null)
         .toList()
       ..sort((a, b) => (b['id'] as int).compareTo(a['id'] as int));
+      
+    final filteredBookings = _selectedFilter == 'all'
+        ? validBookings
+        : validBookings.where((booking) => booking['status'] == _selectedFilter).toList();
 
-    if (isLoading) {
+    if (widget.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -43,7 +74,7 @@ class BookingsTab extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
-              onPressed: onRefresh,
+              onPressed: widget.onRefresh,
               icon: const Icon(Icons.refresh),
               label: const Text('Refresh Bookings'),
               style: ElevatedButton.styleFrom(
@@ -57,54 +88,128 @@ class BookingsTab extends StatelessWidget {
     }
 
     return RefreshIndicator(
-      onRefresh: onRefresh,
+      onRefresh: widget.onRefresh,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: isLoading ? null : onRefresh,
-                  icon: isLoading
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Icon(Icons.refresh, size: 16),
-                  label: Text(isLoading ? 'Refreshing...' : 'Refresh Bookings'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildFilterSection(validBookings),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: validBookings.length,
-              itemBuilder: (context, index) {
-                final booking = validBookings[index];
-                final isApproved = booking['status'] == 'approved';
-                final hasPaymentProof = booking['payment_proof']?.toString().isNotEmpty ?? false;
+            child: filteredBookings.isEmpty 
+                ? Center(
+                    child: Text(
+                      'No ${_filters[_selectedFilter]?.toLowerCase() ?? _selectedFilter} bookings found',
+                      style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: filteredBookings.length,
+                    itemBuilder: (context, index) {
+                      final booking = filteredBookings[index];
+                      final bookingId = booking['id'];
+                      final isExpanded = _expandedBookings[bookingId] ?? false;
+                      final isApproved = booking['status'] == 'approved';
+                      final hasPaymentProof = booking['payment_proof']?.toString().isNotEmpty ?? false;
 
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: Column(
-                    children: [
-                      _buildHeader(booking),
-                      _buildDetails(context, booking, isApproved, hasPaymentProof),
-                    ],
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        child: Column(
+                          children: [
+                            _buildHeader(booking, isExpanded, () {
+                              setState(() {
+                                _expandedBookings[bookingId] = !isExpanded;
+                              });
+                            }),
+                            if (isExpanded)
+                              _buildDetails(context, booking, isApproved, hasPaymentProof),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildFilterSection(List<dynamic> bookings) {
+    // Count bookings by status
+    Map<String, int> statusCounts = {'all': bookings.length};
+    for (var status in _filters.keys.where((s) => s != 'all')) {
+      statusCounts[status] = bookings.where((b) => b['status'] == status).length;
+    }
+    
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Filter Bookings',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              if (widget.isLoading)
+                const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              else
+                IconButton(
+                  icon: const Icon(Icons.refresh, size: 20),
+                  onPressed: widget.onRefresh,
+                  tooltip: 'Refresh bookings',
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _filters.entries.map((entry) {
+                final isSelected = _selectedFilter == entry.key;
+                final count = statusCounts[entry.key] ?? 0;
+                
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: FilterChip(
+                    label: Text('${entry.value} ($count)'),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      setState(() {
+                        _selectedFilter = entry.key;
+                      });
+                    },
+                    backgroundColor: Colors.grey.shade100,
+                    selectedColor: AppColors.primary.withOpacity(0.2),
+                    checkmarkColor: AppColors.primary,
+                    labelStyle: TextStyle(
+                      color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
                   ),
                 );
-              },
+              }).toList(),
             ),
           ),
         ],
@@ -112,34 +217,69 @@ class BookingsTab extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(Map<String, dynamic> booking) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: getStatusColor(booking['status']).withOpacity(0.1),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              'Booking #${booking['id']}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+  Widget _buildHeader(Map<String, dynamic> booking, bool isExpanded, VoidCallback onToggle) {
+    final roomNumber = booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown';
+    final guestName = booking['user']?['name'] ?? 'Guest';
+    
+    return InkWell(
+      onTap: onToggle,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: getStatusColor(booking['status']).withOpacity(0.1),
+          borderRadius: isExpanded 
+              ? const BorderRadius.vertical(top: Radius.circular(12))
+              : BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'Room $roomNumber',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: getStatusColor(booking['status']),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          booking['status'].toString().toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.white, 
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    guestName,
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Check-in: ${booking['check_in'] != null ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_in'])) : 'N/A'}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: getStatusColor(booking['status']),
-              borderRadius: BorderRadius.circular(20),
+            Icon(
+              isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+              color: Colors.grey.shade600,
             ),
-            child: Text(
-              booking['status'].toString().toUpperCase(),
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -155,9 +295,9 @@ class BookingsTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildInfoSection(
-            icon: Icons.hotel,
+          _buildCollapsibleSection(
             title: 'Room Information',
+            icon: Icons.hotel,
             color: Colors.blue,
             children: [
               _buildInfoRow('Room Number', booking['room']?['number']?.toString() ?? booking['room_number']?.toString() ?? 'Unknown'),
@@ -166,9 +306,9 @@ class BookingsTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          _buildInfoSection(
-            icon: Icons.person,
+          _buildCollapsibleSection(
             title: 'Guest Information',
+            icon: Icons.person,
             color: Colors.green,
             children: [
               _buildInfoRow('Name', booking['user']?['name']?.toString() ?? 'Guest'),
@@ -177,9 +317,9 @@ class BookingsTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          _buildInfoSection(
-            icon: Icons.calendar_today,
+          _buildCollapsibleSection(
             title: 'Booking Details',
+            icon: Icons.calendar_today,
             color: Colors.orange,
             children: [
               _buildInfoRow('Check In', booking['check_in'] != null ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_in'])) : 'N/A'),
@@ -191,9 +331,9 @@ class BookingsTab extends StatelessWidget {
           if (booking['special_requests']?.toString().isNotEmpty == true && booking['special_requests'] != 'None')
             Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: _buildInfoSection(
-                icon: Icons.note_alt,
+              child: _buildCollapsibleSection(
                 title: 'Special Requests',
+                icon: Icons.note_alt,
                 color: Colors.purple,
                 children: [
                   Text(
@@ -206,10 +346,11 @@ class BookingsTab extends StatelessWidget {
           if (booking['identity_card']?.toString().isNotEmpty == true)
             Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: _buildInfoSection(
-                icon: Icons.badge,
+              child: _buildCollapsibleSection(
                 title: 'Identity Card',
+                icon: Icons.badge,
                 color: Colors.blue,
+                initiallyExpanded: false,
                 children: [
                   _buildNetworkImage(context, booking['identity_card'].toString(), 'identity-cards'),
                 ],
@@ -219,10 +360,11 @@ class BookingsTab extends StatelessWidget {
             const Divider(),
             Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: _buildInfoSection(
-                icon: Icons.payment,
+              child: _buildCollapsibleSection(
                 title: 'Payment Proof',
+                icon: Icons.payment,
                 color: Colors.teal,
+                initiallyExpanded: false,
                 children: [
                   _buildNetworkImage(context, booking['payment_proof'].toString(), 'payment-proofs'),
                   if (isApproved && hasPaymentProof) ...[
@@ -231,7 +373,7 @@ class BookingsTab extends StatelessWidget {
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'paid'),
+                            onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'paid'),
                             icon: const Icon(Icons.check_circle_outline),
                             label: const Text('Verify Payment'),
                             style: ElevatedButton.styleFrom(
@@ -243,7 +385,7 @@ class BookingsTab extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'rejected'),
+                            onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'rejected'),
                             icon: const Icon(Icons.cancel_outlined),
                             label: const Text('Reject Payment'),
                             style: OutlinedButton.styleFrom(foregroundColor: AppColors.error),
@@ -259,6 +401,34 @@ class BookingsTab extends StatelessWidget {
           const SizedBox(height: 24),
           _buildActionButtons(context, booking),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCollapsibleSection({
+    required String title,
+    required IconData icon,
+    required Color color,
+    required List<Widget> children,
+    bool initiallyExpanded = true,
+  }) {
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Row(
+          children: [
+            Icon(icon, size: 20, color: color),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: color),
+            ),
+          ],
+        ),
+        tilePadding: EdgeInsets.zero,
+        initiallyExpanded: initiallyExpanded,
+        childrenPadding: const EdgeInsets.only(bottom: 8),
+        children: children,
       ),
     );
   }
@@ -336,7 +506,7 @@ class BookingsTab extends StatelessWidget {
                       );
                     }
                   }
-                  await onUpdateBookingStatus(booking['id'].toString(), 'approved');
+                  await widget.onUpdateBookingStatus(booking['id'].toString(), 'approved');
                 },
                 icon: const Icon(Icons.check_circle),
                 label: const Text('Approve'),
@@ -350,7 +520,7 @@ class BookingsTab extends StatelessWidget {
             const SizedBox(width: 16),
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'rejected'),
+                onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'rejected'),
                 icon: const Icon(Icons.cancel),
                 label: const Text('Reject'),
                 style: OutlinedButton.styleFrom(
@@ -365,7 +535,7 @@ class BookingsTab extends StatelessWidget {
       case 'approved':
         return Center(
           child: ElevatedButton.icon(
-            onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'completed'),
+            onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'completed'),
             icon: const Icon(Icons.done_all),
             label: const Text('Mark as Completed'),
             style: ElevatedButton.styleFrom(
@@ -378,7 +548,7 @@ class BookingsTab extends StatelessWidget {
       case 'paid':
         return Center(
           child: ElevatedButton.icon(
-            onPressed: () => onUpdateBookingStatus(booking['id'].toString(), 'completed'),
+            onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'completed'),
             icon: const Icon(Icons.done_all),
             label: const Text('Mark as Completed'),
             style: ElevatedButton.styleFrom(
@@ -391,39 +561,6 @@ class BookingsTab extends StatelessWidget {
       default:
         return const SizedBox.shrink();
     }
-  }
-
-  Widget _buildInfoSection({
-    required IconData icon,
-    required String title,
-    required Color color,
-    required List<Widget> children,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.2), width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 20, color: color),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: color),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ...children,
-        ],
-      ),
-    );
   }
 
   Widget _buildInfoRow(String label, String value) {
