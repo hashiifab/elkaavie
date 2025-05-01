@@ -112,7 +112,7 @@ class RoomController extends Controller
                     'number' => $roomNumber,
                     'floor' => $floor,
                     'price' => 1500000, // Rp 1,500,000 per month as standardized
-                    'capacity' => 2,
+                    'capacity' => 1,
                     'status' => 'available',
                     'is_available' => true,
                 ]);

@@ -171,7 +171,7 @@ const RoomBooking = () => {
             ...prev,
             check_in: defaultCheckInDate,
             check_out: defaultCheckOutDate,
-            guests: data.capacity || data.roomType?.capacity || 1,
+            guests: data.capacity || 1,
           }));
         }
 

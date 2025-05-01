@@ -13,7 +13,7 @@ class AddRoomTypeFieldsToRoomsTable extends Migration
         Schema::table('rooms', function (Blueprint $table) {
             $table->string('name')->default('Standard')->after('id');
             $table->decimal('price', 10, 2)->default(1500000)->after('floor');
-            $table->integer('capacity')->default(2)->after('price');
+            $table->integer('capacity')->default(1)->after('price');
         });
 
         // Step 2: Transfer data from room_types to rooms

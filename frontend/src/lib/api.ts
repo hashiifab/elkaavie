@@ -67,7 +67,8 @@ export interface Room {
   created_at?: string;
   updated_at?: string;
   
-  // Untuk kompatibilitas dengan kode yang menggunakan roomType
+  // Properti roomType dipertahankan untuk kompatibilitas mundur
+  // Dalam implementasi, nilai ini akan sama dengan properti Room yang sesuai
   roomType?: {
     id: number;
     name: string;
@@ -88,6 +89,8 @@ export interface BookingRoom {
   name?: string;
   price?: number;
   capacity?: number;
+  // Properti roomType dipertahankan untuk kompatibilitas dengan kode yang ada
+  // Dalam implementasi, nilai ini akan sama dengan properti BookingRoom yang sesuai
   roomType?: {
     name: string;
     price: number;
@@ -125,15 +128,7 @@ export interface BookingCreateParams {
   identity_card?: File;
 }
 
-export interface RoomType {
-  id: number;
-  name: string;
-  description?: string;
-  price: number;
-  capacity: number;
-  created_at?: string;
-  updated_at?: string;
-}
+// RoomType interface dihapus karena sudah diintegrasikan ke dalam Room
 
 export interface Amenity {
   id: number;
@@ -346,4 +341,4 @@ export const bookingApi = {
   },
 };
 
-export default api; 
+export default api;

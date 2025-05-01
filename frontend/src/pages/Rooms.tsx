@@ -308,7 +308,7 @@ const Rooms = () => {
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
                   <Users className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{selectedRoom.capacity || selectedRoom.roomType?.capacity || 2} guests</span>
+                  <span className="text-sm text-gray-600">{selectedRoom.capacity || selectedRoom.roomType?.capacity || 1} guests</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
                   <BedDouble className="h-4 w-4 text-gray-500" />

@@ -3,14 +3,14 @@
 
 Table users {
   id integer [primary key]
+  google_id varchar [note: 'For Google OAuth login']
   name varchar
   email varchar [unique]
   email_verified_at timestamp
+  verification_code varchar [note: 'For email verification']
   password varchar
   remember_token varchar
   role varchar [default: 'user']
-  verification_code varchar [note: 'For email verification']
-  google_id varchar [note: 'For Google OAuth login']
   created_at timestamp
   updated_at timestamp
 }
@@ -20,7 +20,7 @@ Table rooms {
   number varchar
   floor integer
   price decimal(10,2) [default: 1500000]
-  capacity integer [default: 2]
+  capacity integer [default: 1]
   status enum [note: 'available, booked, maintenance']
   is_available boolean [default: true]
   created_at timestamp
@@ -37,11 +37,11 @@ Table bookings {
   phone_number varchar
   identity_card varchar [note: 'Path to uploaded identity card file']
   guests integer
-  special_requests text
+  special_requests text [null]
   payment_method varchar
   total_price decimal(10,2)
-  payment_proof text [note: 'Path to uploaded payment proof file']
-  payment_due_at timestamp
+  payment_proof text [note: 'Path to uploaded payment proof file', null]
+  payment_due_at timestamp [null]
   created_at timestamp
   updated_at timestamp
 }
@@ -49,14 +49,14 @@ Table bookings {
 Table password_reset_tokens {
   email varchar [primary key]
   token varchar
-  created_at timestamp
+  created_at timestamp [null]
 }
 
 Table sessions {
   id varchar [primary key]
-  user_id integer
-  ip_address varchar(45)
-  user_agent text
+  user_id integer [null]
+  ip_address varchar(45) [null]
+  user_agent text [null]
   payload longtext
   last_activity integer
 }
@@ -67,9 +67,9 @@ Table personal_access_tokens {
   tokenable_id integer
   name varchar
   token varchar(64) [unique]
-  abilities text
-  last_used_at timestamp
-  expires_at timestamp
+  abilities text [null]
+  last_used_at timestamp [null]
+  expires_at timestamp [null]
   created_at timestamp
   updated_at timestamp
 }
@@ -77,4 +77,4 @@ Table personal_access_tokens {
 // Define relationships
 Ref: bookings.user_id > users.id [delete: set null]
 Ref: bookings.room_id > rooms.id [delete: cascade]
-Ref: sessions.user_id > users.id 
+Ref: sessions.user_id > users.id

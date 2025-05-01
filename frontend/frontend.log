@@ -3,17 +3,14 @@
 > vite
 
 
-  VITE v5.4.10  ready in 173 ms
+  VITE v5.4.10  ready in 369 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: http://192.192.2.215:3000/
-Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
-10:24:59 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
-10:25:57 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
-10:27:45 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
-10:46:14 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
-10:46:27 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
-10:46:31 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
-10:46:41 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:13:03 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/Profile.tsx, /src/pages/Settings.tsx, /src/pages/BookingDetails.tsx, /src/pages/EmailVerification.tsx, /src/pages/GoogleCallback.tsx, /src/pages/ForgotPassword.tsx, /src/pages/ResetPassword.tsx, /src/components/layout/Header.tsx
+11:13:06 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/Profile.tsx, /src/pages/Settings.tsx, /src/pages/BookingDetails.tsx, /src/pages/EmailVerification.tsx, /src/pages/GoogleCallback.tsx, /src/pages/ForgotPassword.tsx, /src/pages/ResetPassword.tsx, /src/components/layout/Header.tsx
+11:26:56 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/Profile.tsx, /src/pages/Settings.tsx, /src/pages/BookingDetails.tsx, /src/pages/EmailVerification.tsx, /src/pages/GoogleCallback.tsx, /src/pages/ForgotPassword.tsx, /src/pages/ResetPassword.tsx, /src/components/layout/Header.tsx
+11:26:58 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/Profile.tsx, /src/pages/Settings.tsx, /src/pages/BookingDetails.tsx, /src/pages/EmailVerification.tsx, /src/pages/GoogleCallback.tsx, /src/pages/ForgotPassword.tsx, /src/pages/ResetPassword.tsx, /src/components/layout/Header.tsx

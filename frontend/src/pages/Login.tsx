@@ -46,7 +46,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   
   // Error handling
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -85,8 +84,8 @@ const Login = () => {
     
     setLoading(true);
     try {
-      // Attempt login with rememberMe setting
-      const response = await authApi.login(email, password, rememberMe);
+      // Attempt login
+      const response = await authApi.login(email, password);
       
       // Navigate based on redirect or pending booking
       const pendingBooking = sessionStorage.getItem('pendingBooking');
@@ -134,7 +133,7 @@ const Login = () => {
 
   const handleGoogleLogin = async () => {
     try {
-      const { url } = await authApi.googleLogin(rememberMe);
+      const { url } = await authApi.googleLogin();
       window.location.href = url;
     } catch (error) {
       console.error("Google login failed:", error);
@@ -154,12 +153,8 @@ const Login = () => {
     }
 
     if (token) {
-      // Store the token based on remember me setting
-      if (rememberMe) {
-        localStorage.setItem('auth_token', token);
-      } else {
-        sessionStorage.setItem('auth_token', token);
-      }
+      // Store the token in sessionStorage
+      sessionStorage.setItem('auth_token', token);
       
       // Get redirect path from localStorage or default to home
       const redirectPath = localStorage.getItem('redirect_after_login') || '/';
@@ -168,7 +163,7 @@ const Login = () => {
       // Navigate to the redirect path
       navigate(redirectPath);
     }
-  }, [navigate, rememberMe]);
+  }, [navigate]);
 
   return (
     <>
@@ -294,22 +289,13 @@ const Login = () => {
                   </div>
                 )}
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="remember"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="h-4 w-4 text-elkaavie-600 focus:ring-elkaavie-500 border-gray-300 rounded"
-                    />
-                    <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-                      Remember me
-                    </label>
+                <div className="flex justify-start">
+                 
+                  <div className="flex items-center justify-end">
+                    <Link to="/forgot-password" className="text-sm text-elkaavie-600 hover:text-elkaavie-700">
+                      Forgot password?
+                    </Link>
                   </div>
-                  <Link to="/forgot-password" className="text-sm text-elkaavie-600 hover:text-elkaavie-700">
-                    Forgot password?
-                  </Link>
                 </div>
 
                 <div className="mt-4">
@@ -349,4 +335,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;

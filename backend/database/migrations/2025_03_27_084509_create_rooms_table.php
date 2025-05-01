@@ -11,16 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rooms', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('room_type_id')->constrained()->onDelete('cascade');
-            $table->string('number');
-            $table->integer('floor');
-            $table->enum('status', ['available', 'booked', 'maintenance'])->default('available');
-            $table->boolean('is_available')->default(true);
-            $table->text('description')->nullable();
-            $table->timestamps();
-        });
+        // Skip this migration since we already created the rooms table
+        // The 2024_06_29_000000_create_rooms_table migration has already created this table
     }
 
     /**
@@ -28,6 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rooms');
+        // Don't do anything in down since we skipped the up method
     }
 };

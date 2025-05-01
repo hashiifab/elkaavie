@@ -17,7 +17,7 @@ export default function GoogleCallback() {
     
     console.log('Token from URL:', token ? 'Present' : 'Not present');
     console.log('Error from URL:', error || 'None');
-    console.log('Remember me from URL:', rememberMe);
+    // console.log('Remember me from URL:', rememberMe);
     
     if (error) {
       console.error('Error in URL:', error);
