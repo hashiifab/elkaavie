@@ -28,7 +28,7 @@ const ResetPassword = () => {
 
     // Validate passwords match
     if (password !== passwordConfirmation) {
-      setErrorMessage("Passwords do not match");
+      setErrorMessage("Kata sandi tidak cocok");
       setLoading(false);
       return;
     }
@@ -41,7 +41,7 @@ const ResetPassword = () => {
         token: token || "",
       });
       
-      setSuccessMessage(response.message || "Password has been reset successfully!");
+      setSuccessMessage(response.message || "Kata sandi berhasil diatur ulang!");
       
       // Redirect to login after 3 seconds
       setTimeout(() => {
@@ -49,7 +49,7 @@ const ResetPassword = () => {
       }, 3000);
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ message: string }>;
-      const errorMessage = axiosError.response?.data?.message || "Failed to reset password. Please try again.";
+      const errorMessage = axiosError.response?.data?.message || "Gagal mengatur ulang kata sandi. Silakan coba lagi.";
       setErrorMessage(errorMessage);
     } finally {
       setLoading(false);
@@ -82,9 +82,9 @@ const ResetPassword = () => {
         <div className="fixed top-20 left-0 right-0 flex justify-center items-center z-50 px-4">
           <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex items-start max-w-md">
             <div className="flex-grow">
-              <p className="font-bold">Success</p>
+              <p className="font-bold">Berhasil!</p>
               <p className="text-sm">{successMessage}</p>
-              <p className="text-sm mt-2">Redirecting to login page...</p>
+              <p className="text-sm mt-2">Mengalihkan ke halaman login...</p>
             </div>
             <button 
               onClick={() => setSuccessMessage(null)}
@@ -100,15 +100,15 @@ const ResetPassword = () => {
         <Container>
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset Password</h1>
-              <p className="text-gray-600">Enter your email and new password</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset kata sandi</h1>
+              <p className="text-gray-600">Masukkan email dan kata sandi baru Anda</p>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    Alamat email
                   </label>
                   <input
                     type="email"
@@ -123,7 +123,7 @@ const ResetPassword = () => {
 
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    New Password
+                    Sandi baru
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -155,7 +155,7 @@ const ResetPassword = () => {
 
                 <div>
                   <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm New Password
+                    Konfirmasi sandi
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

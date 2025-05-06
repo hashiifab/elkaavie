@@ -32,8 +32,8 @@ const PaymentGuide = () => {
     const savedToken = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     if (!savedToken) {
       toast({
-        title: "Authentication required",
-        description: "Please login to upload payment proof",
+        title: "Diperlukan autentikasi",
+        description: "Silakan login untuk mengunggah bukti pembayaran",
         variant: "destructive",
       });
       navigate('/login');
@@ -57,8 +57,8 @@ const PaymentGuide = () => {
   const validateAndSetFile = (selectedFile: File) => {
     if (selectedFile.size > 2 * 1024 * 1024) {
       toast({
-        title: "File too large",
-        description: "Please select a file smaller than 2MB",
+        title: "File Terlalu Besar",
+        description: "Pilih gambar yang lebih kecil dari 2MB",
         variant: "destructive",
       });
       return;
@@ -67,8 +67,8 @@ const PaymentGuide = () => {
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     if (!validTypes.includes(selectedFile.type)) {
       toast({
-        title: "Invalid file type",
-        description: "Please select an image file (JPEG, PNG)",
+        title: "Berkas tidak valid",
+        description: "Silakan pilih file gambar (JPEG, PNG)",
         variant: "destructive",
       });
       return;
@@ -101,15 +101,15 @@ const PaymentGuide = () => {
 
   const sendWhatsAppNotification = (bookingId: string, imageUrl: string) => {
     try {
-      const message = `*Payment Proof Uploaded*\n\nBooking ID: #${bookingId}\n\nA user has uploaded payment proof for booking #${bookingId}. Please verify the payment and update the booking status.\n\nImage: ${imageUrl}`;
+      const message = `*Bukti Pembayaran Telah Diunggah*\n\nBooking ID: #${bookingId}\n\nPengguna telah mengunggah bukti pembayaran untuk pemesanan #${bookingId}. Harap verifikasi pembayaran dan perbarui status pemesanan.\n\nImage: ${imageUrl}`;
       const encodedMessage = encodeURIComponent(message);
-      const adminPhone = "6282220760272";
+      const adminPhone = "628179370631";
       window.open(`https://wa.me/${adminPhone}?text=${encodedMessage}`, '_blank');
     } catch (error) {
-      console.error('Error sending WhatsApp notification:', error);
+      console.error('Kesalahan saat mengirim notifikasi WhatsApp:', error);
       toast({
-        title: "Notification failed",
-        description: "Failed to send WhatsApp notification. Please contact support.",
+        title: "Notifikasi gagal",
+        description: "Gagal mengirim notifikasi WhatsApp. Silakan hubungi dukungan.",
         variant: "destructive",
       });
     }
@@ -147,8 +147,8 @@ const PaymentGuide = () => {
       }
 
       toast({
-        title: "Payment proof uploaded",
-        description: "Admin will verify your payment within 24 hours.",
+        title: "Bukti pembayaran telah diunggah",
+        description: "Admin akan memverifikasi pembayaran Anda dalam waktu 24 jam.",
         variant: "default",
       });
 
@@ -158,8 +158,8 @@ const PaymentGuide = () => {
     } catch (error) {
       console.error('Upload error:', error);
       toast({
-        title: "Upload failed",
-        description: "Failed to upload payment proof. Please try again.",
+        title: "Pengunggahan gagal",
+        description: "Gagal mengunggah bukti pembayaran. Silakan coba lagi.",
         variant: "destructive",
       });
     } finally {
@@ -190,7 +190,7 @@ const PaymentGuide = () => {
                   onClick={() => navigate("/profile")}
                   className="hover:text-elkaavie-600 transition-colors"
                 >
-                  Profile
+                  Profil
                 </button>
               </li>
               <li><ChevronRight className="h-4 w-4 text-gray-400" /></li>
@@ -199,12 +199,12 @@ const PaymentGuide = () => {
                   onClick={() => navigate(`/bookings/${id}`)}
                   className="hover:text-elkaavie-600 transition-colors"
                 >
-                  Booking Details
+                  Detail Pemesanan
                 </button>
               </li>
               <li><ChevronRight className="h-4 w-4 text-gray-400" /></li>
               <li>
-                <span className="text-elkaavie-600 font-semibold">Payment Guide</span>
+                <span className="text-elkaavie-600 font-semibold">Panduan Pembayaran</span>
               </li>
             </ol>
           </nav>
@@ -215,9 +215,9 @@ const PaymentGuide = () => {
               <div className="md:col-span-2 order-1 md:order-2">
                 <Card className="shadow-lg border-0 h-full flex flex-col">
                   <CardHeader className="bg-elkaavie-50">
-                    <CardTitle className="text-lg font-semibold">Upload Payment Proof</CardTitle>
+                    <CardTitle className="text-lg font-semibold">Unggah Bukti Pembayaran</CardTitle>
                     <CardDescription className="text-sm text-gray-600">
-                      Upload a clear image of your payment receipt
+                      Unggah gambar tanda terima pembayaran Anda yang jelas
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-6 space-y-6 flex-grow">
@@ -278,10 +278,10 @@ const PaymentGuide = () => {
                           </div>
                           <div className="text-center space-y-1">
                             <p className="font-semibold text-gray-800">
-                              Click to upload or drag & drop
+                              Klik untuk mengunggah atau seret & lepas
                             </p>
                             <p className="text-sm text-gray-500">
-                              JPG or PNG (Max 2MB)
+                              JPG atau PNG (Maks 2MB)
                             </p>
                           </div>
                         </label>
@@ -291,7 +291,7 @@ const PaymentGuide = () => {
                     {isUploading && (
                       <div className="space-y-3">
                         <div className="flex justify-between text-sm font-medium text-gray-700">
-                          <span>Uploading...</span>
+                          <span>Mengunggah...</span>
                           <span>{Math.round(uploadProgress)}%</span>
                         </div>
                         <Progress

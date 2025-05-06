@@ -46,7 +46,7 @@ const Register = () => {
       setRegistrationSuccess(true);
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-      setError(axiosError.response?.data?.message || "Failed to register. Please try again.");
+      setError(axiosError.response?.data?.message || "Gagal mendaftar. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
@@ -60,8 +60,8 @@ const Register = () => {
           <Container>
             <div className="max-w-md mx-auto">
               <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Registration Successful!</h1>
-                <p className="text-gray-600">Please check your email for verification</p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Pendaftaran Berhasil!</h1>
+                <p className="text-gray-600">Silakan periksa email Anda untuk verifikasi</p>
               </div>
 
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
@@ -83,15 +83,15 @@ const Register = () => {
                     </svg>
                   </div>
                   <p className="text-gray-600">
-                    We've sent a verification email to {formData.email}. Please check your inbox and click the verification link to activate your account.
+                  Kami telah mengirimkan email verifikasi ke {formData.email}. Periksa kotak masuk Anda dan klik tautan verifikasi untuk mengaktifkan akun Anda.
                   </p>
                   <p className="text-sm text-gray-500">
-                    Didn't receive the email?{" "}
+                    Tidak menerima email?{" "}
                     <button
                       onClick={() => navigate("/login")}
                       className="text-elkaavie-600 hover:text-elkaavie-700 font-medium"
                     >
-                      Try logging in
+                      Coba masuk
                     </button>
                   </p>
                 </div>
@@ -111,8 +111,8 @@ const Register = () => {
         <Container>
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-              <p className="text-gray-600">Join us to start your journey</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Buat Akun</h1>
+              <p className="text-gray-600">Bergabunglah dengan kami untuk memulai perjalanan Anda</p>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
@@ -125,7 +125,7 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
+                    Nama panjang
                   </label>
                   <input
                     type="text"
@@ -141,7 +141,7 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    Alamat email
                   </label>
                   <input
                     type="email"
@@ -157,7 +157,7 @@ const Register = () => {
 
                 <div className="relative">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
+                    Kata sandi
                   </label>
                   <div className="relative">
                     <input
@@ -191,7 +191,7 @@ const Register = () => {
 
                 <div className="relative">
                   <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm Password
+                    Konfirmasi sandi
                   </label>
                   <div className="relative">
                     <input
@@ -234,9 +234,9 @@ const Register = () => {
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Already have an account?{" "}
+                    Sudah punya akun?{" "}
                   <Link to="/login" className="text-elkaavie-600 hover:text-elkaavie-700 font-medium">
-                    Sign in
+                    Masuk
                   </Link>
                 </p>
               </div>

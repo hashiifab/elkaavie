@@ -87,13 +87,6 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
           elevation: 0,
         ),
-        // Card styling with rounded corners
-        cardTheme: CardTheme(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
         // Elevated button styling
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -134,12 +127,6 @@ class MyApp extends StatelessWidget {
             borderSide: BorderSide(color: AppColors.error),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        ),
-        // Tab bar styling
-        tabBarTheme: TabBarTheme(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          indicatorColor: Colors.white,
         ),
       ),
       // Start with authentication wrapper that checks login state

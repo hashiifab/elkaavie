@@ -57,7 +57,7 @@ const Rooms = () => {
       // Extract room IDs from active bookings (not cancelled or rejected)
       const bookings = response.data || [];
       const activeBookings = bookings.filter(booking => 
-        ['pending', 'approved', 'paid'].includes(booking.status)
+        ['tertunda', 'disetujui', 'dibayar'].includes(booking.status)
       );
       
       // Store full booking objects to access booking IDs later
@@ -71,7 +71,7 @@ const Rooms = () => {
       const bookedRoomIds = activeBookings.map(booking => booking.room_id);
       setUserBookedRooms(bookedRoomIds);
     } catch (err) {
-      console.error("Failed to fetch user bookings:", err);
+      console.error("Gagal mengambil pesanan pengguna:", err);
     }
   };
 
@@ -88,8 +88,8 @@ const Rooms = () => {
         await fetchUserBookings();
       }
     } catch (err) {
-      setError("Failed to fetch rooms. Please try again later.");
-      console.error("Error fetching rooms:", err);
+      setError("Gagal mengambil kamar. Coba lagi nanti.");
+      console.error("Terjadi kesalahan saat mengambil kamar:", err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -211,10 +211,10 @@ const Rooms = () => {
                 </div>
                 <div className="ml-3 flex-1">
                   <p className="text-sm font-medium text-gray-900">
-                    Room {room.number} is already yours
+                    Kamar {room.number} sudah menjadi milikmu
                   </p>
                   <p className="mt-1 text-sm text-gray-500">
-                    Check your bookings for details
+                    Periksa pemesanan Anda untuk detailnya
                   </p>
                 </div>
               </div>
@@ -224,7 +224,7 @@ const Rooms = () => {
                 onClick={() => toast.dismiss(t.id)}
                 className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-500 focus:outline-none"
               >
-                Dismiss
+                Memberhentikan
               </button>
             </div>
           </div>
@@ -262,13 +262,13 @@ const Rooms = () => {
         <main className="pt-24 pb-16">
           <Container>
             <div className="text-center py-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Oops! Something went wrong</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Ups! Ada yang salah</h2>
               <p className="text-gray-600 mb-6">{error}</p>
               <button
                 onClick={() => window.location.reload()}
                 className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
               >
-                Try Again
+                Coba lagi
               </button>
             </div>
           </Container>
@@ -319,7 +319,7 @@ const Rooms = () => {
               {/* Price and Book Button */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Price per month</p>
+                  <p className="text-sm text-gray-500 mb-1">Harga per bulan</p>
                   <p className="text-xl font-semibold text-elkaavie-600">
                     Rp 1.500.000
                   </p>
@@ -331,12 +331,12 @@ const Rooms = () => {
                   {isLoggedIn ? (
                     <>
                       <CreditCard className="h-4 w-4" />
-                      <span>Book Now</span>
+                      <span>Pesan Sekarang</span>
                     </>
                   ) : (
                     <>
                       <LogIn className="h-4 w-4" />
-                      <span>Login to Book</span>
+                      <span>Masuk untuk Memesan</span>
                     </>
                   )}
                 </button>
@@ -364,25 +364,25 @@ const Rooms = () => {
           <div className="relative z-10 py-24">
             <Container>
               <div className="text-white max-w-2xl">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">Find Your Perfect Room</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-4">Temukan Kamar Sempurna Anda</h1>
                 <div className="w-20 h-1 bg-elkaavie-400 mb-6"></div>
                 <p className="text-xl text-white/90 mb-8">
-                  Our hotel offers a variety of comfortable rooms for all your needs.
-                  Select from our cinema-style layout below.
+                  Hotel kami menawarkan berbagai kamar yang nyaman untuk semua kebutuhan Anda.
+                  Pilih dari tata letak bergaya bioskop kami di bawah ini.
                 </p>
                 
                 <div className="flex flex-wrap gap-4 items-center">
                   <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
                     <Check className="h-4 w-4 text-green-400" />
-                    <span>Modern Comfort</span>
+                    <span>Kenyamanan Modern</span>
                   </div>
                   <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
                     <Check className="h-4 w-4 text-green-400" />
-                    <span>Prime Locations</span>
+                    <span>Lokasi Utama</span>
                   </div>
                   <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
                     <Check className="h-4 w-4 text-green-400" />
-                    <span>Excellent Service</span>
+                    <span>Pelayanan prima</span>
                   </div>
                 </div>
               </div>
@@ -400,30 +400,30 @@ const Rooms = () => {
                 className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm font-medium transition"
               >
                 <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                {refreshing ? 'Refreshing...' : 'Refresh Rooms'}
+                {refreshing ? 'Segarkan...' : 'Segarkan'}
               </button>
             </div>
         
             {/* Booking instruction */}
             <div className="max-w-4xl mx-auto mb-16">
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">How to Book</h2>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-4">Cara Memesan</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
                   <div className="flex flex-col items-center text-center">
                     <div className="w-12 h-12 bg-elkaavie-100 text-elkaavie-600 flex items-center justify-center rounded-full mb-4">
                       <span className="font-bold">1</span>
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">Select a Room</h3>
-                    <p className="text-gray-600 text-sm">Click on an available (green) room from our floor layout</p>
+                    <h3 className="font-medium text-gray-900 mb-2">Pilih Kamar</h3>
+                    <p className="text-gray-600 text-sm">Klik pada ruangan yang tersedia (hijau) dari tata letak lantai kami</p>
                   </div>
                   
                   <div className="flex flex-col items-center text-center relative">
                     <div className="w-12 h-12 bg-elkaavie-100 text-elkaavie-600 flex items-center justify-center rounded-full mb-4">
                       <span className="font-bold">2</span>
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">Review Details</h3>
-                    <p className="text-gray-600 text-sm">Check the room details and price</p>
+                    <h3 className="font-medium text-gray-900 mb-2">Detail Ulasan</h3>
+                    <p className="text-gray-600 text-sm">Periksa detail kamar dan harga</p>
                     
                     <div className="hidden md:block absolute top-8 left-full -translate-x-4">
                       <ArrowRight className="text-gray-300 h-8 w-8" />
@@ -434,8 +434,8 @@ const Rooms = () => {
                     <div className="w-12 h-12 bg-elkaavie-100 text-elkaavie-600 flex items-center justify-center rounded-full mb-4">
                       <span className="font-bold">3</span>
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">Complete Booking</h3>
-                    <p className="text-gray-600 text-sm">Click "Book Now" to finalize your reservation</p>
+                    <h3 className="font-medium text-gray-900 mb-2">Pemesanan Lengkap</h3>
+                    <p className="text-gray-600 text-sm">Klik "Pesan Sekarang" untuk menyelesaikan reservasi Anda</p>
                   </div>
                 </div>
               </div>
@@ -443,23 +443,23 @@ const Rooms = () => {
             
             {/* Legend */}
             <div className="max-w-3xl mx-auto mb-8 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Room Availability</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Ketersediaan Kamar</h3>
               <div className="flex items-center justify-center gap-8 flex-wrap">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm"></div>
-                  <span className="text-sm">Available</span>
+                  <span className="text-sm">Tersedia</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-red-500 rounded mr-3 shadow-sm opacity-70"></div>
-                  <span className="text-sm">Unavailable</span>
+                  <span className="text-sm">Tidak tersedia</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-blue-300 rounded mr-3 shadow-sm"></div>
-                  <span className="text-sm">Rooms You've Booked</span>
+                  <span className="text-sm">Kamar kamu</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm ring-2 ring-blue-500"></div>
-                  <span className="text-sm">Selected</span>
+                  <span className="text-sm">Terpilih</span>
                 </div>
               </div>
             </div>

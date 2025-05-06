@@ -8,7 +8,7 @@ import { authApi } from "@/lib/api";
 const EmailVerification = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
+  const [status, setStatus] = useState<"verifikasi" | "berhasil" | "error">("verifikasi");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,25 +17,25 @@ const EmailVerification = () => {
         const code = searchParams.get("code");
 
         if (!code) {
-          throw new Error("Invalid verification link");
+          throw new Error("Verifikasi tidak valid");
         }
 
         // Call the API to verify the email with the code and log in
         await authApi.authenticateWithVerificationCode(code);
         
-        setStatus("success");
+        setStatus("berhasil");
         
         // Redirect to home page after 2 seconds
         setTimeout(() => {
           navigate("/", { 
             state: { 
-              message: "Email verified successfully. You're now logged in." 
+              message: "Email berhasil diverifikasi. Anda sekarang sudah masuk." 
             } 
           });
         }, 2000);
       } catch (err) {
         setStatus("error");
-        setError(err instanceof Error ? err.message : "Failed to verify email. The code may have expired or is invalid.");
+        setError(err instanceof Error ? err.message : "Gagal memverifikasi email. Kode mungkin telah kedaluwarsa atau tidak valid.");
       }
     };
 
@@ -50,24 +50,24 @@ const EmailVerification = () => {
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {status === "verifying" && "Verifying Email..."}
-                {status === "success" && "Email Verified!"}
-                {status === "error" && "Verification Failed"}
+                {status === "verifikasi" && "Verifikasi Email..."}
+                {status === "berhasil" && "Email Terverifikasi"}
+                {status === "error" && "Verifikasi Gagal"}
               </h1>
               <p className="text-gray-600">
-                {status === "verifying" && "Please wait while we verify your email..."}
-                {status === "success" && "Your email has been verified successfully. Redirecting to home page..."}
+                {status === "verifikasi" && "Mohon tunggu selagi kami memverifikasi email Anda..."}
+                {status === "berhasil" && "Email Anda telah berhasil diverifikasi. Mengalihkan ke beranda..."}
                 {status === "error" && error}
               </p>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <div className="text-center space-y-4">
-                {status === "verifying" && (
+                {status === "verifikasi" && (
                   <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-elkaavie-600 mx-auto"></div>
                 )}
                 
-                {status === "success" && (
+                {status === "berhasil" && (
                   <div className="text-green-600">
                     <svg
                       className="w-16 h-16 mx-auto"

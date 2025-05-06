@@ -13,40 +13,40 @@ interface GalleryImage {
   featured?: boolean;
 }
 
-type Category = "all" | "rooms" | "amenities" | "exterior" | "dining";
+type Category = "semua" | "kamar" | "fasilitas" | "exterior" | "makan";
 
 const galleryImages: GalleryImage[] = [
   {
     id: 1,
     src: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304",
     alt: "Luxury king bedroom with spacious design",
-    category: "rooms",
+    category: "kamar",
     featured: true,
   },
   {
     id: 2,
     src: "https://images.unsplash.com/photo-1624834452214-38c02f9ae3c9",
     alt: "Modern bathroom with rain shower",
-    category: "rooms",
+    category: "kamar",
   },
   {
     id: 3,
     src: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc",
     alt: "Cozy living area with contemporary furnishings",
-    category: "rooms",
+    category: "kamar",
   },
   {
     id: 4,
     src: "https://images.unsplash.com/photo-1615874959474-d609969a20ed",
     alt: "Fully equipped kitchen with stainless steel appliances",
-    category: "amenities",
+    category: "fasilitas",
     featured: true,
   },
   {
     id: 5,
     src: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c",
     alt: "Elegant dining area with natural lighting",
-    category: "dining",
+    category: "makan",
   },
   {
     id: 6,
@@ -59,13 +59,13 @@ const galleryImages: GalleryImage[] = [
     id: 7,
     src: "https://images.unsplash.com/photo-1617098474202-0d0d7f60c56a",
     alt: "Deluxe room with balcony and city view",
-    category: "rooms",
+    category: "kamar",
   },
   {
     id: 8,
     src: "https://images.unsplash.com/photo-1587985064135-a1a8cb43838b",
     alt: "Refreshing swimming pool with loungers",
-    category: "amenities",
+    category: "fasilitas",
   },
   {
     id: 9,
@@ -77,43 +77,43 @@ const galleryImages: GalleryImage[] = [
     id: 10,
     src: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
     alt: "Premium twin bedroom with desk area",
-    category: "rooms",
+    category: "kamar",
   },
   {
     id: 11,
     src: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7",
     alt: "Rooftop terrace with panoramic views",
-    category: "amenities",
+    category: "fasilitas",
   },
   {
     id: 12,
     src: "https://images.unsplash.com/photo-1544148103-0773bf10d330",
     alt: "Fine dining restaurant with elegant decor",
-    category: "dining",
+    category: "makan",
     featured: true,
   },
   {
     id: 13,
     src: "https://images.unsplash.com/photo-1572267447684-c625798b99cd",
-    alt: "Wellness center with gym equipment",
-    category: "amenities",
+    alt: "Pusat kesehatan dengan peralatan olahraga",
+    category: "fasilitas",
   },
   {
     id: 14,
     src: "https://images.unsplash.com/photo-1519690889869-e705e59f72e1",
-    alt: "Breakfast buffet with fresh options",
-    category: "dining",
+    alt: "Prasmanan sarapan dengan pilihan segar",
+    category: "makan",
   },
   {
     id: 15,
     src: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7",
-    alt: "Night view of the building facade",
+    alt: "Pemandangan malam dari fasad bangunan",
     category: "exterior",
   },
 ];
 
 const Gallery = () => {
-  const [selectedCategory, setSelectedCategory] = useState<Category>("all");
+  const [selectedCategory, setSelectedCategory] = useState<Category>("semua");
   const [filteredImages, setFilteredImages] = useState<GalleryImage[]>(galleryImages);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -122,7 +122,7 @@ const Gallery = () => {
   const featuredImages = galleryImages.filter(img => img.featured);
 
   useEffect(() => {
-    if (selectedCategory === "all") {
+    if (selectedCategory === "semua") {
       setFilteredImages(galleryImages);
     } else {
       setFilteredImages(galleryImages.filter(img => img.category === selectedCategory));
@@ -170,11 +170,11 @@ const Gallery = () => {
   }, [isLightboxOpen, selectedImage]);
 
   const categories: { value: Category; label: string }[] = [
-    { value: "all", label: "All Photos" },
-    { value: "rooms", label: "Rooms" },
-    { value: "amenities", label: "Amenities" },
+    { value: "semua", label: "Semua Foto" },
+    { value: "kamar", label: "Kamar" },
+    { value: "fasilitas", label: "Fasilitas" },
     { value: "exterior", label: "Exterior" },
-    { value: "dining", label: "Dining" },
+    { value: "makan", label: "Tempat makan" },
   ];
 
   return (
@@ -196,7 +196,7 @@ const Gallery = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              Our Gallery
+              Galeri kami
             </motion.h1>
             <motion.p 
               className="text-xl text-white/90 max-w-2xl"
@@ -204,7 +204,7 @@ const Gallery = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Experience the elegance and comfort of Elkaavie through our carefully curated image gallery
+              Rasakan keanggunan dan kenyamanan Elkaavie melalui galeri gambar kami yang dikurasi dengan cermat
             </motion.p>
           </div>
         </div>

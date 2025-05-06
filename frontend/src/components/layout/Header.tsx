@@ -20,10 +20,10 @@ interface UserData {
 }
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Rooms", href: "/rooms" },
+  { label: "Beranda", href: "/" },
+  { label: "kamar", href: "/rooms" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Help Center", href: "/help-center" },
+  { label: "Pusat bantuan", href: "/help-center" },
 ];
 
 const Header = () => {
@@ -94,7 +94,7 @@ const Header = () => {
       setUserData(null);
       navigate("/");
     } catch (error) {
-      console.error("Failed to logout:", error);
+      console.error("Gagal keluar:", error);
     }
   };
 
@@ -122,7 +122,7 @@ const Header = () => {
       <Container className="flex items-center justify-between">
         <Link to="/" className="relative z-10">
           <h1 className="text-2xl font-bold text-elkaavie-800">
-            Elkaavie<span className="text-elkaavie-500">.</span>
+            {/* <img src="" alt="" srcset=""/> */}
           </h1>
         </Link>
 
@@ -159,7 +159,7 @@ const Header = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <User className="h-5 w-5 mr-2" />
-                My Profile
+                Profil
               </Link>
               <Link
                 to="/profile"
@@ -167,7 +167,7 @@ const Header = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Calendar className="h-5 w-5 mr-2" />
-                My Bookings
+                Booking
               </Link>
               <button
                 onClick={() => {
@@ -177,7 +177,7 @@ const Header = () => {
                 className="flex items-center text-gray-800 hover:text-elkaavie-600"
               >
                 <LogOut className="h-5 w-5 mr-2" />
-                Logout
+                Keluar
               </button>
             </>
           ) : (
@@ -186,7 +186,7 @@ const Header = () => {
               className="px-6 py-2.5 bg-elkaavie-600 text-white font-medium rounded-lg hover:bg-elkaavie-700 transition"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Login
+              Masuk
             </Link>
           )}
         </nav>
@@ -235,7 +235,7 @@ const Header = () => {
                     onClick={() => setIsProfileMenuOpen(false)}
                   >
                     <UserCircle size={16} />
-                    My Profile
+                    Profil
                   </Link>
                   <Link 
                     to="/profile"
@@ -243,7 +243,7 @@ const Header = () => {
                     onClick={() => setIsProfileMenuOpen(false)}
                   >
                     <Calendar size={16} />
-                    My Bookings
+                    Pesanan
                   </Link>
                   <Link 
                     to="/settings"
@@ -251,7 +251,7 @@ const Header = () => {
                     onClick={() => setIsProfileMenuOpen(false)}
                   >
                     <Settings size={16} />
-                    Account Settings
+                    Pengaturan akun
                   </Link>
                   <div className="border-t border-gray-100 mt-1">
                     <button
@@ -262,7 +262,7 @@ const Header = () => {
                       className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-gray-50 w-full text-left"
                     >
                       <LogOut size={16} />
-                      Logout
+                      Keluar
                     </button>
                   </div>
                 </div>
@@ -273,7 +273,7 @@ const Header = () => {
               to="/login"
               className="px-5 py-2 bg-elkaavie-600 text-white text-sm font-medium rounded-lg hover:bg-elkaavie-700 transition"
             >
-              Login
+              Masuk
             </Link>
           )}
         </nav>

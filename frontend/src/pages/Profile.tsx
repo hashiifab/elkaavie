@@ -20,7 +20,7 @@ interface Booking {
   room_id: number;
   check_in: string;
   check_out: string;
-  status: "pending" | "approved" | "rejected" | "completed" | "cancelled";
+  status: "tertunda" | "disetujui" | "ditolak" | "selesai" | "dibatalkan";
   total_price: number;
   guests?: number;
   phone_number?: string;
@@ -82,14 +82,14 @@ const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
   if (expired) {
     return (
       <div className="text-red-600 text-sm font-medium">
-        Payment deadline expired
+        Batas waktu pembayaran telah berakhir
       </div>
     );
   }
 
   return (
     <div className="text-sm">
-      <span className="font-medium text-gray-700">Payment due in: </span>
+      <span className="font-medium text-gray-700">Pembayaran jatuh tempo di: </span>
       <span className="font-semibold text-elkaavie-600">
         {timeLeft.hours.toString().padStart(2, '0')}:
         {timeLeft.minutes.toString().padStart(2, '0')}:
@@ -116,8 +116,8 @@ const Profile = () => {
       setUserData(user);
       return user;
     } catch (err) {
-      console.error("Error fetching user data:", err);
-      setError("Failed to load your profile information.");
+      console.error("Terjadi kesalahan saat mengambil data pengguna:", err);
+      setError("Gagal memuat informasi profil Anda.");
       navigate("/login");
       return null;
     } finally {
@@ -133,7 +133,7 @@ const Profile = () => {
       // Extract the data array from the response
       setUserBookings(response.data || []);
     } catch (err) {
-      console.error("Error fetching user bookings:", err);
+      console.error("Terjadi kesalahan saat mengambil pesanan pengguna:", err);
     } finally {
       setBookingsLoading(false);
     }
@@ -177,7 +177,7 @@ const Profile = () => {
   // Format date to readable format
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("id-ID", {
       weekday: "short",
       day: "numeric",
       month: "short",
@@ -188,14 +188,14 @@ const Profile = () => {
   // Get status badge class
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
-      case "approved":
+      case "disetujui":
         return "bg-green-100 text-green-800";
-      case "pending":
+      case "tertunda":
         return "bg-yellow-100 text-yellow-800";
-      case "rejected":
-      case "cancelled":
+      case "ditolak":
+      case "dibatalkan":
         return "bg-red-100 text-red-800";
-      case "completed":
+      case "selesai":
         return "bg-blue-100 text-blue-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -230,13 +230,13 @@ const Profile = () => {
         <main className="pt-24 pb-16">
           <Container>
             <div className="text-center py-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Oops! Something went wrong</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Ups! Ada yang salah</h2>
               <p className="text-gray-600 mb-6">{error}</p>
               <button
                 onClick={() => navigate("/")}
                 className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
               >
-                Back to Home
+                Kembali ke Beranda
               </button>
             </div>
           </Container>
@@ -258,7 +258,7 @@ const Profile = () => {
                 <Home className="h-4 w-4" />
               </button>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <span>Profile</span>
+              <span>Profil</span>
             </div>
             
             <button
@@ -295,7 +295,7 @@ const Profile = () => {
                   <div className="flex items-start">
                     <Calendar className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                     <div>
-                      <p className="text-sm font-medium text-gray-700">Member Since</p>
+                      <p className="text-sm font-medium text-gray-700">Anggota Sejak</p>
                       <p className="text-gray-600">
                         {userData?.created_at 
                           ? formatDate(userData.created_at)
@@ -309,7 +309,7 @@ const Profile = () => {
                       onClick={() => navigate("/settings")}
                       className="w-full py-2 text-sm text-elkaavie-600 border border-elkaavie-600 rounded-lg hover:bg-elkaavie-50 transition"
                     >
-                      Edit Profile
+                      Edit Profil
                     </button>
                   </div>
                 </div>
@@ -320,7 +320,7 @@ const Profile = () => {
             <div className="md:col-span-2">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="border-b border-gray-200 p-6">
-                  <h2 className="text-xl font-semibold">My Bookings</h2>
+                  <h2 className="text-xl font-semibold">Pemesanan Saya</h2>
                 </div>
 
                 {/* Status Filter */}
@@ -334,7 +334,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      All ({userBookings.length})
+                      Semua ({userBookings.length})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("pending")}
@@ -344,7 +344,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Pending ({getStatusCount("pending")})
+                      Tertunda ({getStatusCount("pending")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("approved")}
@@ -354,7 +354,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Approved ({getStatusCount("approved")})
+                      Disetujui ({getStatusCount("approved")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("rejected")}
@@ -364,7 +364,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Rejected ({getStatusCount("rejected")})
+                      Ditolak ({getStatusCount("rejected")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("cancelled")}
@@ -374,7 +374,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Cancelled ({getStatusCount("cancelled")})
+                      Dibatalkan ({getStatusCount("cancelled")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("completed")}
@@ -384,7 +384,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Completed ({getStatusCount("completed")})
+                      Selesai ({getStatusCount("completed")})
                     </button>
                   </div>
                 </div>
@@ -438,9 +438,9 @@ const Profile = () => {
                             <div className="flex items-start">
                               <MapPin className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                               <div>
-                                <p className="text-sm font-medium text-gray-700">Room Details</p>
+                                <p className="text-sm font-medium text-gray-700">Detail kamar</p>
                                 <p className="text-gray-600">
-                                  Room {booking.room?.number}, Floor {booking.room?.floor}
+                                  Kamar {booking.room?.number}, Lantai {booking.room?.floor}
                                 </p>
                               </div>
                             </div>
@@ -448,9 +448,9 @@ const Profile = () => {
                             <div className="flex items-start">
                               <User className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                               <div>
-                                <p className="text-sm font-medium text-gray-700">Guests</p>
+                                <p className="text-sm font-medium text-gray-700">Tamu</p>
                                 <p className="text-gray-600">
-                                  {booking.guests || 1} {booking.guests === 1 ? "Guest" : "Guests"}
+                                  {booking.guests || 1} {booking.guests === 1 ? "Tamu" : "Tamu"}
                                 </p>
                               </div>
                             </div>
@@ -458,7 +458,7 @@ const Profile = () => {
                             <div className="flex items-start">
                               <Clock className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                               <div>
-                                <p className="text-sm font-medium text-gray-700">Booked On</p>
+                                <p className="text-sm font-medium text-gray-700">Dipesan Pada</p>
                                 <p className="text-gray-600">
                                   {formatDate(booking.created_at)}
                                 </p>
@@ -467,7 +467,7 @@ const Profile = () => {
 
                             {booking.special_requests && (
                               <div className="md:col-span-2">
-                                <p className="text-sm font-medium text-gray-700">Special Requests</p>
+                                <p className="text-sm font-medium text-gray-700">Permintaan Khusus</p>
                                 <p className="text-gray-600">{booking.special_requests}</p>
                               </div>
                             )}
@@ -480,26 +480,26 @@ const Profile = () => {
                                 <p className="text-lg font-semibold text-elkaavie-600">
                                   {formatPrice(booking.total_price)}
                                 </p>
-                                {booking.status === "approved" && booking.payment_due_at && (
+                                {booking.status === "disetujui" && booking.payment_due_at && (
                                   <div className="mt-2">
                                     <CountdownTimer dueDate={booking.payment_due_at} />
                                   </div>
                                 )}
                               </div>
                               <div className="flex flex-col sm:flex-row gap-2">
-                                {booking.status === "approved" && (
+                                {booking.status === "disetujui" && (
                                   <button 
                                     onClick={() => navigate(`/bookings/${booking.id}/payment-guide`)}
                                     className="w-full sm:w-auto text-sm px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                                   >
-                                    Continue Payment
+                                    Lanjutkan pembayaran
                                   </button>
                                 )}
                                 <button 
                                   onClick={() => navigate(`/bookings/${booking.id}`)}
                                   className="w-full sm:w-auto text-sm px-4 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition flex items-center justify-center"
                                 >
-                                  View Details
+                                  Lihat detail
                                   <ChevronRight className="h-4 w-4 ml-1" />
                                 </button>
                               </div>
@@ -513,7 +513,7 @@ const Profile = () => {
                       <div className="w-16 h-16 mx-auto bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-4">
                         <Calendar className="h-8 w-8" />
                       </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Bookings Found</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Tidak Ada Pemesanan Ditemukan</h3>
                       <p className="text-gray-600 mb-6">
                         {selectedStatus 
                           ? `You don't have any ${selectedStatus} bookings.`
@@ -523,7 +523,7 @@ const Profile = () => {
                         onClick={() => navigate("/rooms")}
                         className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
                       >
-                        Browse Rooms
+                        Telusuri Kamar
                       </button>
                     </div>
                   )}

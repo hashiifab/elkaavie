@@ -39,8 +39,8 @@ const Settings = () => {
       });
       return user;
     } catch (err) {
-      console.error("Error fetching user data:", err);
-      setError("Failed to load your profile information.");
+      console.error("Terjadi kesalahan saat mengambil data pengguna:", err);
+      setError("Gagal memuat informasi profil Anda.");
       navigate("/login");
       return null;
     } finally {
@@ -69,7 +69,7 @@ const Settings = () => {
 
     try {
       await authApi.updateProfile(formData);
-      setSuccessMessage("Profile updated successfully!");
+      setSuccessMessage("Profil berhasil diperbarui!");
       
       // Refresh user data
       await fetchUserData();
@@ -80,7 +80,7 @@ const Settings = () => {
       }, 3000);
     } catch (err) {
       const axiosError = err as AxiosError<{ message: string }>;
-      setError(axiosError.response?.data?.message || "Failed to update profile. Please try again.");
+      setError(axiosError.response?.data?.message || "Gagal memperbarui profil. Silakan coba lagi.");
     } finally {
       setSaving(false);
     }
@@ -114,16 +114,16 @@ const Settings = () => {
             </button>
             <ChevronRight className="h-4 w-4 mx-2" />
             <button onClick={() => navigate("/profile")} className="hover:text-elkaavie-600">
-              Profile
+              Profil
             </button>
             <ChevronRight className="h-4 w-4 mx-2" />
-            <span>Settings</span>
+            <span>Pengaturan</span>
           </div>
 
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="border-b border-gray-200 p-6">
-                <h2 className="text-xl font-semibold">Edit Profile</h2>
+                <h2 className="text-xl font-semibold">Edit Profil</h2>
               </div>
 
               <div className="p-6">
@@ -143,7 +143,7 @@ const Settings = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                      Name
+                      Nama
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -187,14 +187,14 @@ const Settings = () => {
                       onClick={() => navigate("/profile")}
                       className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
                     >
-                      Cancel
+                      Batal
                     </button>
                     <button
                       type="submit"
                       disabled={saving}
                       className="px-4 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                      {saving ? "Saving..." : "Save Changes"}
+                      {saving ? "Menyimpan..." : "Simpan perubahan"}
                     </button>
                   </div>
                 </form>

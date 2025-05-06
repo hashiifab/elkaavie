@@ -23,7 +23,7 @@ const ErrorToast = ({ message, onClose }: { message: string; onClose: () => void
       <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-start max-w-md">
         <AlertCircle className="h-5 w-5 mr-2 text-red-500 flex-shrink-0 mt-0.5" />
         <div className="flex-grow">
-          <p className="font-bold">Login Failed</p>
+          <p className="font-bold">Login Gagal</p>
           <p className="text-sm">{message}</p>
         </div>
         <button 
@@ -64,7 +64,7 @@ const Login = () => {
       try {
         setPendingBooking(JSON.parse(pendingBookingData));
       } catch (e) {
-        console.error("Error parsing pending booking data", e);
+        console.error("Terjadi kesalahan saat mengurai data pemesanan yang tertunda", e);
       }
     }
   }, []);
@@ -78,7 +78,7 @@ const Login = () => {
     
     // Basic validation
     if (!email || !password) {
-      setErrorMessage("Please enter both email and password");
+      setErrorMessage("Silakan masukkan email dan kata sandi");
       return;
     }
     
@@ -97,15 +97,15 @@ const Login = () => {
     } catch (err) {
       // Handle error
       const axiosError = err as AxiosError<{ message: string }>;
-      const errorMessage = axiosError.response?.data?.message || "Failed to login. Please try again.";
+      const errorMessage = axiosError.response?.data?.message || "Gagal masuk. Silakan coba lagi.";
       
       // Update error message
       let displayError = errorMessage;
-      if (errorMessage === 'Invalid login credentials') {
-        displayError = 'Incorrect email or password. Please check your credentials and try again.';
+      if (errorMessage === 'Kredensial login tidak valid') {
+        displayError = 'Email atau kata sandi salah. Harap periksa kredensial Anda dan coba lagi.';
       }
       
-      if (errorMessage.includes("verify your email")) {
+      if (errorMessage.includes("verifikasi email anda")) {
         setShowResendVerification(true);
       }
       
@@ -125,7 +125,7 @@ const Login = () => {
       setResendSuccess(true);
       setShowResendVerification(false);
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "Failed to resend verification email");
+      setErrorMessage(err instanceof Error ? err.message : "Gagal mengirim ulang email verifikasi");
     } finally {
       setLoading(false);
     }
@@ -136,8 +136,8 @@ const Login = () => {
       const { url } = await authApi.googleLogin();
       window.location.href = url;
     } catch (error) {
-      console.error("Google login failed:", error);
-      setErrorMessage("Failed to initiate Google login. Please try again.");
+      console.error("Login Google gagal:", error);
+      setErrorMessage("Gagal memulai login Google. Silakan coba lagi.");
     }
   };
 
@@ -148,7 +148,7 @@ const Login = () => {
     const error = searchParams.get('error');
 
     if (error === 'google_login_failed') {
-      setErrorMessage("Google login failed. Please try again.");
+      setErrorMessage("Gagal masuk ke Google. Silakan coba lagi.");
       return;
     }
 
@@ -180,8 +180,8 @@ const Login = () => {
         <Container>
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-              <p className="text-gray-600">Sign in to your account to continue</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Selamat Datang kembali</h1>
+              <p className="text-gray-600">Masuk ke akun Anda untuk melanjutkan</p>
               
               {/* Pending Booking Notification */}
               {(redirectPath.includes('room-booking') || pendingBooking) && (
@@ -189,10 +189,10 @@ const Login = () => {
                   <div className="bg-elkaavie-50 p-4">
                     <h3 className="font-medium text-elkaavie-800 mb-1 flex items-center gap-2">
                       <Clock className="h-4 w-4" />
-                      Pending Booking
+                      Pemesanan Tertunda
                     </h3>
                     <p className="text-sm text-elkaavie-600">
-                      Please login to complete your reservation
+                      Silakan login untuk menyelesaikan reservasi Anda
                     </p>
                   </div>
                   
@@ -207,7 +207,7 @@ const Login = () => {
                             {pendingBooking.name || pendingBooking.roomType || `Room ${pendingBooking.roomNumber}`}
                           </p>
                           <p className="text-gray-600">
-                            Room {pendingBooking.roomNumber}, Floor {pendingBooking.floor}
+                            Kamar {pendingBooking.roomNumber}, Lantai {pendingBooking.floor}
                           </p>
                         </div>
                       </div>
@@ -220,14 +220,14 @@ const Login = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               {resendSuccess && (
                 <div className="bg-green-50 text-green-600 p-4 rounded-lg text-sm mb-6">
-                  Verification email sent successfully. Please check your inbox.
+                  Email verifikasi berhasil dikirim. Silakan periksa kotak masuk Anda.
                 </div>
               )}
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    Alamat Email
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -240,14 +240,14 @@ const Login = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
-                      placeholder="Enter your email"
+                      placeholder="Masukkan email Anda"
                     />
                   </div>
                 </div>
 
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
+                    Kata Sandi
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -260,7 +260,7 @@ const Login = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
-                      placeholder="Enter your password"
+                      placeholder="Masukkan kata sandi"
                     />
                     <button
                       type="button"
@@ -284,7 +284,7 @@ const Login = () => {
                       disabled={loading}
                       className="text-elkaavie-600 hover:text-elkaavie-700 font-medium text-sm"
                     >
-                      {loading ? "Sending..." : "Resend verification email"}
+                      {loading ? "Mengirim..." : "Kirim ulang email verifikasi"}
                     </button>
                   </div>
                 )}
@@ -293,7 +293,7 @@ const Login = () => {
                  
                   <div className="flex items-center justify-end">
                     <Link to="/forgot-password" className="text-sm text-elkaavie-600 hover:text-elkaavie-700">
-                      Forgot password?
+                      Lupa sandi?
                     </Link>
                   </div>
                 </div>
@@ -305,7 +305,7 @@ const Login = () => {
                     className="w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50"
                   >
                     <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
-                    Continue with Google
+                    Lanjutkan dengan Google
                   </button>
                 </div>
 
@@ -314,15 +314,15 @@ const Login = () => {
                   disabled={loading}
                   className="w-full py-3 px-4 bg-elkaavie-600 text-white font-medium rounded-lg hover:bg-elkaavie-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? "Signing in..." : redirectPath.includes('room-booking') ? "Login to Complete Booking" : "Sign in"}
+                  {loading ? "Masuk..." : redirectPath.includes('room-booking') ? "Login to Complete Booking" : "Masuk"}
                 </button>
               </form>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Don't have an account?{" "}
+                  Tidak punya akun?{" "}
                   <Link to="/register" className="text-elkaavie-600 hover:text-elkaavie-700 font-medium">
-                    Sign up
+                    Daftar
                   </Link>
                 </p>
               </div>

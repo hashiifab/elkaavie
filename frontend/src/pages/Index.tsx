@@ -60,7 +60,7 @@ const Index = () => {
                 <ArrowRight size={18} className="ml-2" />
               </a>
               <a
-                href="https://wa.me/6281234567890"
+                href="https://wa.me/628179370631"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-8 py-4 bg-white border border-elkaavie-200 text-elkaavie-700 font-medium rounded-lg hover:bg-elkaavie-50 transition duration-200 text-center min-w-[200px]"

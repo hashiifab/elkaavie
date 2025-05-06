@@ -84,7 +84,7 @@ const Footer = () => {
                   href="#home"
                   className="text-gray-600 hover:text-elkaavie-700 transition"
                 >
-                  Home
+                  Beranda
                 </a>
               </li>
               <li>
@@ -92,7 +92,7 @@ const Footer = () => {
                   href="/rooms"
                   className="text-gray-600 hover:text-elkaavie-700 transition"
                 >
-                  Rooms
+                  Kamar
                 </a>
               </li>
               <li>
@@ -108,7 +108,7 @@ const Footer = () => {
                   href="/help-center"
                   className="text-gray-600 hover:text-elkaavie-700 transition"
                 >
-                  Help Center
+                  Pusat bantuan
                 </a>
               </li>
             </ul>

@@ -47,7 +47,7 @@ const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
   if (expired) {
     return (
       <div className="text-red-600 text-sm font-medium">
-        Payment deadline expired
+        Batas waktu pembayaran telah habis
       </div>
     );
   }
@@ -175,13 +175,13 @@ const BookingDetails = () => {
         <main className="pt-24 pb-16">
           <Container>
             <div className="text-center py-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Oops! Something went wrong</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Uups! Ada kesalahan</h2>
               <p className="text-gray-600 mb-6">{error || "Booking not found"}</p>
               <button
                 onClick={() => navigate("/profile")}
                 className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
               >
-                Back to Profile
+                Kemblai ke Profil
               </button>
             </div>
           </Container>
@@ -207,7 +207,7 @@ const BookingDetails = () => {
                 Profile
               </button>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <span>Booking Details</span>
+              <span>Detail Booking</span>
             </div>
           </div>
 
@@ -249,9 +249,9 @@ const BookingDetails = () => {
               <div className="flex items-start">
                 <MapPin className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Room Details</p>
+                  <p className="text-sm font-medium text-gray-700">Detail kamar</p>
                   <p className="text-gray-600">
-                    Room {booking.room?.number}, Floor {booking.room?.floor}
+                    Kamar {booking.room?.number}, Lantai {booking.room?.floor}
                   </p>
                 </div>
               </div>
@@ -259,7 +259,7 @@ const BookingDetails = () => {
               <div className="flex items-start">
                 <User className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Guests</p>
+                  <p className="text-sm font-medium text-gray-700">Tamu</p>
                   <p className="text-gray-600">
                     {booking.guests || 1} {booking.guests === 1 ? "Guest" : "Guests"}
                   </p>
@@ -278,7 +278,7 @@ const BookingDetails = () => {
 
               {booking.special_requests && (
                 <div className="md:col-span-2">
-                  <p className="text-sm font-medium text-gray-700">Special Requests</p>
+                  <p className="text-sm font-medium text-gray-700">Permintaan khusus</p>
                   <p className="text-gray-600">{booking.special_requests}</p>
                 </div>
               )}
@@ -307,7 +307,7 @@ const BookingDetails = () => {
                     className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center justify-center"
                   >
                     <CreditCard className="h-5 w-5 mr-2" />
-                    Continue Payment
+                    Lanjutkan pembayaran
                   </button>
                 )}
 
@@ -316,10 +316,10 @@ const BookingDetails = () => {
                     <div className="flex items-start">
                       <FileText className="h-5 w-5 text-green-600 mt-0.5 mr-3" />
                       <div>
-                        <p className="text-sm font-medium text-green-800">Payment Verified</p>
+                        <p className="text-sm font-medium text-green-800">Verifikasi pembayaran</p>
                         <p className="text-sm text-green-700">
-                          Your payment has been verified. You can now proceed with check-in on {formatDate(booking.check_in)}. 
-                          Please bring your ID card and payment receipt for verification.
+                          Pembayaran Anda telah diverifikasi. Anda sekarang dapat melanjutkan check-in pada {formatDate(booking.check_in)}. 
+                          Harap bawa kartu identitas dan tanda terima pembayaran Anda untuk verifikasi.
                         </p>
                       </div>
                     </div>
@@ -333,11 +333,11 @@ const BookingDetails = () => {
                       <div>
                         <p className="text-sm font-medium text-yellow-800">Contact Admin</p>
                         <p className="text-sm text-yellow-700">
-                          Your booking is pending approval. Please contact our admin at{" "}
+                          Pemesanan Anda sedang menunggu persetujuan. Silakan hubungi admin kami di{" "}
                           <a href="tel:+6281234567890" className="font-medium underline">
                             +62 812-3456-7890
                           </a>{" "}
-                          to expedite the process.
+                          untuk mempercepat proses
                         </p>
                       </div>
                     </div>
@@ -352,7 +352,7 @@ const BookingDetails = () => {
                         <div>
                           <p className="text-sm font-medium text-red-800">Booking {booking.status === "rejected" ? "Rejected" : "Cancelled"}</p>
                           <p className="text-sm text-red-700">
-                            Your booking has been {booking.status}. You can submit a new booking request or contact our admin for assistance.
+                            Pesanan anda telah {booking.status}. Anda dapat mengajukan permintaan pemesanan baru atau menghubungi admin kami untuk mendapatkan bantuan.
                           </p>
                         </div>
                       </div>
@@ -362,7 +362,7 @@ const BookingDetails = () => {
                       className="w-full py-3 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition flex items-center justify-center"
                     >
                       <FileText className="h-5 w-5 mr-2" />
-                      Submit New Booking
+                      Pesan baru
                     </button>
                   </div>
                 )}
@@ -372,9 +372,9 @@ const BookingDetails = () => {
                     <div className="flex items-start">
                       <FileText className="h-5 w-5 text-green-600 mt-0.5 mr-3" />
                       <div>
-                        <p className="text-sm font-medium text-green-800">Booking Completed</p>
+                        <p className="text-sm font-medium text-green-800">Booking berhasil</p>
                         <p className="text-sm text-green-700">
-                          Your stay has been completed. Thank you for choosing our service!
+                          Masa inap Anda telah selesai. Terima kasih telah memilih layanan kami!
                         </p>
                       </div>
                     </div>
