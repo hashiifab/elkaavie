@@ -10,6 +10,23 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Traits\HasCustomEmailVerification;
 
+/**
+ * User Model
+ * 
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property \Carbon\Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $remember_token
+ * @property string|null $verification_code
+ * @property string $role
+ * @property string|null $google_id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * 
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Booking[] $bookings
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

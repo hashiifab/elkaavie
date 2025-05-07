@@ -4,6 +4,7 @@ import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 interface GalleryImage {
   id: number;
@@ -113,11 +114,12 @@ const galleryImages: GalleryImage[] = [
 ];
 
 const Gallery = () => {
+  const { translations } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<Category>("all");
   const [filteredImages, setFilteredImages] = useState<GalleryImage[]>(galleryImages);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  
+
   // Featured image - always the first in the list
   const featuredImages = galleryImages.filter(img => img.featured);
 
@@ -142,16 +144,16 @@ const Gallery = () => {
 
   const navigateImage = (direction: "next" | "prev") => {
     if (!selectedImage) return;
-    
+
     const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
     let newIndex;
-    
+
     if (direction === "next") {
       newIndex = (currentIndex + 1) % filteredImages.length;
     } else {
       newIndex = (currentIndex - 1 + filteredImages.length) % filteredImages.length;
     }
-    
+
     setSelectedImage(filteredImages[newIndex]);
   };
 
@@ -159,22 +161,46 @@ const Gallery = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isLightboxOpen) return;
-      
+
       if (e.key === "Escape") closeLightbox();
       if (e.key === "ArrowRight") navigateImage("next");
       if (e.key === "ArrowLeft") navigateImage("prev");
     };
-    
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isLightboxOpen, selectedImage]);
 
+  // Function to get the translation key for image descriptions
+  const getImageDescriptionKey = (alt: string): string => {
+    const descriptionMap: Record<string, keyof typeof translations.gallery.imageDescriptions> = {
+      "Luxury king bedroom with spacious design": "luxuryBedroom",
+      "Modern bathroom with rain shower": "modernBathroom",
+      "Cozy living area with contemporary furnishings": "cozyLivingArea",
+      "Fully equipped kitchen with stainless steel appliances": "fullyEquippedKitchen",
+      "Elegant dining area with natural lighting": "elegantDiningArea",
+      "Modern building exterior with landscaped entrance": "modernBuilding",
+      "Deluxe room with balcony and city view": "deluxeRoom",
+      "Refreshing swimming pool with loungers": "swimmingPool",
+      "Tranquil garden with seating areas": "tranquilGarden",
+      "Premium twin bedroom with desk area": "premiumBedroom",
+      "Rooftop terrace with panoramic views": "rooftopTerrace",
+      "Fine dining restaurant with elegant decor": "fineDining",
+      "Wellness center with gym equipment": "wellnessCenter",
+      "Breakfast buffet with fresh options": "breakfastBuffet",
+      "Night view of the building facade": "nightView"
+    };
+
+    const key = descriptionMap[alt];
+    return key ? translations.gallery.imageDescriptions[key] : alt;
+  };
+
   const categories: { value: Category; label: string }[] = [
-    { value: "all", label: "All Photos" },
-    { value: "rooms", label: "Rooms" },
-    { value: "amenities", label: "Amenities" },
-    { value: "exterior", label: "Exterior" },
-    { value: "dining", label: "Dining" },
+    { value: "all", label: translations.gallery.categories.all },
+    { value: "rooms", label: translations.gallery.categories.rooms },
+    { value: "amenities", label: translations.gallery.categories.amenities },
+    { value: "exterior", label: translations.gallery.categories.exterior },
+    { value: "dining", label: translations.gallery.categories.dining },
   ];
 
   return (
@@ -184,27 +210,27 @@ const Gallery = () => {
         {/* Hero section with featured images */}
         <div className="relative h-[50vh] mb-16 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/10 z-10" />
-          <img 
-            src={`${featuredImages[0]?.src}?w=1920&auto=format&fit=crop&q=80`} 
+          <img
+            src={`${featuredImages[0]?.src}?w=1920&auto=format&fit=crop&q=80`}
             alt={featuredImages[0]?.alt}
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
-            <motion.h1 
+            <motion.h1
               className="text-5xl font-bold text-white mb-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              Our Gallery
+              {translations.gallery.title}
             </motion.h1>
-            <motion.p 
+            <motion.p
               className="text-xl text-white/90 max-w-2xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Experience the elegance and comfort of Elkaavie through our carefully curated image gallery
+              {translations.gallery.description}
             </motion.p>
           </div>
         </div>
@@ -228,7 +254,7 @@ const Gallery = () => {
           </div>
 
           {/* Gallery grid */}
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
             layout
           >
@@ -247,17 +273,17 @@ const Gallery = () => {
                   <div className="relative aspect-square overflow-hidden">
                     <img
                       src={`${image.src}?w=600&auto=format&fit=crop&q=80`}
-                      alt={image.alt}
+                      alt={getImageDescriptionKey(image.alt)}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <span className="text-white font-medium text-sm bg-black/60 px-3 py-1 rounded-full">
-                        View
+                        {translations.gallery.viewButton}
                       </span>
                     </div>
                   </div>
                   <div className="p-3 bg-white">
-                    <p className="text-sm text-gray-700 line-clamp-1">{image.alt}</p>
+                    <p className="text-sm text-gray-700 line-clamp-1">{getImageDescriptionKey(image.alt)}</p>
                   </div>
                 </motion.div>
               ))}
@@ -276,36 +302,39 @@ const Gallery = () => {
             className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
             onClick={closeLightbox}
           >
-            <button 
+            <button
               className="absolute top-4 right-4 text-white bg-black/30 p-2 rounded-full hover:bg-black/50 transition z-50"
               onClick={(e) => {
                 e.stopPropagation();
                 closeLightbox();
               }}
+              aria-label={translations.gallery.lightbox.close}
             >
               <X size={24} />
             </button>
-            
+
             <button
               className="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-black/30 p-2 rounded-full hover:bg-black/50 transition z-50"
               onClick={(e) => {
                 e.stopPropagation();
                 navigateImage("prev");
               }}
+              aria-label={translations.gallery.lightbox.previous}
             >
               <ChevronLeft size={24} />
             </button>
-            
+
             <button
               className="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-black/30 p-2 rounded-full hover:bg-black/50 transition z-50"
               onClick={(e) => {
                 e.stopPropagation();
                 navigateImage("next");
               }}
+              aria-label={translations.gallery.lightbox.next}
             >
               <ChevronRight size={24} />
             </button>
-            
+
             <motion.div
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
@@ -315,11 +344,11 @@ const Gallery = () => {
             >
               <img
                 src={`${selectedImage.src}?w=1920&auto=format&fit=crop&q=90`}
-                alt={selectedImage.alt}
+                alt={getImageDescriptionKey(selectedImage.alt)}
                 className="max-h-[85vh] max-w-[85vw] object-contain rounded-lg shadow-2xl"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-4 text-center rounded-b-lg">
-                <p>{selectedImage.alt}</p>
+                <p>{getImageDescriptionKey(selectedImage.alt)}</p>
               </div>
             </motion.div>
           </motion.div>
@@ -331,4 +360,4 @@ const Gallery = () => {
   );
 };
 
-export default Gallery; 
+export default Gallery;

@@ -12,6 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import axios from 'axios';
+import { useLanguage } from "@/contexts/language-context";
 
 const api = axios.create({
   baseURL: 'http://localhost:8000'
@@ -21,6 +22,7 @@ const PaymentGuide = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { translations } = useLanguage();
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -32,8 +34,8 @@ const PaymentGuide = () => {
     const savedToken = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     if (!savedToken) {
       toast({
-        title: "Authentication required",
-        description: "Please login to upload payment proof",
+        title: translations.paymentGuide.notifications.authRequired.title,
+        description: translations.paymentGuide.notifications.authRequired.message,
         variant: "destructive",
       });
       navigate('/login');
@@ -57,8 +59,8 @@ const PaymentGuide = () => {
   const validateAndSetFile = (selectedFile: File) => {
     if (selectedFile.size > 2 * 1024 * 1024) {
       toast({
-        title: "File too large",
-        description: "Please select a file smaller than 2MB",
+        title: translations.paymentGuide.notifications.fileTooLarge.title,
+        description: translations.paymentGuide.notifications.fileTooLarge.message,
         variant: "destructive",
       });
       return;
@@ -67,8 +69,8 @@ const PaymentGuide = () => {
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     if (!validTypes.includes(selectedFile.type)) {
       toast({
-        title: "Invalid file type",
-        description: "Please select an image file (JPEG, PNG)",
+        title: translations.paymentGuide.notifications.invalidFileType.title,
+        description: translations.paymentGuide.notifications.invalidFileType.message,
         variant: "destructive",
       });
       return;
@@ -108,8 +110,8 @@ const PaymentGuide = () => {
     } catch (error) {
       console.error('Error sending WhatsApp notification:', error);
       toast({
-        title: "Notification failed",
-        description: "Failed to send WhatsApp notification. Please contact support.",
+        title: translations.paymentGuide.notifications.notificationFailed.title,
+        description: translations.paymentGuide.notifications.notificationFailed.message,
         variant: "destructive",
       });
     }
@@ -147,8 +149,8 @@ const PaymentGuide = () => {
       }
 
       toast({
-        title: "Payment proof uploaded",
-        description: "Admin will verify your payment within 24 hours.",
+        title: translations.paymentGuide.notifications.uploadSuccess.title,
+        description: translations.paymentGuide.notifications.uploadSuccess.message,
         variant: "default",
       });
 
@@ -158,8 +160,8 @@ const PaymentGuide = () => {
     } catch (error) {
       console.error('Upload error:', error);
       toast({
-        title: "Upload failed",
-        description: "Failed to upload payment proof. Please try again.",
+        title: translations.paymentGuide.notifications.uploadFailed.title,
+        description: translations.paymentGuide.notifications.uploadFailed.message,
         variant: "destructive",
       });
     } finally {
@@ -190,7 +192,7 @@ const PaymentGuide = () => {
                   onClick={() => navigate("/profile")}
                   className="hover:text-elkaavie-600 transition-colors"
                 >
-                  Profile
+                  {translations.auth.profile.navigation.profile}
                 </button>
               </li>
               <li><ChevronRight className="h-4 w-4 text-gray-400" /></li>
@@ -199,12 +201,12 @@ const PaymentGuide = () => {
                   onClick={() => navigate(`/bookings/${id}`)}
                   className="hover:text-elkaavie-600 transition-colors"
                 >
-                  Booking Details
+                  {translations.auth.bookingDetails.navigation.bookingDetails}
                 </button>
               </li>
               <li><ChevronRight className="h-4 w-4 text-gray-400" /></li>
               <li>
-                <span className="text-elkaavie-600 font-semibold">Payment Guide</span>
+                <span className="text-elkaavie-600 font-semibold">{translations.paymentGuide.navigation.paymentGuide}</span>
               </li>
             </ol>
           </nav>
@@ -215,9 +217,9 @@ const PaymentGuide = () => {
               <div className="md:col-span-2 order-1 md:order-2">
                 <Card className="shadow-lg border-0 h-full flex flex-col">
                   <CardHeader className="bg-elkaavie-50">
-                    <CardTitle className="text-lg font-semibold">Upload Payment Proof</CardTitle>
+                    <CardTitle className="text-lg font-semibold">{translations.paymentGuide.uploadForm.title}</CardTitle>
                     <CardDescription className="text-sm text-gray-600">
-                      Upload a clear image of your payment receipt
+                      {translations.paymentGuide.uploadForm.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-6 space-y-6 flex-grow">
@@ -265,7 +267,7 @@ const PaymentGuide = () => {
                             </button>
                           </div>
                           <p className="text-sm text-gray-600">
-                            {file?.name} - {(file?.size / 1024 / 1024).toFixed(2)}MB
+                            {file?.name} - {(file?.size / 1024 / 1024).toFixed(2)}{translations.paymentGuide.fileInfo.size}
                           </p>
                         </div>
                       ) : (
@@ -278,10 +280,10 @@ const PaymentGuide = () => {
                           </div>
                           <div className="text-center space-y-1">
                             <p className="font-semibold text-gray-800">
-                              Click to upload or drag & drop
+                              {translations.paymentGuide.uploadForm.dragDrop.title}
                             </p>
                             <p className="text-sm text-gray-500">
-                              JPG or PNG (Max 2MB)
+                              {translations.paymentGuide.uploadForm.dragDrop.format}
                             </p>
                           </div>
                         </label>
@@ -291,22 +293,22 @@ const PaymentGuide = () => {
                     {isUploading && (
                       <div className="space-y-3">
                         <div className="flex justify-between text-sm font-medium text-gray-700">
-                          <span>Uploading...</span>
+                          <span>{translations.paymentGuide.uploadForm.uploading}</span>
                           <span>{Math.round(uploadProgress)}%</span>
                         </div>
                         <Progress
                           value={uploadProgress}
                           className="h-2 rounded-full"
-                          
+
                         />
                       </div>
                     )}
 
                     <Alert className="bg-blue-50 border-blue-200 text-blue-800">
                       <AlertCircle className="h-5 w-5" />
-                      <AlertTitle className="text-sm font-semibold">Important</AlertTitle>
+                      <AlertTitle className="text-sm font-semibold">{translations.paymentGuide.uploadForm.important.title}</AlertTitle>
                       <AlertDescription className="text-sm">
-                        Pastikan detail pembayaran (ID transaksi, jumlah, tanggal) terlihat jelas pada gambar.
+                        {translations.paymentGuide.uploadForm.important.message}
                       </AlertDescription>
                     </Alert>
                   </CardContent>
@@ -317,7 +319,7 @@ const PaymentGuide = () => {
                       disabled={isUploading}
                       className="w-full sm:w-auto"
                     >
-                      Batal
+                      {translations.paymentGuide.uploadForm.buttons.cancel}
                     </Button>
                     <Button
                       onClick={handleUpload}
@@ -327,12 +329,12 @@ const PaymentGuide = () => {
                       {isUploading ? (
                         <span className="flex items-center gap-2">
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          Mengunggah...
+                          {translations.paymentGuide.uploadForm.buttons.uploading}
                         </span>
                       ) : (
                         <span className="flex items-center gap-2">
                           <Send className="w-4 h-4" />
-                          Kirim Bukti Pembayaran
+                          {translations.paymentGuide.uploadForm.buttons.send}
                         </span>
                       )}
                     </Button>
@@ -344,8 +346,8 @@ const PaymentGuide = () => {
               <div className="md:col-span-1 order-2 md:order-1">
                 <Card className="shadow-sm h-full flex flex-col">
                   <CardHeader className="bg-elkaavie-50 border-b">
-                    <CardTitle className="text-xl">Panduan Pembayaran</CardTitle>
-                    <CardDescription>Ikuti langkah-langkah ini untuk menyelesaikan pembayaran Anda</CardDescription>
+                    <CardTitle className="text-xl">{translations.paymentGuide.guide.title}</CardTitle>
+                    <CardDescription>{translations.paymentGuide.guide.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="pt-6 flex-grow">
                     <div className="space-y-6">
@@ -353,28 +355,28 @@ const PaymentGuide = () => {
                         {[
                           {
                             icon: <CreditCard className="w-5 h-5 text-elkaavie-600" />,
-                            title: "Transfer Pembayaran",
-                            description: "Transfer jumlah pembayaran ke rekening bank kami"
+                            title: translations.paymentGuide.guide.steps.transfer.title,
+                            description: translations.paymentGuide.guide.steps.transfer.description
                           },
                           {
                             icon: <ImageIcon className="w-5 h-5 text-elkaavie-600" />,
-                            title: "Ambil Screenshot",
-                            description: "Ambil tangkapan layar dari konfirmasi pembayaran Anda"
+                            title: translations.paymentGuide.guide.steps.screenshot.title,
+                            description: translations.paymentGuide.guide.steps.screenshot.description
                           },
                           {
                             icon: <Upload className="w-5 h-5 text-elkaavie-600" />,
-                            title: "Unggah Bukti",
-                            description: "Unggah bukti pembayaran Anda melalui formulir"
+                            title: translations.paymentGuide.guide.steps.upload.title,
+                            description: translations.paymentGuide.guide.steps.upload.description
                           },
                           {
                             icon: <Send className="w-5 h-5 text-elkaavie-600" />,
-                            title: "Kirim Notifikasi",
-                            description: "Beritahu admin tentang pembayaran Anda"
+                            title: translations.paymentGuide.guide.steps.notify.title,
+                            description: translations.paymentGuide.guide.steps.notify.description
                           },
                           {
                             icon: <Clock className="w-5 h-5 text-elkaavie-600" />,
-                            title: "Tunggu Verifikasi",
-                            description: "Admin akan memverifikasi pembayaran Anda dalam 24 jam"
+                            title: translations.paymentGuide.guide.steps.wait.title,
+                            description: translations.paymentGuide.guide.steps.wait.description
                           }
                         ].map((step, index) => (
                           <div key={index} className="flex gap-3">
@@ -391,7 +393,7 @@ const PaymentGuide = () => {
                     </div>
                   </CardContent>
                   <CardFooter className="bg-gray-50 text-sm text-gray-500 italic p-5">
-                    Untuk bantuan, silakan hubungi dukungan kami.
+                    {translations.paymentGuide.guide.support}
                   </CardFooter>
                 </Card>
               </div>

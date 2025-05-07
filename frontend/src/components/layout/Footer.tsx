@@ -1,8 +1,10 @@
 import React from "react";
 import Container from "../ui/Container";
 import { MapPin, Mail, Phone } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 const Footer = () => {
+  const { translations } = useLanguage();
   return (
     <footer className="bg-gray-50 border-t border-gray-200 pt-16 pb-6">
       <Container>
@@ -12,8 +14,7 @@ const Footer = () => {
               Elkaavie<span className="text-elkaavie-500">.</span>
             </h3>
             <p className="text-gray-600 mb-6 max-w-sm">
-              Kos eksklusif dengan lokasi strategis di tengah kota. Nyaman,
-              tenang, dan dekat dengan berbagai fasilitas.
+              {translations.footer.description}
             </p>
             <div className="flex space-x-4">
               <a
@@ -63,8 +64,8 @@ const Footer = () => {
                 className="w-10 h-10 rounded-full bg-elkaavie-100 flex items-center justify-center text-elkaavie-600 hover:bg-elkaavie-200 transition"
                 aria-label="WhatsApp"
               >
-                <svg 
-                  viewBox="0 0 24 24" 
+                <svg
+                  viewBox="0 0 24 24"
                   className="w-5 h-5"
                   fill="currentColor"
                 >
@@ -76,7 +77,7 @@ const Footer = () => {
 
           <div>
             <h4 className="text-lg font-semibold text-gray-900 mb-4">
-              Tautan Cepat
+              {translations.footer.quickLinks}
             </h4>
             <ul className="space-y-3">
               <li>
@@ -84,7 +85,7 @@ const Footer = () => {
                   href="#home"
                   className="text-gray-600 hover:text-elkaavie-700 transition"
                 >
-                  Home
+                  {translations.navigation.home}
                 </a>
               </li>
               <li>
@@ -92,7 +93,7 @@ const Footer = () => {
                   href="/rooms"
                   className="text-gray-600 hover:text-elkaavie-700 transition"
                 >
-                  Rooms
+                  {translations.navigation.rooms}
                 </a>
               </li>
               <li>
@@ -100,7 +101,7 @@ const Footer = () => {
                   href="/gallery"
                   className="text-gray-600 hover:text-elkaavie-700 transition"
                 >
-                  Gallery
+                  {translations.navigation.gallery}
                 </a>
               </li>
               <li>
@@ -108,14 +109,14 @@ const Footer = () => {
                   href="/help-center"
                   className="text-gray-600 hover:text-elkaavie-700 transition"
                 >
-                  Help Center
+                  {translations.navigation.helpCenter}
                 </a>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-4">Kontak</h4>
+            <h4 className="text-lg font-semibold text-gray-900 mb-4">{translations.footer.contact}</h4>
             <ul className="space-y-4">
               <li className="flex">
                 <MapPin className="flex-shrink-0 w-5 h-5 text-elkaavie-500 mt-0.5" />
@@ -137,7 +138,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-200 mt-12 pt-8">
           <p className="text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()} Elkaavie. All rights reserved.
+            {translations.footer.copyright.replace('{year}', new Date().getFullYear().toString())}
           </p>
         </div>
       </Container>

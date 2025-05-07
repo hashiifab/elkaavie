@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
 import { roomApi, bookingApi, Room, BookingCreateParams } from "@/lib/api";
+import { useLanguage } from "@/contexts/language-context";
 import {
   Calendar,
   BedDouble,
@@ -19,7 +20,7 @@ import {
 
 /**
  * RoomBooking Component
- * 
+ *
  * Handles the room booking process including:
  * - Fetching room details
  * - Date selection for check-in and check-out
@@ -32,6 +33,7 @@ const RoomBooking = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const roomId = searchParams.get("room");
+  const { translations } = useLanguage();
 
   // Component state management
   const [room, setRoom] = useState<Room | null>(null);
@@ -135,7 +137,7 @@ const RoomBooking = () => {
       const pendingBookingData = sessionStorage.getItem("pendingBooking");
 
       if (!roomId && !pendingBookingData) {
-        setError("No room selected. Please select a room first.");
+        setError(translations.auth.roomBooking.errors.noRoomSelected);
         setLoading(false);
         return;
       }
@@ -150,7 +152,7 @@ const RoomBooking = () => {
         }
 
         if (!selectedRoomId) {
-          setError("No room selected. Please select a room first.");
+          setError(translations.auth.roomBooking.errors.noRoomSelected);
           setLoading(false);
           return;
         }
@@ -161,7 +163,7 @@ const RoomBooking = () => {
         // Check if room is still available
         if (!data.is_available) {
           setError(
-            "This room is no longer available. Please select another room."
+            translations.auth.roomBooking.errors.roomUnavailable
           );
         } else {
           setRoom(data);
@@ -181,7 +183,7 @@ const RoomBooking = () => {
         }
       } catch (err) {
         console.error("Error fetching room:", err);
-        setError("Failed to load room details. Please try again later.");
+        setError(translations.auth.roomBooking.errors.bookingFailed);
       } finally {
         setLoading(false);
       }
@@ -214,13 +216,13 @@ const RoomBooking = () => {
     if (file) {
       // Check file type - only accept images
       if (!file.type.startsWith("image/")) {
-        setError("Please upload an image file");
+        setError(translations.auth.roomBooking.errors.fileTypeError);
         return;
       }
 
       // Check file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        setError("File size should be less than 5MB");
+        setError(translations.auth.roomBooking.errors.fileSizeError);
         return;
       }
 
@@ -264,7 +266,7 @@ const RoomBooking = () => {
       window.scrollTo(0, 0);
     } catch (err) {
       console.error("Error booking room:", err);
-      setError("Failed to process your booking. Please try again later.");
+      setError(translations.auth.roomBooking.errors.bookingFailed);
     } finally {
       setSubmitting(false);
     }
@@ -296,14 +298,14 @@ const RoomBooking = () => {
           <Container>
             <div className="text-center py-12">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Oops! Something went wrong
+                {translations.auth.roomBooking.errors.errorTitle}
               </h2>
               <p className="text-gray-600 mb-6">{error}</p>
               <button
                 onClick={() => navigate("/rooms")}
                 className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
               >
-                Back to Rooms
+                {translations.auth.roomBooking.navigation.backToRooms}
               </button>
             </div>
           </Container>
@@ -336,25 +338,23 @@ const RoomBooking = () => {
                 </svg>
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Booking Submitted for Approval
+                {translations.auth.roomBooking.success.title}
               </h2>
               <p className="text-gray-600 mb-8">
-                Your booking request has been submitted and is pending admin
-                approval. We will review your application and contact you soon
-                with the result.
+                {translations.auth.roomBooking.success.message}
               </p>
               <div className="flex flex-col md:flex-row gap-4 justify-center">
                 <button
                   onClick={() => navigate("/profile")}
                   className="px-6 py-3 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
                 >
-                  View My Bookings
+                  {translations.auth.roomBooking.navigation.viewMyBookings}
                 </button>
                 <button
                   onClick={() => navigate("/")}
                   className="px-6 py-3 bg-white text-elkaavie-600 border border-elkaavie-600 rounded-lg hover:bg-elkaavie-50 transition"
                 >
-                  Return to Home
+                  {translations.auth.roomBooking.navigation.returnToHome}
                 </button>
               </div>
             </div>
@@ -389,12 +389,12 @@ const RoomBooking = () => {
                   d="M15 19l-7-7 7-7"
                 ></path>
               </svg>
-              Back to Room Selection
+              {translations.auth.roomBooking.navigation.backToRoomSelection}
             </button>
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-8">
-            Complete Your Booking
+            {translations.auth.roomBooking.pageTitle}
           </h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -405,7 +405,7 @@ const RoomBooking = () => {
                   <div className="space-y-6">
                     <h2 className="text-xl font-semibold mb-4 flex items-center">
                       <CalendarDays className="w-5 h-5 mr-2 text-elkaavie-600" />
-                      Booking Details
+                      {translations.auth.roomBooking.form.bookingDetails}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -414,7 +414,7 @@ const RoomBooking = () => {
                           htmlFor="check_in"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Check-in Date
+                          {translations.auth.roomBooking.form.checkInDate}
                         </label>
                         <input
                           type="date"
@@ -433,7 +433,7 @@ const RoomBooking = () => {
                           htmlFor="check_out"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          Check-out Date
+                          {translations.auth.roomBooking.form.checkOutDate}
                         </label>
                         <input
                           type="date"
@@ -453,7 +453,7 @@ const RoomBooking = () => {
                         htmlFor="guests"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Number of Guests
+                        {translations.auth.roomBooking.form.numberOfGuests}
                       </label>
                       <select
                         id="guests"
@@ -466,7 +466,7 @@ const RoomBooking = () => {
                           { length: room?.capacity || room?.roomType?.capacity || 1 },
                           (_, i) => (
                             <option key={i + 1} value={i + 1}>
-                              {i + 1} {i === 0 ? "Guest" : "Guests"}
+                              {i + 1} {i === 0 ? translations.auth.roomBooking.form.guest : translations.auth.roomBooking.form.guests}
                             </option>
                           )
                         )}
@@ -478,7 +478,7 @@ const RoomBooking = () => {
                         htmlFor="phone_number"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Phone Number
+                        {translations.auth.roomBooking.form.phoneNumber}
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -491,7 +491,7 @@ const RoomBooking = () => {
                           value={formData.phone_number}
                           onChange={handleChange}
                           required
-                          placeholder="Enter your phone number"
+                          placeholder={translations.auth.roomBooking.form.phoneNumberPlaceholder}
                           className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
                         />
                       </div>
@@ -499,9 +499,9 @@ const RoomBooking = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Identity Card
+                        {translations.auth.roomBooking.form.identityCard}
                       </label>
-                      <div 
+                      <div
                         className={`mt-1 border-2 border-dashed rounded-lg p-6 transition-all duration-200 ${formData.identity_card_preview ? 'bg-gray-50' : 'hover:border-elkaavie-400'} ${error ? 'border-red-300' : 'border-gray-300'}`}
                         onDragOver={(e) => {
                           e.preventDefault();
@@ -521,22 +521,22 @@ const RoomBooking = () => {
                           e.preventDefault();
                           e.stopPropagation();
                           e.currentTarget.classList.remove('border-elkaavie-500', 'bg-elkaavie-50');
-                          
+
                           if (e.dataTransfer.files && e.dataTransfer.files[0]) {
                             const file = e.dataTransfer.files[0];
-                            
+
                             // Check file type - only accept images
                             if (!file.type.startsWith("image/")) {
                               setError("Please upload an image file");
                               return;
                             }
-                            
+
                             // Check file size (max 5MB)
                             if (file.size > 5 * 1024 * 1024) {
                               setError("File size should be less than 5MB");
                               return;
                             }
-                            
+
                             // Update state with file and create preview URL
                             setFormData((prev) => ({
                               ...prev,
@@ -556,7 +556,7 @@ const RoomBooking = () => {
                           className="hidden"
                           required
                         />
-                        
+
                         {formData.identity_card_preview ? (
                           <div className="space-y-4">
                             <div className="relative mx-auto max-w-sm overflow-hidden rounded-lg border shadow-sm">
@@ -608,10 +608,10 @@ const RoomBooking = () => {
                             </div>
                             <div className="text-center space-y-1">
                               <p className="font-semibold text-gray-800">
-                                Click to upload or drag & drop
+                                {translations.auth.roomBooking.form.uploadTitle}
                               </p>
                               <p className="text-sm text-gray-500">
-                                JPG or PNG (Max 5MB)
+                                {translations.auth.roomBooking.form.uploadFormat}
                               </p>
                             </div>
                           </label>
@@ -632,7 +632,7 @@ const RoomBooking = () => {
                           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          Upload a clear photo of your ID card (KTP/SIM/Passport)
+                          {translations.auth.roomBooking.form.uploadInfo}
                         </p>
                       </div>
                     </div>
@@ -642,7 +642,7 @@ const RoomBooking = () => {
                         htmlFor="special_requests"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Special Requests
+                        {translations.auth.roomBooking.form.specialRequests}
                       </label>
                       <textarea
                         id="special_requests"
@@ -650,7 +650,7 @@ const RoomBooking = () => {
                         value={formData.special_requests}
                         onChange={handleChange}
                         rows={4}
-                        placeholder="Let us know if you have any special requests or requirements"
+                        placeholder={translations.auth.roomBooking.form.specialRequestsPlaceholder}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
                       ></textarea>
                     </div>
@@ -659,7 +659,7 @@ const RoomBooking = () => {
                   <div className="pt-6 border-t border-gray-200 space-y-6">
                     <h2 className="text-xl font-semibold mb-4 flex items-center">
                       <CreditCard className="w-5 h-5 mr-2 text-elkaavie-600" />
-                      Payment Method
+                      {translations.auth.roomBooking.form.paymentMethod}
                     </h2>
 
                     <div className="space-y-4">
@@ -677,7 +677,7 @@ const RoomBooking = () => {
                           htmlFor="credit_card"
                           className="text-sm font-medium text-gray-700"
                         >
-                          Credit Card (Payment at hotel)
+                          {translations.auth.roomBooking.form.creditCard}
                         </label>
                       </div>
 
@@ -695,7 +695,7 @@ const RoomBooking = () => {
                           htmlFor="bank_transfer"
                           className="text-sm font-medium text-gray-700"
                         >
-                          Bank Transfer
+                          {translations.auth.roomBooking.form.bankTransfer}
                         </label>
                       </div>
                     </div>
@@ -714,11 +714,11 @@ const RoomBooking = () => {
                       {submitting ? (
                         <>
                           <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-l-2 border-white"></span>
-                          <span>Processing...</span>
+                          <span>{translations.auth.roomBooking.loading.processing}</span>
                         </>
                       ) : (
                         <>
-                          <span>Submit for Approval</span>
+                          <span>{translations.auth.roomBooking.form.submitButton}</span>
                           <svg
                             className="w-4 h-4"
                             fill="none"
@@ -745,7 +745,7 @@ const RoomBooking = () => {
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-28">
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-xl font-semibold mb-4">
-                    Booking Summary
+                    {translations.auth.roomBooking.summary.title}
                   </h2>
 
                   <div className="space-y-2">
@@ -756,7 +756,7 @@ const RoomBooking = () => {
                           {room?.name || room?.roomType?.name || `Room ${room?.number}`}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          Room {room?.number}, Floor {room?.floor}
+                          {translations.auth.roomBooking.summary.room} {room?.number}, {translations.auth.roomBooking.summary.floor} {room?.floor}
                         </p>
                       </div>
                     </div>
@@ -766,10 +766,10 @@ const RoomBooking = () => {
                       <div>
                         <h3 className="font-medium">
                           {formData.guests}{" "}
-                          {formData.guests === 1 ? "Guest" : "Guests"}
+                          {formData.guests === 1 ? translations.auth.roomBooking.form.guest : translations.auth.roomBooking.form.guests}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          Max capacity: {room?.capacity || room?.roomType?.capacity}
+                          {translations.auth.roomBooking.summary.maxCapacity}: {room?.capacity || room?.roomType?.capacity}
                         </p>
                       </div>
                     </div>
@@ -779,7 +779,7 @@ const RoomBooking = () => {
                       <div>
                         <h3 className="font-medium">
                           {calculateMonths()}{" "}
-                          {calculateMonths() === 1 ? "Month" : "Months"}
+                          {calculateMonths() === 1 ? translations.auth.roomBooking.summary.month : translations.auth.roomBooking.summary.months}
                         </h3>
                         <p className="text-sm text-gray-600">
                           {formData.check_in && formData.check_out && (
@@ -814,16 +814,16 @@ const RoomBooking = () => {
                 <div className="p-6">
                   <div className="space-y-2 mb-6">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Monthly Rate</span>
+                      <span className="text-gray-600">{translations.auth.roomBooking.summary.monthlyRate}</span>
                       <span className="font-medium">Rp 1.500.000</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Number of Months</span>
+                      <span className="text-gray-600">{translations.auth.roomBooking.summary.numberOfMonths}</span>
                       <span className="font-medium">{calculateMonths()}</span>
                     </div>
                     {formData.guests > 1 && (
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Extra Guests</span>
+                        <span className="text-gray-600">{translations.auth.roomBooking.summary.extraGuests}</span>
                         <span className="font-medium">
                           {formData.guests - 1}
                         </span>
@@ -833,13 +833,13 @@ const RoomBooking = () => {
 
                   <div className="border-t border-gray-200 pt-4">
                     <div className="flex justify-between items-center">
-                      <span className="font-semibold">Total</span>
+                      <span className="font-semibold">{translations.auth.roomBooking.summary.total}</span>
                       <span className="text-xl font-bold text-elkaavie-600">
                         {formatPrice(calculateTotal())}
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 mt-2">
-                      Taxes and service fees included
+                      {translations.auth.roomBooking.summary.taxesIncluded}
                     </p>
                   </div>
 
@@ -847,10 +847,9 @@ const RoomBooking = () => {
                     <div className="flex items-start">
                       <Info className="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
                       <div className="text-sm text-blue-700">
-                        <p className="font-medium mb-1">Cancellation Policy</p>
+                        <p className="font-medium mb-1">{translations.auth.roomBooking.summary.cancellationPolicy}</p>
                         <p>
-                          Free cancellation up to 24 hours before check-in.
-                          Cancellations after this time may be subject to a fee.
+                          {translations.auth.roomBooking.summary.cancellationInfo}
                         </p>
                       </div>
                     </div>

@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../main.dart';
 import '../utils.dart';
 
+
 class BookingsTab extends StatefulWidget {
   final List<dynamic> bookings;
   final bool isLoading;
@@ -373,7 +374,37 @@ class _BookingsTabState extends State<BookingsTab> {
                       children: [
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'paid'),
+                            onPressed: () async {
+                              final bool? confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (BuildContext confirmContext) {
+                                  return AlertDialog(
+                                    title: const Text('Konfirmasi Verifikasi Pembayaran'),
+                                    content: const Text(
+                                      'Apakah Anda yakin ingin memverifikasi pembayaran ini? Status booking akan berubah menjadi "PAID".',
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Batal'),
+                                        onPressed: () {
+                                          Navigator.of(confirmContext).pop(false);
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('Ya, Verifikasi'),
+                                        onPressed: () {
+                                          Navigator.of(confirmContext).pop(true);
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+
+                              if (confirm == true) {
+                                await widget.onUpdateBookingStatus(booking['id'].toString(), 'paid');
+                              }
+                            },
                             icon: const Icon(Icons.check_circle_outline),
                             label: const Text('Verify Payment'),
                             style: ElevatedButton.styleFrom(
@@ -385,7 +416,37 @@ class _BookingsTabState extends State<BookingsTab> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: OutlinedButton.icon(
-                            onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'rejected'),
+                            onPressed: () async {
+                              final bool? confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (BuildContext confirmContext) {
+                                  return AlertDialog(
+                                    title: const Text('Konfirmasi Penolakan Pembayaran'),
+                                    content: const Text(
+                                      'Apakah Anda yakin ingin menolak pembayaran ini? Status booking akan berubah menjadi "REJECTED".',
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Batal'),
+                                        onPressed: () {
+                                          Navigator.of(confirmContext).pop(false);
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('Ya, Tolak'),
+                                        onPressed: () {
+                                          Navigator.of(confirmContext).pop(true);
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+
+                              if (confirm == true) {
+                                await widget.onUpdateBookingStatus(booking['id'].toString(), 'rejected');
+                              }
+                            },
                             icon: const Icon(Icons.cancel_outlined),
                             label: const Text('Reject Payment'),
                             style: OutlinedButton.styleFrom(foregroundColor: AppColors.error),
@@ -493,20 +554,48 @@ class _BookingsTabState extends State<BookingsTab> {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () async {
-                  final phoneNumber = booking['phone_number']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
-                  if (phoneNumber.isNotEmpty) {
-                    final message = 'Your booking #${booking['id']} has been approved! Room ${booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown'} is now confirmed for your stay.';
-                    final encodedMessage = Uri.encodeComponent(message);
-                    final whatsappUrl = 'https://wa.me/$phoneNumber?text=$encodedMessage';
-                    if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
-                      await launchUrl(Uri.parse(whatsappUrl));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Failed to open WhatsApp')),
+                  final bool? confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext confirmContext) {
+                      return AlertDialog(
+                        title: const Text('Konfirmasi Persetujuan Booking'),
+                        content: const Text(
+                          'Apakah Anda yakin ingin menyetujui booking ini? Status akan berubah menjadi "APPROVED" dan pemberitahuan akan dikirim ke WhatsApp tamu.',
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('Batal'),
+                            onPressed: () {
+                              Navigator.of(confirmContext).pop(false);
+                            },
+                          ),
+                          TextButton(
+                            child: const Text('Ya, Setujui'),
+                            onPressed: () {
+                              Navigator.of(confirmContext).pop(true);
+                            },
+                          ),
+                        ],
                       );
+                    },
+                  );
+
+                  if (confirm == true) {
+                    final phoneNumber = booking['phone_number']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
+                    if (phoneNumber.isNotEmpty) {
+                      final message = 'Your booking #${booking['id']} has been approved! Room ${booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown'} is now confirmed for your stay.';
+                      final encodedMessage = Uri.encodeComponent(message);
+                      final whatsappUrl = 'https://wa.me/$phoneNumber?text=$encodedMessage';
+                      if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
+                        await launchUrl(Uri.parse(whatsappUrl));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Failed to open WhatsApp')),
+                        );
+                      }
                     }
+                    await widget.onUpdateBookingStatus(booking['id'].toString(), 'approved');
                   }
-                  await widget.onUpdateBookingStatus(booking['id'].toString(), 'approved');
                 },
                 icon: const Icon(Icons.check_circle),
                 label: const Text('Approve'),
@@ -520,7 +609,37 @@ class _BookingsTabState extends State<BookingsTab> {
             const SizedBox(width: 16),
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'rejected'),
+                onPressed: () async {
+                  final bool? confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext confirmContext) {
+                      return AlertDialog(
+                        title: const Text('Konfirmasi Penolakan Booking'),
+                        content: const Text(
+                          'Apakah Anda yakin ingin menolak booking ini? Status akan berubah menjadi "REJECTED".',
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('Batal'),
+                            onPressed: () {
+                              Navigator.of(confirmContext).pop(false);
+                            },
+                          ),
+                          TextButton(
+                            child: const Text('Ya, Tolak'),
+                            onPressed: () {
+                              Navigator.of(confirmContext).pop(true);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  if (confirm == true) {
+                    await widget.onUpdateBookingStatus(booking['id'].toString(), 'rejected');
+                  }
+                },
                 icon: const Icon(Icons.cancel),
                 label: const Text('Reject'),
                 style: OutlinedButton.styleFrom(
@@ -535,7 +654,37 @@ class _BookingsTabState extends State<BookingsTab> {
       case 'approved':
         return Center(
           child: ElevatedButton.icon(
-            onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'completed'),
+            onPressed: () async {
+              final bool? confirm = await showDialog<bool>(
+                context: context,
+                builder: (BuildContext confirmContext) {
+                  return AlertDialog(
+                    title: const Text('Konfirmasi Penyelesaian Booking'),
+                    content: const Text(
+                      'Apakah Anda yakin ingin menyelesaikan booking ini? Status akan berubah menjadi "COMPLETED".',
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Batal'),
+                        onPressed: () {
+                          Navigator.of(confirmContext).pop(false);
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Ya, Selesaikan'),
+                        onPressed: () {
+                          Navigator.of(confirmContext).pop(true);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (confirm == true) {
+                await widget.onUpdateBookingStatus(booking['id'].toString(), 'completed');
+              }
+            },
             icon: const Icon(Icons.done_all),
             label: const Text('Mark as Completed'),
             style: ElevatedButton.styleFrom(
@@ -548,7 +697,37 @@ class _BookingsTabState extends State<BookingsTab> {
       case 'paid':
         return Center(
           child: ElevatedButton.icon(
-            onPressed: () => widget.onUpdateBookingStatus(booking['id'].toString(), 'completed'),
+            onPressed: () async {
+              final bool? confirm = await showDialog<bool>(
+                context: context,
+                builder: (BuildContext confirmContext) {
+                  return AlertDialog(
+                    title: const Text('Konfirmasi Penyelesaian Booking'),
+                    content: const Text(
+                      'Apakah Anda yakin ingin menyelesaikan booking ini? Status akan berubah menjadi "COMPLETED".',
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Batal'),
+                        onPressed: () {
+                          Navigator.of(confirmContext).pop(false);
+                        },
+                      ),
+                      TextButton(
+                        child: const Text('Ya, Selesaikan'),
+                        onPressed: () {
+                          Navigator.of(confirmContext).pop(true);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (confirm == true) {
+                await widget.onUpdateBookingStatus(booking['id'].toString(), 'completed');
+              }
+            },
             icon: const Icon(Icons.done_all),
             label: const Text('Mark as Completed'),
             style: ElevatedButton.styleFrom(

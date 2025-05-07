@@ -6,6 +6,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Booking Model
+ * 
+ * @property int $id
+ * @property int $user_id
+ * @property int $room_id
+ * @property \Carbon\Carbon $check_in
+ * @property \Carbon\Carbon $check_out
+ * @property string $status
+ * @property int $guests
+ * @property string|null $special_requests
+ * @property string|null $payment_method
+ * @property string|null $phone_number
+ * @property string|null $identity_card
+ * @property float $total_price
+ * @property string|null $payment_proof
+ * @property \Carbon\Carbon|null $payment_due_at
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * 
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\Room $room
+ */
 class Booking extends Model
 {
     use HasFactory;
@@ -45,4 +68,4 @@ class Booking extends Model
     {
         return $this->belongsTo(Room::class);
     }
-} 
+}

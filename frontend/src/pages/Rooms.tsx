@@ -5,7 +5,8 @@ import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
 import { roomApi, Room, authApi, bookingApi } from "@/lib/api";
 import { ChevronRight, BedDouble, Users, ArrowRight, Check, X, CreditCard, LogIn, RefreshCw, Info } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/language-context";
 
 // Interface for user bookings
 interface UserBooking {
@@ -16,6 +17,8 @@ interface UserBooking {
 
 const Rooms = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { translations } = useLanguage();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +49,7 @@ const Rooms = () => {
         setCheckingAuth(false);
       }
     };
-    
+
     checkAuth();
   }, []);
 
@@ -56,17 +59,17 @@ const Rooms = () => {
       const response = await bookingApi.getUserBookings();
       // Extract room IDs from active bookings (not cancelled or rejected)
       const bookings = response.data || [];
-      const activeBookings = bookings.filter(booking => 
+      const activeBookings = bookings.filter(booking =>
         ['pending', 'approved', 'paid'].includes(booking.status)
       );
-      
+
       // Store full booking objects to access booking IDs later
       setUserBookings(activeBookings.map(booking => ({
         id: booking.id,
         room_id: booking.room_id,
         status: booking.status
       })));
-      
+
       // Extract just the room IDs for quick lookup
       const bookedRoomIds = activeBookings.map(booking => booking.room_id);
       setUserBookedRooms(bookedRoomIds);
@@ -82,7 +85,7 @@ const Rooms = () => {
       const data = await roomApi.getAll();
       setRooms(data);
       setError(null);
-      
+
       // Refresh user bookings if logged in
       if (isLoggedIn) {
         await fetchUserBookings();
@@ -117,7 +120,7 @@ const Rooms = () => {
       currency: "IDR",
     }).format(price);
   };
-  
+
   // Format price for room grid display
   const formatPriceShort = (price: number) => {
     // For 1,500,000 we want to display "1.5 jt" or "1.5 jt/bln" (1.5 million per month)
@@ -127,10 +130,10 @@ const Rooms = () => {
   // Group rooms by floor
   const getRoomsByFloor = () => {
     const roomsByFloor: { [key: number]: Room[] } = {};
-    
+
     rooms.forEach(room => {
       const floor = room.floor || 1;
-      
+
       if (floor === 3) return;
 
       if (!roomsByFloor[floor]) {
@@ -138,10 +141,10 @@ const Rooms = () => {
       }
       roomsByFloor[floor].push(room);
     });
-    
+
     // Tambahkan lantai 3 untuk laundry area
     roomsByFloor[3] = [];
-    
+
     // Sort rooms within each floor by room number
     Object.keys(roomsByFloor).forEach(floorKey => {
       const floor = Number(floorKey);
@@ -151,14 +154,14 @@ const Rooms = () => {
         return numA - numB;
       });
     });
-    
+
     return roomsByFloor;
   };
 
   // Handle booking request
   const handleBookNow = () => {
     if (!selectedRoom) return;
-    
+
     if (isLoggedIn) {
       // If logged in, proceed to booking page
       navigate(`/room-booking?room=${selectedRoom.id}`);
@@ -167,7 +170,6 @@ const Rooms = () => {
       sessionStorage.setItem('pendingBooking', JSON.stringify({
         roomId: selectedRoom.id,
         roomNumber: selectedRoom.number,
-        name: selectedRoom.name,
         roomType: selectedRoom.roomType?.name,
         price: selectedRoom.price || selectedRoom.roomType?.price,
         floor: selectedRoom.floor
@@ -193,46 +195,25 @@ const Rooms = () => {
     // If room is already booked by this user, navigate to booking details
     if (isRoomBookedByUser(room.id)) {
       const bookingId = getBookingIdForRoom(room.id);
-      
+
       if (bookingId) {
         // Navigate directly to the booking details page
         navigate(`/bookings/${bookingId}`);
       } else {
         // Fallback to profile if we can't find the specific booking
         navigate('/profile');
-        
+
         // Show toast to inform user
-        toast.custom((t) => (
-          <div className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}>
-            <div className="flex-1 w-0 p-4">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 pt-0.5">
-                  <Info className="h-5 w-5 text-blue-500" />
-                </div>
-                <div className="ml-3 flex-1">
-                  <p className="text-sm font-medium text-gray-900">
-                    Room {room.number} is already yours
-                  </p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Check your bookings for details
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="flex border-l border-gray-200">
-              <button
-                onClick={() => toast.dismiss(t.id)}
-                className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-blue-600 hover:text-blue-500 focus:outline-none"
-              >
-                Dismiss
-              </button>
-            </div>
-          </div>
-        ), { duration: 3000 });
+        toast({
+          title: translations.rooms.alreadyBooked.title.replace('{number}', room.number),
+          description: translations.rooms.alreadyBooked.description,
+          variant: "default",
+        });
+
       }
       return;
     }
-    
+
     // If available, set as selected
     if (room.is_available) {
       setSelectedRoom(prev => prev?.id === room.id ? null : room);
@@ -262,13 +243,13 @@ const Rooms = () => {
         <main className="pt-24 pb-16">
           <Container>
             <div className="text-center py-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Oops! Something went wrong</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">{translations.rooms.error.title}</h2>
               <p className="text-gray-600 mb-6">{error}</p>
               <button
                 onClick={() => window.location.reload()}
                 className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
               >
-                Try Again
+                {translations.rooms.error.tryAgain}
               </button>
             </div>
           </Container>
@@ -284,13 +265,13 @@ const Rooms = () => {
   return (
     <>
       <Header />
-      
+
       {/* Floating Card */}
       {selectedRoom && showFloatingCard && (
         <div className="fixed bottom-6 left-0 right-0 z-50 mx-auto px-4 max-w-lg">
           <div className="bg-white rounded-xl shadow-2xl border border-gray-200 relative">
             {/* Close button - sekarang di pojok kanan atas */}
-            <button 
+            <button
               onClick={() => setSelectedRoom(null)}
               className="absolute -top-2 -right-2 p-1 bg-white hover:bg-gray-100 rounded-full transition-colors shadow-md border border-gray-200"
             >
@@ -301,25 +282,25 @@ const Rooms = () => {
             <div className="p-4">
               {/* Room Title */}
               <h3 className="font-semibold text-gray-900 mb-4">
-                {selectedRoom.name || selectedRoom.roomType?.name || `Room ${selectedRoom.number}`}
+                {selectedRoom.roomType?.name || `Room ${selectedRoom.number}`}
               </h3>
 
               {/* Room Info */}
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
                   <Users className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{selectedRoom.capacity || selectedRoom.roomType?.capacity || 1} guests</span>
+                  <span className="text-sm text-gray-600">{selectedRoom.capacity || selectedRoom.roomType?.capacity || 1} {translations.booking.guests}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
                   <BedDouble className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">Room {selectedRoom.number}</span>
+                  <span className="text-sm text-gray-600">{translations.rooms.title.split(' ')[0]} {selectedRoom.number}</span>
                 </div>
               </div>
 
               {/* Price and Book Button */}
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Price per month</p>
+                  <p className="text-sm text-gray-500 mb-1">{translations.rooms.price} {translations.rooms.perMonth}</p>
                   <p className="text-xl font-semibold text-elkaavie-600">
                     Rp 1.500.000
                   </p>
@@ -331,12 +312,12 @@ const Rooms = () => {
                   {isLoggedIn ? (
                     <>
                       <CreditCard className="h-4 w-4" />
-                      <span>Book Now</span>
+                      <span>{translations.rooms.book}</span>
                     </>
                   ) : (
                     <>
                       <LogIn className="h-4 w-4" />
-                      <span>Login to Book</span>
+                      <span>{translations.rooms.loginToBook}</span>
                     </>
                   )}
                 </button>
@@ -350,39 +331,38 @@ const Rooms = () => {
         {/* Hero section with image */}
         <div className="relative">
           {/* Background image with overlay */}
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ 
+            style={{
               backgroundImage: "url('https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=1600&auto=format&fit=crop')",
               backgroundPosition: "center",
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-elkaavie-900/80 to-elkaavie-800/70"></div>
           </div>
-          
+
           {/* Content */}
           <div className="relative z-10 py-24">
             <Container>
               <div className="text-white max-w-2xl">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">Find Your Perfect Room</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-4">{translations.rooms.hero.title}</h1>
                 <div className="w-20 h-1 bg-elkaavie-400 mb-6"></div>
                 <p className="text-xl text-white/90 mb-8">
-                  Our hotel offers a variety of comfortable rooms for all your needs.
-                  Select from our cinema-style layout below.
+                  {translations.rooms.hero.description}
                 </p>
-                
+
                 <div className="flex flex-wrap gap-4 items-center">
                   <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
                     <Check className="h-4 w-4 text-green-400" />
-                    <span>Modern Comfort</span>
+                    <span>{translations.rooms.hero.features.modernComfort}</span>
                   </div>
                   <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
                     <Check className="h-4 w-4 text-green-400" />
-                    <span>Prime Locations</span>
+                    <span>{translations.rooms.hero.features.primeLocations}</span>
                   </div>
                   <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
                     <Check className="h-4 w-4 text-green-400" />
-                    <span>Excellent Service</span>
+                    <span>{translations.rooms.hero.features.excellentService}</span>
                   </div>
                 </div>
               </div>
@@ -400,66 +380,66 @@ const Rooms = () => {
                 className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm font-medium transition"
               >
                 <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                {refreshing ? 'Refreshing...' : 'Refresh Rooms'}
+                {refreshing ? translations.rooms.booking.refreshing : translations.rooms.booking.refresh}
               </button>
             </div>
-        
+
             {/* Booking instruction */}
             <div className="max-w-4xl mx-auto mb-16">
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">How to Book</h2>
-                
+                <h2 className="text-2xl font-semibold text-gray-900 mb-4">{translations.rooms.booking.howToBook}</h2>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
                   <div className="flex flex-col items-center text-center">
                     <div className="w-12 h-12 bg-elkaavie-100 text-elkaavie-600 flex items-center justify-center rounded-full mb-4">
                       <span className="font-bold">1</span>
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">Select a Room</h3>
-                    <p className="text-gray-600 text-sm">Click on an available (green) room from our floor layout</p>
+                    <h3 className="font-medium text-gray-900 mb-2">{translations.rooms.booking.steps.step1.title}</h3>
+                    <p className="text-gray-600 text-sm">{translations.rooms.booking.steps.step1.description}</p>
                   </div>
-                  
+
                   <div className="flex flex-col items-center text-center relative">
                     <div className="w-12 h-12 bg-elkaavie-100 text-elkaavie-600 flex items-center justify-center rounded-full mb-4">
                       <span className="font-bold">2</span>
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">Review Details</h3>
-                    <p className="text-gray-600 text-sm">Check the room details and price</p>
-                    
+                    <h3 className="font-medium text-gray-900 mb-2">{translations.rooms.booking.steps.step2.title}</h3>
+                    <p className="text-gray-600 text-sm">{translations.rooms.booking.steps.step2.description}</p>
+
                     <div className="hidden md:block absolute top-8 left-full -translate-x-4">
                       <ArrowRight className="text-gray-300 h-8 w-8" />
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-col items-center text-center">
                     <div className="w-12 h-12 bg-elkaavie-100 text-elkaavie-600 flex items-center justify-center rounded-full mb-4">
                       <span className="font-bold">3</span>
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">Complete Booking</h3>
-                    <p className="text-gray-600 text-sm">Click "Book Now" to finalize your reservation</p>
+                    <h3 className="font-medium text-gray-900 mb-2">{translations.rooms.booking.steps.step3.title}</h3>
+                    <p className="text-gray-600 text-sm">{translations.rooms.booking.steps.step3.description}</p>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             {/* Legend */}
             <div className="max-w-3xl mx-auto mb-8 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Room Availability</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">{translations.rooms.legend.title}</h3>
               <div className="flex items-center justify-center gap-8 flex-wrap">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm"></div>
-                  <span className="text-sm">Available</span>
+                  <span className="text-sm">{translations.rooms.legend.available}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-red-500 rounded mr-3 shadow-sm opacity-70"></div>
-                  <span className="text-sm">Unavailable</span>
+                  <span className="text-sm">{translations.rooms.legend.unavailable}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-blue-300 rounded mr-3 shadow-sm"></div>
-                  <span className="text-sm">Rooms You've Booked</span>
+                  <span className="text-sm">{translations.rooms.legend.booked}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm ring-2 ring-blue-500"></div>
-                  <span className="text-sm">Selected</span>
+                  <span className="text-sm">{translations.rooms.legend.selected}</span>
                 </div>
               </div>
             </div>
@@ -469,15 +449,15 @@ const Rooms = () => {
               {floors.map(floor => (
                 <div key={floor} className="mb-8">
                   <h2 className="text-xl font-semibold bg-blue-900 text-white py-3 px-6 rounded-t-xl mb-0 text-center">
-                    {floor === 3 ? 'Laundry Area' : `Floor ${floor}`}
+                    {floor === 3 ? translations.rooms.floor.laundryArea.title : `${translations.rooms.floor.title} ${floor}`}
                   </h2>
-                  
+
                   <div className="border border-gray-200 rounded-b-xl bg-white p-8">
                     {/* Hallway */}
                     <div className="w-full bg-gray-200 py-3 text-center text-gray-600 text-sm mb-8 rounded-lg">
-                      Hallway
+                      {translations.rooms.floor.hallway}
                     </div>
-                    
+
                     {floor === 3 ? (
                       <div className="text-center py-8">
                         <div className="inline-flex items-center justify-center w-16 h-16 bg-elkaavie-100 rounded-full mb-4">
@@ -485,25 +465,25 @@ const Rooms = () => {
                             <path d="M3 7V5C3 3.89543 3.89543 3 5 3H19C20.1046 3 21 3.89543 21 5V7M3 7H21M3 7V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V7M8 11H16M8 15H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                         </div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">Laundry Area</h3>
-                        <p className="text-gray-600">Area penjemuran dan cuci pakaian untuk penghuni</p>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">{translations.rooms.floor.laundryArea.title}</h3>
+                        <p className="text-gray-600">{translations.rooms.floor.laundryArea.description}</p>
                       </div>
                     ) : (
                     <div className="grid grid-cols-5 gap-6 max-w-3xl mx-auto">
                         {roomsByFloor[floor].map((room) => {
                           // Determine if this room is booked by the user
                           const isUserBooked = isRoomBookedByUser(room.id);
-                          
+
                           return (
                             <div
                               key={room.id}
                               className={`aspect-square rounded-lg shadow-sm flex items-center justify-center ${
-                                !room.is_available && !isUserBooked 
-                                  ? 'cursor-not-allowed opacity-70 bg-red-500' 
-                                  : isUserBooked 
-                                    ? "cursor-pointer bg-blue-300 hover:bg-blue-400 hover:shadow-md transition-all hover:scale-105" 
-                                    : room.is_available 
-                                      ? "cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-md transition-all hover:scale-105" 
+                                !room.is_available && !isUserBooked
+                                  ? 'cursor-not-allowed opacity-70 bg-red-500'
+                                  : isUserBooked
+                                    ? "cursor-pointer bg-blue-300 hover:bg-blue-400 hover:shadow-md transition-all hover:scale-105"
+                                    : room.is_available
+                                      ? "cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-md transition-all hover:scale-105"
                                       : ""
                               } ${selectedRoom?.id === room.id ? "ring-4 ring-blue-500 transform scale-105" : ""}`}
                               onClick={() => {

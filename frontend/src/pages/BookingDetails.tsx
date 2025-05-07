@@ -5,9 +5,11 @@ import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
 import { bookingApi } from "@/lib/api";
 import { Calendar, MapPin, User, Clock, CreditCard, ChevronRight, Phone, FileText, Home } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 // Countdown Timer Component
 const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
+  const { translations } = useLanguage();
   const [timeLeft, setTimeLeft] = useState<{
     hours: number;
     minutes: number;
@@ -47,14 +49,14 @@ const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
   if (expired) {
     return (
       <div className="text-red-600 text-sm font-medium">
-        Payment deadline expired
+        {translations.auth.profile.bookings.details.paymentDeadlineExpired}
       </div>
     );
   }
 
   return (
     <div className="text-sm">
-      <span className="font-medium text-gray-700">Payment due in: </span>
+      <span className="font-medium text-gray-700">{translations.auth.profile.bookings.details.paymentDueIn}: </span>
       <span className="font-semibold text-elkaavie-600">
         {timeLeft.hours.toString().padStart(2, '0')}:
         {timeLeft.minutes.toString().padStart(2, '0')}:
@@ -92,6 +94,7 @@ interface Booking {
 const BookingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { translations } = useLanguage();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -103,7 +106,7 @@ const BookingDetails = () => {
         setBooking(response.data);
       } catch (err) {
         console.error("Error fetching booking details:", err);
-        setError("Failed to load booking details.");
+        setError(translations.auth.bookingDetails.errors.failedToLoad);
       } finally {
         setLoading(false);
       }
@@ -175,13 +178,13 @@ const BookingDetails = () => {
         <main className="pt-24 pb-16">
           <Container>
             <div className="text-center py-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Oops! Something went wrong</h2>
-              <p className="text-gray-600 mb-6">{error || "Booking not found"}</p>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">{translations.auth.bookingDetails.errors.title}</h2>
+              <p className="text-gray-600 mb-6">{error || translations.auth.bookingDetails.errors.bookingNotFound}</p>
               <button
                 onClick={() => navigate("/profile")}
                 className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
               >
-                Back to Profile
+                {translations.auth.bookingDetails.navigation.backToProfile}
               </button>
             </div>
           </Container>
@@ -204,10 +207,10 @@ const BookingDetails = () => {
               </button>
               <ChevronRight className="h-4 w-4 mx-2" />
               <button onClick={() => navigate("/profile")} className="hover:text-elkaavie-600">
-                Profile
+                {translations.auth.profile.navigation.profile}
               </button>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <span>Booking Details</span>
+              <span>{translations.auth.bookingDetails.navigation.bookingDetails}</span>
             </div>
           </div>
 
@@ -222,7 +225,7 @@ const BookingDetails = () => {
                     {booking.room?.roomType?.name || `Room ${booking.room?.number}`}
                   </h3>
                   <p className="text-sm text-gray-600">
-                    Booking ID: #{booking.id}
+                    {translations.auth.bookingDetails.details.bookingId}: #{booking.id}
                   </p>
                 </div>
               </div>
@@ -231,7 +234,7 @@ const BookingDetails = () => {
                   booking.status
                 )}`}
               >
-                {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                {translations.auth.bookingDetails.status[booking.status as keyof typeof translations.auth.bookingDetails.status]}
               </div>
             </div>
 
@@ -239,7 +242,7 @@ const BookingDetails = () => {
               <div className="flex items-start">
                 <Calendar className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Check-in / Check-out</p>
+                  <p className="text-sm font-medium text-gray-700">{translations.auth.bookingDetails.details.checkInOut}</p>
                   <p className="text-gray-600">
                     {formatDate(booking.check_in)} - {formatDate(booking.check_out)}
                   </p>
@@ -249,9 +252,9 @@ const BookingDetails = () => {
               <div className="flex items-start">
                 <MapPin className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Room Details</p>
+                  <p className="text-sm font-medium text-gray-700">{translations.auth.bookingDetails.details.roomDetails}</p>
                   <p className="text-gray-600">
-                    Room {booking.room?.number}, Floor {booking.room?.floor}
+                    {translations.auth.bookingDetails.details.room} {booking.room?.number}, {translations.auth.bookingDetails.details.floor} {booking.room?.floor}
                   </p>
                 </div>
               </div>
@@ -259,9 +262,9 @@ const BookingDetails = () => {
               <div className="flex items-start">
                 <User className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Guests</p>
+                  <p className="text-sm font-medium text-gray-700">{translations.auth.bookingDetails.details.guests}</p>
                   <p className="text-gray-600">
-                    {booking.guests || 1} {booking.guests === 1 ? "Guest" : "Guests"}
+                    {booking.guests || 1} {booking.guests === 1 ? translations.auth.bookingDetails.details.guest : translations.auth.bookingDetails.details.guests}
                   </p>
                 </div>
               </div>
@@ -269,7 +272,7 @@ const BookingDetails = () => {
               <div className="flex items-start">
                 <Clock className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Booked On</p>
+                  <p className="text-sm font-medium text-gray-700">{translations.auth.bookingDetails.details.bookedOn}</p>
                   <p className="text-gray-600">
                     {formatDate(booking.created_at)}
                   </p>
@@ -278,7 +281,7 @@ const BookingDetails = () => {
 
               {booking.special_requests && (
                 <div className="md:col-span-2">
-                  <p className="text-sm font-medium text-gray-700">Special Requests</p>
+                  <p className="text-sm font-medium text-gray-700">{translations.auth.bookingDetails.details.specialRequests}</p>
                   <p className="text-gray-600">{booking.special_requests}</p>
                 </div>
               )}
@@ -287,7 +290,7 @@ const BookingDetails = () => {
             <div className="border-t border-gray-200 px-6 py-4">
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <p className="text-sm text-gray-600">Total</p>
+                  <p className="text-sm text-gray-600">{translations.auth.bookingDetails.details.total}</p>
                   <p className="text-lg font-semibold text-elkaavie-600">
                     {formatPrice(booking.total_price)}
                   </p>
@@ -302,12 +305,12 @@ const BookingDetails = () => {
               {/* Status-specific actions */}
               <div className="space-y-4">
                 {booking.status === "approved" && (
-                  <button 
+                  <button
                     onClick={() => navigate(`/bookings/${booking.id}/payment-guide`)}
                     className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center justify-center"
                   >
                     <CreditCard className="h-5 w-5 mr-2" />
-                    Continue Payment
+                    {translations.auth.bookingDetails.actions.continuePayment}
                   </button>
                 )}
 
@@ -316,10 +319,9 @@ const BookingDetails = () => {
                     <div className="flex items-start">
                       <FileText className="h-5 w-5 text-green-600 mt-0.5 mr-3" />
                       <div>
-                        <p className="text-sm font-medium text-green-800">Payment Verified</p>
+                        <p className="text-sm font-medium text-green-800">{translations.auth.bookingDetails.statusMessages.paid.title}</p>
                         <p className="text-sm text-green-700">
-                          Your payment has been verified. You can now proceed with check-in on {formatDate(booking.check_in)}. 
-                          Please bring your ID card and payment receipt for verification.
+                          {translations.auth.bookingDetails.statusMessages.paid.message.replace('{date}', formatDate(booking.check_in))}
                         </p>
                       </div>
                     </div>
@@ -331,7 +333,7 @@ const BookingDetails = () => {
                     <div className="flex items-start">
                       <Phone className="h-5 w-5 text-yellow-600 mt-0.5 mr-3" />
                       <div>
-                        <p className="text-sm font-medium text-yellow-800">Contact Admin</p>
+                        <p className="text-sm font-medium text-yellow-800">{translations.auth.bookingDetails.statusMessages.pending.title}</p>
                         <p className="text-sm text-yellow-700">
                           Your booking is pending approval. Please contact our admin at{" "}
                           <a href="tel:+6281234567890" className="font-medium underline">
@@ -350,19 +352,25 @@ const BookingDetails = () => {
                       <div className="flex items-start">
                         <FileText className="h-5 w-5 text-red-600 mt-0.5 mr-3" />
                         <div>
-                          <p className="text-sm font-medium text-red-800">Booking {booking.status === "rejected" ? "Rejected" : "Cancelled"}</p>
+                          <p className="text-sm font-medium text-red-800">
+                            {booking.status === "rejected"
+                              ? translations.auth.bookingDetails.statusMessages.rejected.title
+                              : translations.auth.bookingDetails.statusMessages.cancelled.title}
+                          </p>
                           <p className="text-sm text-red-700">
-                            Your booking has been {booking.status}. You can submit a new booking request or contact our admin for assistance.
+                            {booking.status === "rejected"
+                              ? translations.auth.bookingDetails.statusMessages.rejected.message
+                              : translations.auth.bookingDetails.statusMessages.cancelled.message}
                           </p>
                         </div>
                       </div>
                     </div>
-                    <button 
+                    <button
                       onClick={() => navigate("/rooms")}
                       className="w-full py-3 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition flex items-center justify-center"
                     >
                       <FileText className="h-5 w-5 mr-2" />
-                      Submit New Booking
+                      {translations.auth.bookingDetails.actions.submitNewBooking}
                     </button>
                   </div>
                 )}
@@ -372,9 +380,9 @@ const BookingDetails = () => {
                     <div className="flex items-start">
                       <FileText className="h-5 w-5 text-green-600 mt-0.5 mr-3" />
                       <div>
-                        <p className="text-sm font-medium text-green-800">Booking Completed</p>
+                        <p className="text-sm font-medium text-green-800">{translations.auth.bookingDetails.statusMessages.completed.title}</p>
                         <p className="text-sm text-green-700">
-                          Your stay has been completed. Thank you for choosing our service!
+                          {translations.auth.bookingDetails.statusMessages.completed.message}
                         </p>
                       </div>
                     </div>

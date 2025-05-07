@@ -8,8 +8,11 @@ import Facilities from "@/components/home/Facilities";
 import Location from "@/components/home/Location";
 import Reviews from "@/components/home/Reviews";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 const Index = () => {
+  const { translations } = useLanguage();
+
   useEffect(() => {
     // Smooth scroll to section when URL hash changes
     const handleHashChange = () => {
@@ -41,22 +44,22 @@ const Index = () => {
         <Facilities />
         <Location />
         <Reviews />
-        
+
         {/* Book Section/CTA */}
         <section id="book" className="py-20 bg-elkaavie-50">
           <div className="max-w-4xl mx-auto text-center px-6">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Tertarik Untuk Booking?
+              {translations.home.cta.title}
             </h2>
             <p className="text-lg text-gray-700 mb-8 mx-auto">
-              Hunian nyaman dengan fasilitas lengkap ini bisa jadi rumah baru Anda. Hubungi kami untuk informasi ketersediaan dan pemesanan.
+              {translations.home.cta.subtitle}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
                 href="#book"
                 className="inline-flex items-center justify-center px-6 py-3 bg-elkaavie-500 text-white font-medium rounded-lg shadow-md hover:bg-elkaavie-600 transition duration-200 text-center hover-scale"
               >
-                Tanya tanya Dulu
+                {translations.home.cta.buttons.inquire}
                 <ArrowRight size={18} className="ml-2" />
               </a>
               <a
@@ -70,7 +73,7 @@ const Index = () => {
                   <path d="M9.56998 10.252C9.74753 8.80028 11.673 8.70635 12.0621 10.0999C12.6765 12.2399 15.02 11.9313 14.4503 14.9531" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M12 17H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Chat via WhatsApp
+                {translations.home.cta.buttons.whatsapp}
               </a>
             </div>
           </div>

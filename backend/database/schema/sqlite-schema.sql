@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS "users"(
   "created_at" datetime,
   "updated_at" datetime,
   "verification_code" varchar,
-  "role" varchar not null default 'user'
+  "role" varchar not null default 'user',
+  "google_id" varchar
 );
 CREATE UNIQUE INDEX "users_email_unique" on "users"("email");
 CREATE TABLE IF NOT EXISTS "password_reset_tokens"(
@@ -87,7 +88,47 @@ CREATE TABLE IF NOT EXISTS "rooms"(
   "created_at" datetime,
   "updated_at" datetime,
   "price" numeric not null default('1500000'),
-  "capacity" integer not null default('1')
+  "capacity" integer not null default('2'),
+  "image_url" varchar
+);
+CREATE TABLE IF NOT EXISTS "personal_access_tokens"(
+  "id" integer primary key autoincrement not null,
+  "tokenable_type" varchar not null,
+  "tokenable_id" integer not null,
+  "name" varchar not null,
+  "token" varchar not null,
+  "abilities" text,
+  "last_used_at" datetime,
+  "expires_at" datetime,
+  "created_at" datetime,
+  "updated_at" datetime
+);
+CREATE INDEX "personal_access_tokens_tokenable_type_tokenable_id_index" on "personal_access_tokens"(
+  "tokenable_type",
+  "tokenable_id"
+);
+CREATE UNIQUE INDEX "personal_access_tokens_token_unique" on "personal_access_tokens"(
+  "token"
+);
+CREATE TABLE IF NOT EXISTS "bookings"(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NULL,
+  room_id INTEGER NOT NULL,
+  check_in DATE NOT NULL,
+  check_out DATE NOT NULL,
+  status TEXT CHECK(status IN("pending", "approved", "rejected", "completed", "cancelled", "paid")) DEFAULT "pending",
+  phone_number TEXT NOT NULL,
+  identity_card TEXT NOT NULL,
+  guests INTEGER NOT NULL,
+  special_requests TEXT NULL,
+  payment_method TEXT NOT NULL,
+  total_price DECIMAL(10,2) NOT NULL,
+  payment_proof TEXT NULL,
+  payment_due_at TIMESTAMP NULL,
+  created_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL,
+  FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE SET NULL,
+  FOREIGN KEY(room_id) REFERENCES rooms(id) ON DELETE CASCADE
 );
 
 INSERT INTO migrations VALUES(1,'0001_01_01_000000_create_users_table',1);
@@ -99,3 +140,15 @@ INSERT INTO migrations VALUES(6,'2024_06_29_000000_create_rooms_table',2);
 INSERT INTO migrations VALUES(7,'2024_06_30_000000_add_room_type_fields_to_rooms_table',2);
 INSERT INTO migrations VALUES(8,'2024_06_30_000001_remove_room_type_id_from_rooms_table',2);
 INSERT INTO migrations VALUES(9,'2024_06_30_000002_drop_room_types_table',2);
+INSERT INTO migrations VALUES(10,'2024_06_30_000003_remove_unused_columns_from_rooms_table',3);
+INSERT INTO migrations VALUES(11,'2025_03_27_083307_create_personal_access_tokens_table',3);
+INSERT INTO migrations VALUES(12,'2025_03_27_084509_add_role_to_users_table',4);
+INSERT INTO migrations VALUES(13,'2025_03_27_084509_create_bookings_table',4);
+INSERT INTO migrations VALUES(14,'2025_03_27_084509_create_room_types_table',4);
+INSERT INTO migrations VALUES(15,'2025_03_27_084509_create_rooms_table',5);
+INSERT INTO migrations VALUES(16,'2025_03_27_110436_add_is_available_to_rooms_table',5);
+INSERT INTO migrations VALUES(17,'2025_03_27_110615_add_image_url_to_rooms_table',5);
+INSERT INTO migrations VALUES(18,'2025_04_09_235959_update_bookings_status_constraint',5);
+INSERT INTO migrations VALUES(19,'2025_04_23_130432_add_google_id_to_users_table',5);
+INSERT INTO migrations VALUES(20,'2025_05_01_000000_drop_room_types_table_fix',6);
+INSERT INTO migrations VALUES(21,'2024_05_24_000000_drop_amenity_tables',7);

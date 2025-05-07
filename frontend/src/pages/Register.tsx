@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
 import { authApi } from "@/lib/api";
 import { AxiosError } from "axios";
+import { useLanguage } from "@/contexts/language-context";
 
 interface RegisterFormData {
   name: string;
@@ -15,6 +16,7 @@ interface RegisterFormData {
 
 const Register = () => {
   const navigate = useNavigate();
+  const { translations } = useLanguage();
   const [formData, setFormData] = useState<RegisterFormData>({
     name: "",
     email: "",
@@ -60,8 +62,8 @@ const Register = () => {
           <Container>
             <div className="max-w-md mx-auto">
               <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Registration Successful!</h1>
-                <p className="text-gray-600">Please check your email for verification</p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">{translations.auth.register.success.title}</h1>
+                <p className="text-gray-600">{translations.auth.register.success.subtitle}</p>
               </div>
 
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
@@ -83,15 +85,15 @@ const Register = () => {
                     </svg>
                   </div>
                   <p className="text-gray-600">
-                    We've sent a verification email to {formData.email}. Please check your inbox and click the verification link to activate your account.
+                    {translations.auth.register.success.message.replace('{email}', formData.email)}
                   </p>
                   <p className="text-sm text-gray-500">
-                    Didn't receive the email?{" "}
+                    {translations.auth.register.success.noEmail}{" "}
                     <button
                       onClick={() => navigate("/login")}
                       className="text-elkaavie-600 hover:text-elkaavie-700 font-medium"
                     >
-                      Try logging in
+                      {translations.auth.register.success.tryLogin}
                     </button>
                   </p>
                 </div>
@@ -111,8 +113,8 @@ const Register = () => {
         <Container>
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-              <p className="text-gray-600">Join us to start your journey</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{translations.auth.register.title}</h1>
+              <p className="text-gray-600">{translations.auth.register.subtitle}</p>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
@@ -125,7 +127,7 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
+                    {translations.auth.register.fullNameLabel}
                   </label>
                   <input
                     type="text"
@@ -135,13 +137,13 @@ const Register = () => {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
-                    placeholder="Enter your full name"
+                    placeholder={translations.auth.register.fullNamePlaceholder}
                   />
                 </div>
 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    {translations.auth.register.emailLabel}
                   </label>
                   <input
                     type="email"
@@ -151,13 +153,13 @@ const Register = () => {
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
-                    placeholder="Enter your email"
+                    placeholder={translations.auth.register.emailPlaceholder}
                   />
                 </div>
 
                 <div className="relative">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
+                    {translations.auth.register.passwordLabel}
                   </label>
                   <div className="relative">
                     <input
@@ -168,7 +170,7 @@ const Register = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500 pr-10"
-                      placeholder="Create a password"
+                      placeholder={translations.auth.register.passwordPlaceholder}
                     />
                     <button
                       type="button"
@@ -191,7 +193,7 @@ const Register = () => {
 
                 <div className="relative">
                   <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm Password
+                    {translations.auth.register.confirmPasswordLabel}
                   </label>
                   <div className="relative">
                     <input
@@ -202,7 +204,7 @@ const Register = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500 pr-10"
-                      placeholder="Confirm your password"
+                      placeholder={translations.auth.register.confirmPasswordPlaceholder}
                     />
                     <button
                       type="button"
@@ -228,15 +230,15 @@ const Register = () => {
                   disabled={loading}
                   className="w-full py-3 px-4 bg-elkaavie-600 text-white font-medium rounded-lg hover:bg-elkaavie-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? "Creating account..." : "Create Account"}
+                  {loading ? translations.auth.register.creatingAccount : translations.auth.register.createAccount}
                 </button>
               </form>
 
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Already have an account?{" "}
+                  {translations.auth.register.haveAccount}{" "}
                   <Link to="/login" className="text-elkaavie-600 hover:text-elkaavie-700 font-medium">
-                    Sign in
+                    {translations.auth.register.signIn}
                   </Link>
                 </p>
               </div>
@@ -249,4 +251,4 @@ const Register = () => {
   );
 };
 
-export default Register; 
+export default Register;

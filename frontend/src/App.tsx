@@ -33,6 +33,8 @@ const ScrollToTop = () => {
   return null;
 };
 
+import { LanguageProvider } from "./contexts/language-context";
+
 const App = () => {
   const [user, setUser] = useState<{ id: number } | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -57,11 +59,12 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
+        <LanguageProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/rooms" element={<Rooms />} />
             <Route path="/room-booking" element={<RoomBooking />} />
@@ -81,6 +84,7 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </LanguageProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

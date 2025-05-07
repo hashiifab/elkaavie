@@ -54,16 +54,13 @@ export interface RegisterData {
 
 export interface Room {
   id: number;
-  name: string;
   number: string;
   floor: number;
-  description?: string;
   status?: string;
   is_available: boolean;
   price: number;
   capacity: number;
-  image_url?: string;
-  amenities?: Amenity[];
+  
   created_at?: string;
   updated_at?: string;
   
@@ -130,17 +127,7 @@ export interface BookingCreateParams {
 
 // RoomType interface dihapus karena sudah diintegrasikan ke dalam Room
 
-export interface Amenity {
-  id: number;
-  name: string;
-  icon?: string;
-  created_at?: string;
-  updated_at?: string;
-  pivot?: {
-    room_id: number;
-    amenity_id: number;
-  };
-}
+
 
 export const authApi = {
   login: async (email: string, password: string, rememberMe = false) => {

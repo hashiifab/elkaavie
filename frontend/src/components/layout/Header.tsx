@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import Container from "../ui/Container";
 import { cn } from "@/lib/utils";
-import { Menu, X, User, LogOut, UserCircle, Settings, Calendar, ChevronDown } from "lucide-react";
+import { Menu, X, User, LogOut, UserCircle, Settings, Calendar, ChevronDown, Globe } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 import { Link, useNavigate } from "react-router-dom";
 import { authApi } from "@/lib/api";
 
@@ -28,6 +29,7 @@ const navItems: NavItem[] = [
 
 const Header = () => {
   const navigate = useNavigate();
+  const { language, translations, setLanguage } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -151,6 +153,14 @@ const Header = () => {
               {item.label}
             </Link>
           ))}
+          <button
+            onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            {language.toUpperCase()}
+          </button>
+
           {isAuthenticated ? (
             <>
               <Link
@@ -206,6 +216,14 @@ const Header = () => {
               {item.label}
             </Link>
           ))}
+
+          <button
+            onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            {language.toUpperCase()}
+          </button>
 
           {isAuthenticated ? (
             <div className="relative" ref={profileMenuRef}>

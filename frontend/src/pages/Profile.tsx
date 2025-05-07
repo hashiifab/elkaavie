@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
 import { authApi, bookingApi } from "@/lib/api";
 import { User, Mail, Calendar, MapPin, Clock, CreditCard, ChevronRight, Home, RefreshCw } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 interface UserData {
   id?: number;
@@ -43,6 +44,7 @@ interface Booking {
 
 // Countdown Timer Component
 const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
+  const { translations } = useLanguage();
   const [timeLeft, setTimeLeft] = useState<{
     hours: number;
     minutes: number;
@@ -82,14 +84,14 @@ const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
   if (expired) {
     return (
       <div className="text-red-600 text-sm font-medium">
-        Payment deadline expired
+        {translations.auth.profile.bookings.details.paymentDeadlineExpired}
       </div>
     );
   }
 
   return (
     <div className="text-sm">
-      <span className="font-medium text-gray-700">Payment due in: </span>
+      <span className="font-medium text-gray-700">{translations.auth.profile.bookings.details.paymentDueIn}: </span>
       <span className="font-semibold text-elkaavie-600">
         {timeLeft.hours.toString().padStart(2, '0')}:
         {timeLeft.minutes.toString().padStart(2, '0')}:
@@ -101,6 +103,7 @@ const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { translations } = useLanguage();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userBookings, setUserBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +120,7 @@ const Profile = () => {
       return user;
     } catch (err) {
       console.error("Error fetching user data:", err);
-      setError("Failed to load your profile information.");
+      setError(translations.auth.profile.errors.failedToLoad);
       navigate("/login");
       return null;
     } finally {
@@ -230,13 +233,13 @@ const Profile = () => {
         <main className="pt-24 pb-16">
           <Container>
             <div className="text-center py-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Oops! Something went wrong</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">{translations.auth.profile.errors.title}</h2>
               <p className="text-gray-600 mb-6">{error}</p>
               <button
                 onClick={() => navigate("/")}
                 className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
               >
-                Back to Home
+                {translations.auth.profile.navigation.backToHome}
               </button>
             </div>
           </Container>
@@ -258,16 +261,16 @@ const Profile = () => {
                 <Home className="h-4 w-4" />
               </button>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <span>Profile</span>
+              <span>{translations.auth.profile.navigation.profile}</span>
             </div>
-            
+
             <button
               onClick={refreshData}
               disabled={refreshing}
               className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm font-medium transition"
             >
               <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-              {refreshing ? 'Refreshing...' : 'Refresh Data'}
+              {refreshing ? translations.auth.profile.actions.refreshing : translations.auth.profile.actions.refreshData}
             </button>
           </div>
 
@@ -280,36 +283,36 @@ const Profile = () => {
                     {userData?.name ? userData.name.charAt(0).toUpperCase() : "U"}
                   </div>
                   <h2 className="text-xl font-semibold text-center">{userData?.name}</h2>
-                  <p className="text-elkaavie-100 text-center text-sm">{userData?.role || "Guest"}</p>
+                  <p className="text-elkaavie-100 text-center text-sm">{userData?.role || translations.auth.profile.userInfo.guest}</p>
                 </div>
 
                 <div className="p-6 space-y-4">
                   <div className="flex items-start">
                     <Mail className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                     <div>
-                      <p className="text-sm font-medium text-gray-700">Email</p>
+                      <p className="text-sm font-medium text-gray-700">{translations.auth.profile.userInfo.email}</p>
                       <p className="text-gray-600">{userData?.email}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start">
                     <Calendar className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                     <div>
-                      <p className="text-sm font-medium text-gray-700">Member Since</p>
+                      <p className="text-sm font-medium text-gray-700">{translations.auth.profile.userInfo.memberSince}</p>
                       <p className="text-gray-600">
-                        {userData?.created_at 
+                        {userData?.created_at
                           ? formatDate(userData.created_at)
                           : "Not available"}
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="pt-4 border-t border-gray-100">
-                    <button 
+                    <button
                       onClick={() => navigate("/settings")}
                       className="w-full py-2 text-sm text-elkaavie-600 border border-elkaavie-600 rounded-lg hover:bg-elkaavie-50 transition"
                     >
-                      Edit Profile
+                      {translations.auth.profile.actions.editProfile}
                     </button>
                   </div>
                 </div>
@@ -320,7 +323,7 @@ const Profile = () => {
             <div className="md:col-span-2">
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="border-b border-gray-200 p-6">
-                  <h2 className="text-xl font-semibold">My Bookings</h2>
+                  <h2 className="text-xl font-semibold">{translations.auth.profile.bookings.title}</h2>
                 </div>
 
                 {/* Status Filter */}
@@ -334,7 +337,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      All ({userBookings.length})
+                      {translations.auth.profile.bookings.filters.all} ({userBookings.length})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("pending")}
@@ -344,7 +347,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Pending ({getStatusCount("pending")})
+                      {translations.auth.profile.bookings.filters.pending} ({getStatusCount("pending")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("approved")}
@@ -354,7 +357,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Approved ({getStatusCount("approved")})
+                      {translations.auth.profile.bookings.filters.approved} ({getStatusCount("approved")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("rejected")}
@@ -364,7 +367,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Rejected ({getStatusCount("rejected")})
+                      {translations.auth.profile.bookings.filters.rejected} ({getStatusCount("rejected")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("cancelled")}
@@ -374,7 +377,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Cancelled ({getStatusCount("cancelled")})
+                      {translations.auth.profile.bookings.filters.cancelled} ({getStatusCount("cancelled")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("completed")}
@@ -384,7 +387,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      Completed ({getStatusCount("completed")})
+                      {translations.auth.profile.bookings.filters.completed} ({getStatusCount("completed")})
                     </button>
                   </div>
                 </div>
@@ -411,7 +414,7 @@ const Profile = () => {
                                   {booking.room?.name || booking.room?.roomType?.name || `Room ${booking.room?.number}`}
                                 </h3>
                                 <p className="text-sm text-gray-600">
-                                  Booking ID: #{booking.id}
+                                  {translations.auth.profile.bookings.details.bookingId}: #{booking.id}
                                 </p>
                               </div>
                             </div>
@@ -428,7 +431,7 @@ const Profile = () => {
                             <div className="flex items-start">
                               <Calendar className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                               <div>
-                                <p className="text-sm font-medium text-gray-700">Check-in / Check-out</p>
+                                <p className="text-sm font-medium text-gray-700">{translations.auth.profile.bookings.details.checkInOut}</p>
                                 <p className="text-gray-600">
                                   {formatDate(booking.check_in)} - {formatDate(booking.check_out)}
                                 </p>
@@ -438,9 +441,9 @@ const Profile = () => {
                             <div className="flex items-start">
                               <MapPin className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                               <div>
-                                <p className="text-sm font-medium text-gray-700">Room Details</p>
+                                <p className="text-sm font-medium text-gray-700">{translations.auth.profile.bookings.details.roomDetails}</p>
                                 <p className="text-gray-600">
-                                  Room {booking.room?.number}, Floor {booking.room?.floor}
+                                  {translations.auth.roomBooking.summary.room} {booking.room?.number}, {translations.auth.roomBooking.summary.floor} {booking.room?.floor}
                                 </p>
                               </div>
                             </div>
@@ -448,9 +451,9 @@ const Profile = () => {
                             <div className="flex items-start">
                               <User className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                               <div>
-                                <p className="text-sm font-medium text-gray-700">Guests</p>
+                                <p className="text-sm font-medium text-gray-700">{translations.auth.profile.bookings.details.guests}</p>
                                 <p className="text-gray-600">
-                                  {booking.guests || 1} {booking.guests === 1 ? "Guest" : "Guests"}
+                                  {booking.guests || 1} {booking.guests === 1 ? translations.auth.profile.bookings.details.guest : translations.auth.profile.bookings.details.guests}
                                 </p>
                               </div>
                             </div>
@@ -458,7 +461,7 @@ const Profile = () => {
                             <div className="flex items-start">
                               <Clock className="h-5 w-5 text-gray-400 mt-0.5 mr-3" />
                               <div>
-                                <p className="text-sm font-medium text-gray-700">Booked On</p>
+                                <p className="text-sm font-medium text-gray-700">{translations.auth.profile.bookings.details.bookedOn}</p>
                                 <p className="text-gray-600">
                                   {formatDate(booking.created_at)}
                                 </p>
@@ -467,7 +470,7 @@ const Profile = () => {
 
                             {booking.special_requests && (
                               <div className="md:col-span-2">
-                                <p className="text-sm font-medium text-gray-700">Special Requests</p>
+                                <p className="text-sm font-medium text-gray-700">{translations.auth.profile.bookings.details.specialRequests}</p>
                                 <p className="text-gray-600">{booking.special_requests}</p>
                               </div>
                             )}
@@ -476,7 +479,7 @@ const Profile = () => {
                           <div className="border-t border-gray-200 px-6 py-4">
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                               <div>
-                                <p className="text-sm text-gray-600">Total</p>
+                                <p className="text-sm text-gray-600">{translations.auth.profile.bookings.details.total}</p>
                                 <p className="text-lg font-semibold text-elkaavie-600">
                                   {formatPrice(booking.total_price)}
                                 </p>
@@ -488,18 +491,18 @@ const Profile = () => {
                               </div>
                               <div className="flex flex-col sm:flex-row gap-2">
                                 {booking.status === "approved" && (
-                                  <button 
+                                  <button
                                     onClick={() => navigate(`/bookings/${booking.id}/payment-guide`)}
                                     className="w-full sm:w-auto text-sm px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                                   >
-                                    Continue Payment
+                                    {translations.auth.profile.actions.continuePayment}
                                   </button>
                                 )}
-                                <button 
+                                <button
                                   onClick={() => navigate(`/bookings/${booking.id}`)}
                                   className="w-full sm:w-auto text-sm px-4 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition flex items-center justify-center"
                                 >
-                                  View Details
+                                  {translations.auth.profile.actions.viewDetails}
                                   <ChevronRight className="h-4 w-4 ml-1" />
                                 </button>
                               </div>
@@ -513,17 +516,17 @@ const Profile = () => {
                       <div className="w-16 h-16 mx-auto bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-4">
                         <Calendar className="h-8 w-8" />
                       </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Bookings Found</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">{translations.auth.profile.bookings.empty.title}</h3>
                       <p className="text-gray-600 mb-6">
-                        {selectedStatus 
-                          ? `You don't have any ${selectedStatus} bookings.`
-                          : "You haven't made any bookings yet. Start exploring our rooms and book your stay."}
+                        {selectedStatus
+                          ? translations.auth.profile.bookings.empty.noFilteredBookings.replace('{status}', selectedStatus)
+                          : translations.auth.profile.bookings.empty.noBookingsYet}
                       </p>
                       <button
                         onClick={() => navigate("/rooms")}
                         className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
                       >
-                        Browse Rooms
+                        {translations.auth.profile.actions.browseRooms}
                       </button>
                     </div>
                   )}
@@ -538,4 +541,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;

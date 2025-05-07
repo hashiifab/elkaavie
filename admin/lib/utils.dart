@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../main.dart';
 
+
 String formatCurrency(dynamic price) {
   if (price == null) return 'Rp 0';
   try {

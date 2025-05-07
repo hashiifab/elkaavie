@@ -2,26 +2,29 @@ import React from "react";
 import Container from "../ui/Container";
 import CustomBadge from "../ui/CustomBadge";
 import { MapPin } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 const Location = () => {
+  const { translations } = useLanguage();
+
   const nearbyPlaces = [
     {
-      name: "Warteg Al Rizki",
+      name: translations.home.location.nearbyPlaces.places.warteg,
       distance: "2.4 km",
       type: "restaurant",
     },
     {
-      name: "Indomaret Godean",
+      name: translations.home.location.nearbyPlaces.places.indomaret,
       distance: "2.9 km",
       type: "store",
     },
     {
-      name: "Universitas Gadjah Mada",
+      name: translations.home.location.nearbyPlaces.places.ugm,
       distance: "1.5 km",
       type: "education",
     },
     {
-      name: "RS Umum Queen Latifa",
+      name: translations.home.location.nearbyPlaces.places.hospital,
       distance: "3.1 km",
       type: "hospital",
     },
@@ -62,12 +65,12 @@ const Location = () => {
     <section id="location" className="py-20 bg-white">
       <Container>
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <CustomBadge className="mb-3">Lokasi</CustomBadge>
+          <CustomBadge className="mb-3">{translations.navigation.location || "Lokasi"}</CustomBadge>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Lokasi Strategis di Pusat Kota
+            {translations.home.location.title}
           </h2>
           <p className="text-lg text-gray-600">
-            Elkaavie berlokasi strategis di tengah kota dengan akses mudah ke berbagai fasilitas penting.
+            {translations.home.location.subtitle}
           </p>
         </div>
 
@@ -76,15 +79,15 @@ const Location = () => {
             <div className="bg-elkaavie-50 rounded-2xl p-8 animate-scale-in">
               <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
                 <MapPin className="text-elkaavie-500 mr-2" size={24} />
-                Mlati, Kabupaten Sleman, Jogja
+                {translations.home.location.address}
               </h3>
 
               <p className="text-gray-700 mb-8">
-                Lokasi strategis di tengah kota dengan suasana tenang & nyaman. Dekat dengan UGM, UTY, RS Sarjito, serta berbagai fasilitas umum seperti masjid, warung makan, warmindo, toko kelontong, dan laundry.
+                {translations.home.location.description}
               </p>
 
               <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                Tempat Terdekat
+                {translations.home.location.nearbyPlaces.title}
               </h4>
 
               <div className="space-y-4">
@@ -111,7 +114,7 @@ const Location = () => {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-6 py-3 bg-elkaavie-500 text-white font-medium rounded-lg shadow-md hover:bg-elkaavie-600 transition duration-200 text-center hover-scale"
                 >
-                  Lihat di Google Maps
+                  {translations.home.location.viewMap}
                   <svg className="ml-2 w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 17L17 7M17 7H8M17 7V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
@@ -122,7 +125,7 @@ const Location = () => {
 
           <div className="order-1 lg:order-2">
             <div className="relative rounded-2xl overflow-hidden shadow-lg h-[400px] md:h-[500px] animate-scale-in">
-              <iframe 
+              <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.2217300641523!2d110.3646763!3d-7.7662954!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a58453c3f9ca1%3A0xf0e252b6131c38ba!2sKOS%20EXCLUSIVE%20ELKAAVIE!5e0!3m2!1sen!2sid!4v1745549796972!5m2!1sen!2sid"
                 width="100%"
                 height="100%"
@@ -133,9 +136,9 @@ const Location = () => {
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/50 to-transparent flex flex-col justify-end p-6">
-                <h3 className="text-xl font-bold text-white mb-2">KOS EXCLUSIVE ELKAAVIE</h3>
+                <h3 className="text-xl font-bold text-white mb-2">{translations.home.location.fullAddress.split('\n')[0]}</h3>
                 <p className="text-white/90">
-                  Kutu Dukuh, Sinduadi, Mlati, Sleman Regency, Special Region of Yogyakarta 55284
+                  {translations.home.location.fullAddress.split('\n')[1]}
                 </p>
               </div>
             </div>

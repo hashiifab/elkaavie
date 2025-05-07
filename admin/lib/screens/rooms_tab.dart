@@ -22,9 +22,14 @@ class RoomsTab extends StatelessWidget {
     required this.bookings,
   });
 
+  // Di fungsi _findBookingForRoom
   dynamic _findBookingForRoom(int roomId) {
     return bookings.firstWhere(
-      (booking) => booking['room']?['id'] == roomId,
+      (booking) =>
+          booking['room']?['id'] == roomId &&
+          booking['status'] != 'canceled' &&
+          booking['status'] != 'completed' &&
+          booking['status'] != 'rejected',
       orElse: () => null,
     );
   }
@@ -34,7 +39,9 @@ class RoomsTab extends StatelessWidget {
     final int roomId = room['id'];
     final String roomNumber = room['number'] ?? '';
     final dynamic booking = _findBookingForRoom(roomId);
-    final bool isBooked = booking != null;
+    final bool isApproved = booking != null && booking['status'] == 'approved';
+    final bool isPending = booking != null && booking['status'] == 'pending';
+    final dynamic user = booking?['user'];
 
     return showDialog<void>(
       context: context,
@@ -47,12 +54,17 @@ class RoomsTab extends StatelessWidget {
               children: <Widget>[
                 Text('Status: ${isAvailable ? 'Available' : 'Unavailable'}'),
                 const SizedBox(height: 8),
+                if (!isAvailable && booking != null) ...[                  
+                  Text('Booked by: ${user?['name'] ?? 'Unknown'}'),
+                  Text('Status: ${booking['status']?.toUpperCase() ?? 'UNKNOWN'}'),
+                  const SizedBox(height: 8),
+                ],
                 Text('What would you like to do with this room?'),
               ],
             ),
           ),
           actions: <Widget>[
-            if (!isAvailable && isBooked)
+            if (!isAvailable && booking != null) ...[              
               TextButton(
                 child: const Text('View Booking Details'),
                 onPressed: () {
@@ -60,6 +72,15 @@ class RoomsTab extends StatelessWidget {
                   _showBookingDetails(context, booking, roomNumber);
                 },
               ),
+              if (user != null)
+                TextButton(
+                  child: const Text('View Guest Profile'),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                    _showUserDetails(context, user);
+                  },
+                ),
+            ],
             TextButton(
               child: const Text('Cancel'),
               onPressed: () {
@@ -67,7 +88,9 @@ class RoomsTab extends StatelessWidget {
               },
             ),
             TextButton(
-              child: Text(isAvailable ? 'Mark as Unavailable' : 'Mark as Available'),
+              child: Text(
+                isAvailable ? 'Mark as Unavailable' : 'Mark as Available',
+              ),
               onPressed: () async {
                 Navigator.of(dialogContext).pop();
                 try {
@@ -86,13 +109,25 @@ class RoomsTab extends StatelessWidget {
                 }
               },
             ),
+            if (isPending)
+              TextButton(
+                child: const Text('Batalkan Pending'),
+                onPressed: () async {
+                  Navigator.of(dialogContext).pop();
+                  // Tambahkan logika pembatalan pending di sini
+                },
+              ),
           ],
         );
       },
     );
   }
 
-  void _showBookingDetails(BuildContext context, dynamic booking, String roomNumber) {
+  void _showBookingDetails(
+    BuildContext context,
+    dynamic booking,
+    String roomNumber,
+  ) {
     if (booking == null) return;
 
     final String guestName = booking['user']?['name'] ?? 'Unknown';
@@ -113,6 +148,96 @@ class RoomsTab extends StatelessWidget {
               _buildDetailRow('Check In', checkIn),
               _buildDetailRow('Check Out', checkOut),
               _buildDetailRow('Status', status),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+            if (booking['user'] != null)
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _showUserDetails(context, booking['user']);
+                },
+                child: const Text('View Guest Profile'),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showUserDetails(BuildContext context, dynamic user) {
+    if (user == null) return;
+
+    final userBookings = bookings.where((booking) =>
+        booking['user']?['id'] == user['id'] &&
+        booking['status'] != 'canceled' &&
+        booking['status'] != 'rejected').toList();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Guest Profile: ${user['name']}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailRow('Name', user['name'] ?? 'Unknown'),
+              _buildDetailRow('Email', user['email'] ?? 'N/A'),
+              if (userBookings.isNotEmpty) ...[                
+                const SizedBox(height: 16),
+                Text(
+                  'Booking History',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...userBookings.map((booking) {
+                  final roomNumber = booking['room']?['number'] ?? 'Unknown';
+                  final checkIn = booking['check_in'] != null
+                      ? DateTime.parse(booking['check_in'])
+                      : null;
+                  final checkOut = booking['check_out'] != null
+                      ? DateTime.parse(booking['check_out'])
+                      : null;
+                  final status = booking['status']?.toUpperCase() ?? 'UNKNOWN';
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Room $roomNumber',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        if (checkIn != null)
+                          Text(
+                            'Check In: ${checkIn.day}/${checkIn.month}/${checkIn.year}',
+                          ),
+                        if (checkOut != null)
+                          Text(
+                            'Check Out: ${checkOut.day}/${checkOut.month}/${checkOut.year}',
+                          ),
+                        Text('Status: $status'),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ],
             ],
           ),
           actions: [
@@ -160,7 +285,10 @@ class RoomsTab extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'No rooms found',
-              style: GoogleFonts.poppins(fontSize: 18, color: Colors.grey.shade700),
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                color: Colors.grey.shade700,
+              ),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
@@ -176,10 +304,10 @@ class RoomsTab extends StatelessWidget {
     Map<int, List<dynamic>> roomsByFloor = {};
     for (var room in rooms) {
       int floor = room['floor'] ?? 0;
-      
+
       // Skip kamar di lantai 3 untuk grouping reguler
       if (floor == 3) continue;
-      
+
       roomsByFloor.putIfAbsent(floor, () => []).add(room);
     }
     // Tambahkan lantai 3 untuk laundry area
@@ -198,16 +326,19 @@ class RoomsTab extends StatelessWidget {
               children: [
                 ElevatedButton.icon(
                   onPressed: onRefresh,
-                  icon: isLoading
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Icon(Icons.refresh, size: 16),
+                  icon:
+                      isLoading
+                          ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                          : const Icon(Icons.refresh, size: 16),
                   label: Text(isLoading ? 'Refreshing...' : 'Refresh Rooms'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -233,7 +364,7 @@ class RoomsTab extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        width: 18, 
+                        width: 18,
                         height: 18,
                         decoration: BoxDecoration(
                           color: Colors.grey.shade300,
@@ -253,7 +384,10 @@ class RoomsTab extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Text('Booked', style: TextStyle(fontWeight: FontWeight.w500)),
+                      const Text(
+                        'Booked',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
                     ],
                   ),
                 ],
@@ -285,107 +419,120 @@ class RoomsTab extends StatelessWidget {
                   color: Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: floor == 3
-                    ? Column(
-                        children: [
-                          Icon(
-                            Icons.local_laundry_service,
-                            size: 48,
-                            color: Colors.blue.shade900,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Laundry Area',
-                            style: GoogleFonts.poppins(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade900,
+                child:
+                    floor == 3
+                        ? Column(
+                          children: [
+                            Icon(
+                              Icons.local_laundry_service,
+                              size: 48,
+                              color: Colors.blue.shade900,
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Area penjemuran dan cuci pakaian untuk penghuni',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
-                              color: Colors.grey.shade600,
+                            const SizedBox(height: 16),
+                            Text(
+                              'Laundry Area',
+                              style: GoogleFonts.poppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey.shade900,
+                              ),
                             ),
-                          ),
-                        ],
-                      )
-                    : Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'Hallway',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey.shade700),
-                      ),
-                    ),
-                    GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5,
-                        childAspectRatio: 2.0,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemCount: roomsByFloor[floor]!.length,
-                      itemBuilder: (context, index) {
-                        final room = roomsByFloor[floor]![index];
-                        final bool isAvailable = room['is_available'] ?? true;
-                        final String roomNumber = room['number'] ?? '';
-                        final bool isBooked = _findBookingForRoom(room['id']) != null;
+                            const SizedBox(height: 8),
+                            Text(
+                              'Area penjemuran dan cuci pakaian untuk penghuni',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        )
+                        : Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              margin: const EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                'Hallway',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.grey.shade700),
+                              ),
+                            ),
+                            GridView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 5,
+                                    childAspectRatio: 2.0,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                  ),
+                              itemCount: roomsByFloor[floor]!.length,
+                              itemBuilder: (context, index) {
+                                final room = roomsByFloor[floor]![index];
+                                final bool isAvailable =
+                                    room['is_available'] ?? true;
+                                final String roomNumber = room['number'] ?? '';
+                                final bool isBooked =
+                                    _findBookingForRoom(room['id']) != null;
 
-                        return GestureDetector(
-                          onTap: () {
-                            _showRoomActionDialog(context, room);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: isAvailable ? Colors.green : Colors.red.withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(8),
-                              border: isBooked ? Border.all(color: Colors.blue, width: 2) : null,
-                            ),
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: Text(
-                                    roomNumber,
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                return GestureDetector(
+                                  onTap: () {
+                                    _showRoomActionDialog(context, room);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color:
+                                          isAvailable
+                                              ? Colors.green
+                                              : Colors.red.withOpacity(0.7),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border:
+                                          !isAvailable && isBooked
+                                              ? Border.all(
+                                                  color: Colors.blue,
+                                                  width: 2,
+                                                )
+                                              : null,
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            roomNumber,
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        if (!isAvailable && isBooked)
+                                          Positioned(
+                                            top: 2,
+                                            right: 2,
+                                            child: Container(
+                                              width: 8,
+                                              height: 8,
+                                              decoration: const BoxDecoration(
+                                                color: Colors.blue,
+                                                shape: BoxShape.circle,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                                if (isBooked)
-                                  Positioned(
-                                    top: 2,
-                                    right: 2,
-                                    child: Container(
-                                      width: 8,
-                                      height: 8,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.blue,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                  ),
-                              ],
+                                );
+                              },
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                          ],
+                        ),
               ),
               const SizedBox(height: 24),
             ],

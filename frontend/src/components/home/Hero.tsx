@@ -2,8 +2,10 @@
 import React from "react";
 import Container from "../ui/Container";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 const Hero = () => {
+  const { translations } = useLanguage();
   return (
     <section id="home" className="pt-32 pb-24 md:pt-44 md:pb-32 relative overflow-hidden">
       {/* Background Pattern */}
@@ -13,27 +15,27 @@ const Hero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-slide-in">
             <span className="inline-block px-3 py-1 bg-elkaavie-100 text-elkaavie-800 rounded-full text-sm font-medium mb-6">
-              Kos Eksklusif di Jogja
+              {translations.home.hero.title}
             </span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-              Nyaman, Tenang, dan Strategis
+              {translations.home.hero.subtitle}
             </h1>
             <p className="text-lg text-gray-700 mb-8 max-w-lg">
-              Temukan hunian kos premium dengan fasilitas lengkap, suasana tenang, dan lokasi strategis di tengah kota Jogja.
+              {translations.home.hero.description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href="#book"
                 className="inline-flex items-center justify-center px-6 py-3 bg-elkaavie-500 text-white font-medium rounded-lg shadow-md hover:bg-elkaavie-600 transition duration-200 text-center hover-scale"
               >
-                Tanya tanya Dulu
+                {translations.home.hero.cta.inquire}
                 <ArrowRight size={18} className="ml-2" />
               </a>
               <a
                 href="#facilities"
                 className="inline-flex items-center justify-center px-6 py-3 border border-elkaavie-200 text-elkaavie-700 font-medium rounded-lg hover:bg-elkaavie-50 transition duration-200 text-center"
               >
-                Lihat Fasilitas
+                {translations.home.hero.cta.viewFacilities}
               </a>
             </div>
           </div>
@@ -42,7 +44,7 @@ const Hero = () => {
             <div className="relative overflow-hidden rounded-2xl shadow-xl aspect-[4/3]">
               <div className="absolute inset-0 bg-gradient-to-r from-elkaavie-400/20 to-elkaavie-300/10 mix-blend-multiply z-10 rounded-2xl" />
               <img
-                src="https://images.unsplash.com/photo-1586105251261-72a756497a11?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                src="../public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg"
                 alt="Elkaavie Kost"
                 className="object-cover w-full h-full transform transition duration-700 hover:scale-105"
                 loading="lazy"

@@ -2,6 +2,7 @@ import React from "react";
 import Container from "../ui/Container";
 import CustomBadge from "../ui/CustomBadge";
 import RatingStars from "../ui/RatingStars";
+import { useLanguage } from "@/contexts/language-context";
 
 interface ReviewData {
   name: string;
@@ -12,6 +13,7 @@ interface ReviewData {
 }
 
 const Reviews = () => {
+  const { translations } = useLanguage();
   const overallRatings = {
     overall: 4.8,
     cleanliness: 4.8,
@@ -24,23 +26,23 @@ const Reviews = () => {
 
   const reviews: ReviewData[] = [
     {
-      name: "Anonim",
-      time: "1 tahun lalu",
+      name: translations.home.reviews.testimonials.anonymous.name,
+      time: translations.home.reviews.testimonials.anonymous.time,
       rating: 3.6,
-      comment: "Kamarnya bersih dan fasilitas lumayan lengkap.",
+      comment: translations.home.reviews.testimonials.anonymous.comment,
     },
     {
-      name: "Sutejo Heru",
-      time: "1 tahun lalu",
+      name: translations.home.reviews.testimonials.sutejo.name,
+      time: translations.home.reviews.testimonials.sutejo.time,
       rating: 5.0,
-      comment: "Kosan Elkaavie sangat bagus, fasilitas seperti hotel tapi serasa di rumah.",
-      ownerReply: "Alhamdulillah, terima kasih. Semoga sukses dan bahagia selalu, Kak.",
+      comment: translations.home.reviews.testimonials.sutejo.comment,
+      ownerReply: translations.home.reviews.testimonials.sutejo.ownerReply,
     },
     {
-      name: "Rieqy Muwachid Erysya",
-      time: "2 tahun lalu",
+      name: translations.home.reviews.testimonials.rieqy.name,
+      time: translations.home.reviews.testimonials.rieqy.time,
       rating: 4.8,
-      comment: "Kamar mandinya bersih, AC masih sejuk di kamar saya.",
+      comment: translations.home.reviews.testimonials.rieqy.comment,
     },
   ];
 
@@ -48,12 +50,12 @@ const Reviews = () => {
     <section id="reviews" className="py-20 bg-gray-50">
       <Container>
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <CustomBadge className="mb-3">Ulasan</CustomBadge>
+          <CustomBadge className="mb-3">{translations.home.reviews.title}</CustomBadge>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Apa Kata Penghuni Kami
+            {translations.home.reviews.title}
           </h2>
           <p className="text-lg text-gray-600">
-            Lihat ulasan dari penghuni yang telah merasakan kenyamanan tinggal di Elkaavie.
+            {translations.home.reviews.subtitle}
           </p>
         </div>
 
@@ -64,47 +66,47 @@ const Reviews = () => {
               <div className="flex justify-center mb-2">
                 <RatingStars rating={overallRatings.overall} size={24} />
               </div>
-              <p className="text-gray-600">Berdasarkan 6 review</p>
+              <p className="text-gray-600">{translations.home.reviews.overallRating}</p>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-700">Kebersihan</span>
+                <span className="text-gray-700">{translations.home.reviews.categories.cleanliness}</span>
                 <div className="flex items-center">
                   <span className="text-gray-900 font-medium mr-2">{overallRatings.cleanliness}</span>
                   <RatingStars rating={overallRatings.cleanliness} className="flex-shrink-0" />
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-700">Kenyamanan</span>
+                <span className="text-gray-700">{translations.home.reviews.categories.comfort}</span>
                 <div className="flex items-center">
                   <span className="text-gray-900 font-medium mr-2">{overallRatings.comfort}</span>
                   <RatingStars rating={overallRatings.comfort} className="flex-shrink-0" />
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-700">Keamanan</span>
+                <span className="text-gray-700">{translations.home.reviews.categories.security}</span>
                 <div className="flex items-center">
                   <span className="text-gray-900 font-medium mr-2">{overallRatings.security}</span>
                   <RatingStars rating={overallRatings.security} className="flex-shrink-0" />
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-700">Harga</span>
+                <span className="text-gray-700">{translations.home.reviews.categories.price}</span>
                 <div className="flex items-center">
                   <span className="text-gray-900 font-medium mr-2">{overallRatings.price}</span>
                   <RatingStars rating={overallRatings.price} className="flex-shrink-0" />
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-700">Fasilitas Kamar</span>
+                <span className="text-gray-700">{translations.home.reviews.categories.roomFacilities}</span>
                 <div className="flex items-center">
                   <span className="text-gray-900 font-medium mr-2">{overallRatings.roomFacilities}</span>
                   <RatingStars rating={overallRatings.roomFacilities} className="flex-shrink-0" />
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-700">Fasilitas Umum</span>
+                <span className="text-gray-700">{translations.home.reviews.categories.generalFacilities}</span>
                 <div className="flex items-center">
                   <span className="text-gray-900 font-medium mr-2">{overallRatings.publicFacilities}</span>
                   <RatingStars rating={overallRatings.publicFacilities} className="flex-shrink-0" />
@@ -129,7 +131,7 @@ const Reviews = () => {
                     <RatingStars rating={review.rating} />
                   </div>
                   <p className="text-gray-700 mb-4">{review.comment}</p>
-                  
+
                   {review.ownerReply && (
                     <div className="bg-gray-50 p-4 rounded-lg mt-3">
                       <div className="flex items-center mb-2">
@@ -138,7 +140,9 @@ const Reviews = () => {
                             <path d="M3 10L10 17L21 6" stroke="#166534" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                         </span>
-                        <span className="text-sm font-medium text-gray-700">Balasan Pemilik</span>
+                        <span className="text-sm font-medium text-gray-700">
+                          {translations.language === 'id' ? 'Balasan Pemilik' : 'Owner Reply'}
+                        </span>
                       </div>
                       <p className="text-gray-600 text-sm">{review.ownerReply}</p>
                     </div>

@@ -4,9 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Room Model
+ * 
+ * @property int $id
+ * @property string $number
+ * @property int $floor
+ * @property float $price
+ * @property int $capacity
+ * @property string $status
+ * @property bool $is_available
+ * @property string|null $image_url
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ */
 class Room extends Model
 {
     use HasFactory;
@@ -18,6 +31,7 @@ class Room extends Model
         'capacity',
         'status',
         'is_available',
+        'image_url',
     ];
 
     protected function casts(): array
@@ -29,25 +43,13 @@ class Room extends Model
         ];
     }
 
-    // Untuk kompatibilitas dengan frontend, metode ini akan mengembalikan 
-    // data yang mirip dengan RoomType
-    public function getRoomTypeAttribute()
-    {
-        return [
-            'id' => $this->id,
-            'name' => 'Standard',
-            'price' => $this->price,
-            'capacity' => $this->capacity,
-        ];
-    }
+    // Relasi dengan model lain
+    
 
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
     }
 
-    public function amenities(): BelongsToMany
-    {
-        return $this->belongsToMany(Amenity::class);
-    }
-} 
+
+}

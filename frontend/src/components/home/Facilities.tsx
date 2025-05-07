@@ -2,44 +2,47 @@ import React from "react";
 import Container from "../ui/Container";
 import CustomBadge from "../ui/CustomBadge";
 import { Check } from "lucide-react";
+import { useLanguage } from "@/contexts/language-context";
 
 const Facilities = () => {
+  const { translations } = useLanguage();
+
   const mainFacilities = [
-    { name: "WiFi kencang", icon: "wifi" },
-    { name: "Ruang cuci", icon: "washer" },
-    { name: "Kulkas bersama", icon: "fridge" },
-    { name: "Penjaga kos", icon: "security" },
-    { name: "Ruang makan", icon: "dining" },
-    { name: "Ruang jemur", icon: "sun" },
-    { name: "Dapur bersama", icon: "kitchen" },
-    { name: "Balkon", icon: "balcony" },
-    { name: "CCTV", icon: "camera" },
-    { name: "Jemuran pakaian", icon: "clothes" },
+    { name: translations.home.facilities.general.items.wifi, icon: "wifi" },
+    { name: translations.home.facilities.general.items.laundry, icon: "washer" },
+    { name: translations.home.facilities.general.items.fridge, icon: "fridge" },
+    { name: translations.home.facilities.general.items.security, icon: "security" },
+    { name: translations.home.facilities.general.items.diningRoom, icon: "dining" },
+    { name: translations.home.facilities.general.items.dryingArea, icon: "sun" },
+    { name: translations.home.facilities.general.items.kitchen, icon: "kitchen" },
+    { name: translations.home.facilities.general.items.balcony, icon: "balcony" },
+    { name: translations.home.facilities.general.items.cctv, icon: "camera" },
+    { name: translations.home.facilities.general.items.clothesline, icon: "clothes" },
   ];
 
   const parkingFacilities = [
-    { name: "Parkir mobil", icon: "car" },
-    { name: "Parkir motor", icon: "motorcycle" },
-    { name: "Parkir sepeda", icon: "bicycle" },
+    { name: translations.home.facilities.parking.items.car, icon: "car" },
+    { name: translations.home.facilities.parking.items.motorcycle, icon: "motorcycle" },
+    { name: translations.home.facilities.parking.items.bicycle, icon: "bicycle" },
   ];
 
   const koskosanRules = [
-    { name: "Akses 24 jam", icon: "clock" },
-    { name: "Dilarang membawa hewan", icon: "pet" },
-    { name: "Lawan jenis dilarang masuk kamar", icon: "restriction" },
-    { name: "Maksimal 1 orang/kamar", icon: "person" },
+    { name: translations.home.facilities.rules.items.access, icon: "clock" },
+    { name: translations.home.facilities.rules.items.noPets, icon: "pet" },
+    { name: translations.home.facilities.rules.items.noOpposite, icon: "restriction" },
+    { name: translations.home.facilities.rules.items.maxOccupancy, icon: "person" },
   ];
 
   return (
     <section id="facilities" className="py-20 bg-gray-50">
       <Container>
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <CustomBadge className="mb-3">Fasilitas</CustomBadge>
+          <CustomBadge className="mb-3">{translations.rooms.facilities}</CustomBadge>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Fasilitas Lengkap untuk Kenyamanan Anda
+            {translations.home.facilities.title}
           </h2>
           <p className="text-lg text-gray-600">
-            Elkaavie menyediakan berbagai fasilitas yang akan membuat penghuni merasa nyaman dan betah.
+            {translations.home.facilities.subtitle}
           </p>
         </div>
 
@@ -54,9 +57,9 @@ const Facilities = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">Fasilitas Umum</h3>
+                  <h3 className="text-2xl font-bold text-white mb-2">{translations.home.facilities.general.title}</h3>
                   <p className="text-white/90">
-                    Dirancang untuk memenuhi kebutuhan sehari-hari Anda
+                    {translations.home.facilities.general.subtitle}
                   </p>
                 </div>
               </div>
@@ -83,7 +86,7 @@ const Facilities = () => {
                     <path d="M22 12.5V6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H13.5M16 13V18M18.5 15.5H13.5M8 16H8.01M12 16H12.01M12 12H12.01M8 12H8.01M8 8H8.01M12 8H12.01M16 8H16.01M16 12H16.01" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </span>
-                <h3 className="text-xl font-bold text-gray-900">Fasilitas Parkir</h3>
+                <h3 className="text-xl font-bold text-gray-900">{translations.home.facilities.parking.title}</h3>
               </div>
               <div className="space-y-4">
                 {parkingFacilities.map((facility, index) => (
@@ -102,7 +105,7 @@ const Facilities = () => {
                     <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="#D97706" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
                 </span>
-                <h3 className="text-xl font-bold text-gray-900">Peraturan Kos</h3>
+                <h3 className="text-xl font-bold text-gray-900">{translations.home.facilities.rules.title}</h3>
               </div>
               <div className="space-y-4">
                 {koskosanRules.map((rule, index) => (
