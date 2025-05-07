@@ -275,18 +275,7 @@ export const id = {
     show_more: 'Tampilkan Lebih Banyak',
     show_less: 'Tampilkan Lebih Sedikit',
   },
-  auth: {
-    login: 'Masuk',
-    register: 'Daftar',
-    logout: 'Keluar',
-    email: 'Email',
-    password: 'Kata Sandi',
-    forgotPassword: 'Lupa Kata Sandi?',
-    resetPassword: 'Atur Ulang Kata Sandi',
-    confirmPassword: 'Konfirmasi Kata Sandi',
-    name: 'Nama',
-    phone: 'Nomor Telepon',
-  },
+ 
   navigation: {
     home: 'Beranda',
     rooms: 'Kamar',
