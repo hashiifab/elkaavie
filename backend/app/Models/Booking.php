@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Booking Model
- * 
+ *
  * @property int $id
  * @property int $user_id
  * @property int $room_id
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Carbon\Carbon|null $payment_due_at
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * 
+ *
  * @property-read \App\Models\User $user
  * @property-read \App\Models\Room $room
  */
@@ -38,6 +38,7 @@ class Booking extends Model
         'room_id',
         'check_in',
         'check_out',
+        'duration_months',
         'status',
         'guests',
         'special_requests',

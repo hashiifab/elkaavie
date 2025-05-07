@@ -173,20 +173,31 @@ export const id = {
       }
     },
     location: {
+      badge: 'Lokasi',
       title: 'Lokasi Strategis di Pusat Kota',
       subtitle: 'Elkaavie berlokasi strategis di tengah kota dengan akses mudah ke berbagai fasilitas penting.',
       address: 'Mlati, Kabupaten Sleman, Jogja',
       description: 'Lokasi strategis di tengah kota dengan suasana tenang & nyaman. Dekat dengan UGM, UTY, RS Sarjito, serta berbagai fasilitas umum seperti masjid, warung makan, warmindo, toko kelontong, dan laundry.',
       nearbyPlaces: {
         title: 'Tempat Terdekat',
-        places: {
-          warteg: 'Warteg Al Rizki',
-          indomaret: 'Indomaret Godean',
-          ugm: 'Universitas Gadjah Mada',
-          hospital: 'RS Umum Queen Latifa'
-        }
+        seeMore: 'Lihat Lebih Banyak',
+        seeLess: 'Lihat Lebih Sedikit',
+        places: [
+          { name: 'Sekolah Budi Utama', distance: '0.1 km', type: 'education' },
+          { name: 'TVRI Yogyakarta', distance: '0.2 km', type: 'landmark' },
+          { name: 'Masjid Al-Ikhlas', distance: '0.3 km', type: 'worship' },
+          { name: 'Warmindo Latanza', distance: '0.4 km', type: 'restaurant' },
+          { name: 'Sakinah Mart', distance: '0.5 km', type: 'store' },
+          { name: 'RS Umum Sakinah Idaman', distance: '1.2 km', type: 'hospital' },
+          { name: 'RS dr. Sardjito', distance: '1.5 km', type: 'hospital' },
+          { name: 'Universitas Gadjah Mada', distance: '1.5 km', type: 'education' },
+          { name: 'Hotel Tentrem', distance: '1.8 km', type: 'hotel' },
+          { name: 'MAN 3 Sleman', distance: '2.0 km', type: 'education' },
+          { name: 'Warteg Al Rizki', distance: '2.4 km', type: 'restaurant' },
+          { name: 'Indomaret Godean', distance: '2.9 km', type: 'store' },
+        ]
       },
-      viewMap: 'Lihat di Google Maps',
+
       fullAddress: 'KOS EXCLUSIVE ELKAAVIE\nKutu Dukuh, Sinduadi, Mlati, Sleman Regency, Special Region of Yogyakarta 55284'
     },
     reviews: {
@@ -275,7 +286,7 @@ export const id = {
     show_more: 'Tampilkan Lebih Banyak',
     show_less: 'Tampilkan Lebih Sedikit',
   },
- 
+
   navigation: {
     home: 'Beranda',
     rooms: 'Kamar',
@@ -302,7 +313,7 @@ export const id = {
     selected: 'Terpilih',
     hero: {
       title: 'Temukan Kamar Sempurna Anda',
-      description: 'Hotel kami menawarkan berbagai kamar nyaman untuk semua kebutuhan Anda. Pilih dari tata letak gaya bioskop kami di bawah ini.',
+      description: 'Kamar nyaman dan tenang di pusat kota, dekat kampus, kuliner, dan fasilitas publik—ideal untuk tempat tinggal praktis yang terasa seperti rumah sendiri.',
       features: {
         modernComfort: 'Kenyamanan Modern',
         primeLocations: 'Lokasi Strategis',
@@ -636,9 +647,13 @@ export const id = {
         bookingDetails: 'Detail Pemesanan',
         checkInDate: 'Tanggal Check-in',
         checkOutDate: 'Tanggal Check-out',
+        durationMonths: 'Durasi (Bulan)',
+        month: 'Bulan',
+        months: 'Bulan',
         numberOfGuests: 'Jumlah Tamu',
         guest: 'Tamu',
         guests: 'Tamu',
+        guestLimitMessage: 'Maksimal 1 orang per kamar. Untuk penambahan penghuni, silakan hubungi admin terlebih dahulu.',
         phoneNumber: 'Nomor Telepon',
         phoneNumberPlaceholder: 'Masukkan nomor telepon Anda',
         identityCard: 'Kartu Identitas',
@@ -747,7 +762,9 @@ export const id = {
         guest: 'Tamu',
         bookedOn: 'Dipesan Pada',
         specialRequests: 'Permintaan Khusus',
-        total: 'Total'
+        total: 'Total',
+        month: 'Bulan',
+        months: 'Bulan'
       },
       actions: {
         continuePayment: 'Lanjutkan Pembayaran',

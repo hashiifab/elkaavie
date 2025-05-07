@@ -40,7 +40,7 @@ class BookingController extends Controller
         if ($booking->identity_card) {
             $booking->identity_card_url = asset('storage/' . $booking->identity_card);
         }
-        
+
         // Add room info directly to booking object for easier access
         if ($booking->room) {
             $booking->room_number = $booking->room->number;
@@ -117,7 +117,7 @@ class BookingController extends Controller
 
             // Log the incoming request for debugging
             Log::info('Booking request received', $request->validated());
-            
+
             // Get the validated data
             $data = $request->validated();
 
@@ -127,10 +127,16 @@ class BookingController extends Controller
                 Log::info('File uploaded successfully', ['path' => $data['identity_card']]);
             }
 
+            // Validate that check-out date matches the expected date based on duration_months
+            if (!$this->bookingService->validateCheckOutDate($data['check_in'], $data['check_out'], $data['duration_months'])) {
+                // If not, recalculate the check-out date
+                $data['check_out'] = $this->bookingService->calculateCheckOutDate($data['check_in'], $data['duration_months']);
+            }
+
             // Set default status and calculate price
             $data['status'] = BookingService::STATUS_PENDING;
-            $data['total_price'] = 1500000 * $this->bookingService->calculateMonths($data['check_in'], $data['check_out']);
-            
+            $data['total_price'] = 1500000 * $data['duration_months']; // Use duration_months directly
+
             // Always set user_id from authenticated user
             $data['user_id'] = auth()->id();
 
@@ -150,7 +156,7 @@ class BookingController extends Controller
         } catch (\Exception $e) {
             // Log error and return failure response
             Log::error('Booking creation error: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create booking',
@@ -170,7 +176,7 @@ class BookingController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             // Authorization check - only allow admin or booking owner
             if (!$user->isAdmin() && $user->id !== $booking->user_id) {
                 return response()->json(['message' => 'Unauthorized'], 403);
@@ -282,7 +288,7 @@ class BookingController extends Controller
     {
         try {
             $user = auth()->user();
-            
+
             $bookings = Booking::where('user_id', $user->id)
                 ->with(['room'])
                 ->orderBy('created_at', 'desc')

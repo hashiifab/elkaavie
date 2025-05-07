@@ -2,7 +2,7 @@ import 'user.dart';
 import 'room.dart';
 
 /// Model untuk data pemesanan kamar
-/// 
+///
 /// Digunakan untuk menyimpan dan mengelola data pemesanan
 class Booking {
   final int id;
@@ -10,6 +10,7 @@ class Booking {
   final int roomId;
   final String checkIn;
   final String checkOut;
+  final int durationMonths;
   final int totalPrice;
   final String status;
   final String? paymentMethod;
@@ -26,6 +27,7 @@ class Booking {
     required this.roomId,
     required this.checkIn,
     required this.checkOut,
+    this.durationMonths = 1,
     required this.totalPrice,
     required this.status,
     this.paymentMethod,
@@ -45,6 +47,7 @@ class Booking {
       roomId: json['room_id'],
       checkIn: json['check_in'],
       checkOut: json['check_out'],
+      durationMonths: json['duration_months'] ?? 1,
       totalPrice: json['total_price'],
       status: json['status'],
       paymentMethod: json['payment_method'],
@@ -65,6 +68,7 @@ class Booking {
       'room_id': roomId,
       'check_in': checkIn,
       'check_out': checkOut,
+      'duration_months': durationMonths,
       'total_price': totalPrice,
       'status': status,
       'payment_method': paymentMethod,
@@ -84,6 +88,7 @@ class Booking {
     int? roomId,
     String? checkIn,
     String? checkOut,
+    int? durationMonths,
     int? totalPrice,
     String? status,
     String? paymentMethod,
@@ -100,6 +105,7 @@ class Booking {
       roomId: roomId ?? this.roomId,
       checkIn: checkIn ?? this.checkIn,
       checkOut: checkOut ?? this.checkOut,
+      durationMonths: durationMonths ?? this.durationMonths,
       totalPrice: totalPrice ?? this.totalPrice,
       status: status ?? this.status,
       paymentMethod: paymentMethod ?? this.paymentMethod,

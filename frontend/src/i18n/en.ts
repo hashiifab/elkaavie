@@ -173,20 +173,31 @@ export const en = {
       }
     },
     location: {
+      badge: 'Location',
       title: 'Strategic Location in City Center',
       subtitle: 'Elkaavie is strategically located in the city center with easy access to various important facilities.',
       address: 'Mlati, Sleman Regency, Jogja',
       description: 'Strategic location in the city center with a quiet & comfortable atmosphere. Close to UGM, UTY, Sarjito Hospital, and various public facilities such as mosques, food stalls, warmindo, grocery stores, and laundry.',
       nearbyPlaces: {
         title: 'Nearby Places',
-        places: {
-          warteg: 'Warteg Al Rizki',
-          indomaret: 'Indomaret Godean',
-          ugm: 'Gadjah Mada University',
-          hospital: 'Queen Latifa General Hospital'
-        }
+        seeMore: 'See More',
+        seeLess: 'See Less',
+        places: [
+          { name: 'Budi Utama School', distance: '0.1 km', type: 'education' },
+          { name: 'TVRI Yogyakarta', distance: '0.2 km', type: 'landmark' },
+          { name: 'Al-Ikhlas Mosque', distance: '0.3 km', type: 'worship' },
+          { name: 'Warmindo Latanza', distance: '0.4 km', type: 'restaurant' },
+          { name: 'Sakinah Mart', distance: '0.5 km', type: 'store' },
+          { name: 'Sakinah Idaman General Hospital', distance: '1.2 km', type: 'hospital' },
+          { name: 'Sardjito Hospital', distance: '1.5 km', type: 'hospital' },
+          { name: 'Gadjah Mada University', distance: '1.5 km', type: 'education' },
+          { name: 'Hotel Tentrem', distance: '1.8 km', type: 'hotel' },
+          { name: 'MAN 3 Sleman', distance: '2.0 km', type: 'education' },
+          { name: 'Warteg Al Rizki', distance: '2.4 km', type: 'restaurant' },
+          { name: 'Indomaret Godean', distance: '2.9 km', type: 'store' },
+        ]
       },
-      viewMap: 'View on Google Maps',
+
       fullAddress: 'EXCLUSIVE BOARDING HOUSE ELKAAVIE\nKutu Dukuh, Sinduadi, Mlati, Sleman Regency, Special Region of Yogyakarta 55284'
     },
     reviews: {
@@ -302,7 +313,7 @@ export const en = {
     selected: 'Selected',
     hero: {
       title: 'Find Your Perfect Room',
-      description: 'Our hotel offers a variety of comfortable rooms for all your needs. Select from our cinema-style layout below.',
+      description: 'Comfortable and quiet rooms in the city center, close to campuses, dining spots, and public facilities—perfect for a practical living space that feels like home.',
       features: {
         modernComfort: 'Modern Comfort',
         primeLocations: 'Prime Locations',
@@ -636,9 +647,13 @@ export const en = {
         bookingDetails: 'Booking Details',
         checkInDate: 'Check-in Date',
         checkOutDate: 'Check-out Date',
+        durationMonths: 'Duration (Months)',
+        month: 'Month',
+        months: 'Months',
         numberOfGuests: 'Number of Guests',
         guest: 'Guest',
         guests: 'Guests',
+        guestLimitMessage: 'Maximum 1 person per room. Please contact admin for additional occupants.',
         phoneNumber: 'Phone Number',
         phoneNumberPlaceholder: 'Enter your phone number',
         identityCard: 'Identity Card',
@@ -747,7 +762,9 @@ export const en = {
         guest: 'Guest',
         bookedOn: 'Booked On',
         specialRequests: 'Special Requests',
-        total: 'Total'
+        total: 'Total',
+        month: 'Month',
+        months: 'Months'
       },
       actions: {
         continuePayment: 'Continue Payment',

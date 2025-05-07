@@ -246,6 +246,11 @@ const BookingDetails = () => {
                   <p className="text-gray-600">
                     {formatDate(booking.check_in)} - {formatDate(booking.check_out)}
                   </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {booking.duration_months || 1} {(booking.duration_months || 1) === 1 ?
+                      translations.auth.bookingDetails.details.month || "Month" :
+                      translations.auth.bookingDetails.details.months || "Months"}
+                  </p>
                 </div>
               </div>
 

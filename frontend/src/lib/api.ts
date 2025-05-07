@@ -60,10 +60,10 @@ export interface Room {
   is_available: boolean;
   price: number;
   capacity: number;
-  
+
   created_at?: string;
   updated_at?: string;
-  
+
   // Properti roomType dipertahankan untuk kompatibilitas mundur
   // Dalam implementasi, nilai ini akan sama dengan properti Room yang sesuai
   roomType?: {
@@ -100,6 +100,7 @@ export interface Booking {
   user_id: number;
   check_in: string;
   check_out: string;
+  duration_months?: number;
   status: "pending" | "approved" | "rejected" | "completed" | "cancelled" | "paid";
   total_price: number;
   payment_proof?: string;
@@ -118,6 +119,7 @@ export interface BookingCreateParams {
   room_id: number;
   check_in: string;
   check_out: string;
+  duration_months: number;
   guests?: number;
   special_requests?: string;
   payment_method?: string;
@@ -133,7 +135,7 @@ export const authApi = {
   login: async (email: string, password: string, rememberMe = false) => {
     const response = await api.post("/login", { email, password });
     const { token, user } = response.data;
-    
+
     // Store token based on rememberMe setting
     if (rememberMe) {
       localStorage.setItem("auth_token", token);
@@ -141,7 +143,7 @@ export const authApi = {
       sessionStorage.setItem("auth_token", token);
     }
     localStorage.setItem("user_data", JSON.stringify(user));
-    
+
     return response.data;
   },
 
@@ -188,7 +190,7 @@ export const authApi = {
   authenticateWithVerificationCode: async (code: string, rememberMe = false) => {
     const response = await api.post("/email/verify-and-login", { code });
     const { token, user } = response.data;
-    
+
     // Store token based on rememberMe setting
     if (rememberMe) {
       localStorage.setItem("auth_token", token);
@@ -196,7 +198,7 @@ export const authApi = {
       sessionStorage.setItem("auth_token", token);
     }
     localStorage.setItem("user_data", JSON.stringify(user));
-    
+
     return response.data;
   },
 
@@ -218,11 +220,11 @@ export const authApi = {
     return response.data;
   },
 
-  resetPassword: async (data: { 
-    email: string; 
-    password: string; 
-    password_confirmation: string; 
-    token: string 
+  resetPassword: async (data: {
+    email: string;
+    password: string;
+    password_confirmation: string;
+    token: string
   }) => {
     const response = await api.post("/reset-password", data);
     return response.data;
@@ -234,19 +236,19 @@ export const authApi = {
       // Store the current URL to redirect back after login
       localStorage.setItem('redirect_after_login', window.location.pathname);
       console.log('Stored redirect path:', window.location.pathname);
-      
+
       // Use the backend's Google OAuth endpoint with remember_me parameter
       console.log('Calling backend Google OAuth endpoint...');
-      const response = await api.get('/auth/google', { 
-        params: { remember_me: rememberMe ? 'true' : 'false' } 
+      const response = await api.get('/auth/google', {
+        params: { remember_me: rememberMe ? 'true' : 'false' }
       });
       console.log('Backend response:', response.data);
-      
+
       if (!response.data || !response.data.url) {
         console.error('Invalid response from backend:', response.data);
         throw new Error('Invalid response from backend');
       }
-      
+
       return response.data;
     } catch (error) {
       console.error('Google login failed:', error);
@@ -284,33 +286,33 @@ export const bookingApi = {
     const response = await api.get("/bookings");
     return response.data;
   },
-  
+
   getUserBookings: async () => {
     const response = await api.get("/bookings/user");
     return response.data;
   },
-  
+
   getBookingDetails: async (id: number) => {
     const response = await api.get(`/bookings/${id}`);
     return response.data;
   },
-  
+
   create: async (data: FormData | BookingCreateParams) => {
     const config = {
       headers: {
         'Content-Type': data instanceof FormData ? 'multipart/form-data' : 'application/json',
       },
     };
-    
+
     const response = await api.post("/bookings", data, config);
     return response.data;
   },
-  
+
   update: async (id: number, data: Partial<Booking>) => {
     const response = await api.put(`/bookings/${id}`, data);
     return response.data;
   },
-  
+
   cancel: async (id: number) => {
     const response = await api.post(`/bookings/${id}/cancel`);
     return response.data;

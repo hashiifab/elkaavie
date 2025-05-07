@@ -46,7 +46,8 @@ const RoomBooking = () => {
   const [formData, setFormData] = useState({
     check_in: "",
     check_out: "",
-    guests: 1,
+    duration_months: 1, // Number of months for stay
+    guests: 1, // Always fixed to 1 guest
     special_requests: "",
     payment_method: "credit_card",
     phone_number: "",
@@ -87,34 +88,22 @@ const RoomBooking = () => {
   };
 
   /**
-   * Calculate the number of months between check-in and check-out dates
+   * Get the number of months for the booking
    * Used for price calculation (monthly rental model)
    */
-  const calculateMonths = () => {
-    if (!formData.check_in || !formData.check_out) return 0;
+  const getMonths = () => {
+    return formData.duration_months || 1;
+  };
 
-    const checkIn = new Date(formData.check_in);
-    const checkOut = new Date(formData.check_out);
+  /**
+   * Calculate check-out date based on check-in date and duration in months
+   */
+  const calculateCheckOutDate = (checkInDate: string, months: number): string => {
+    if (!checkInDate) return "";
 
-    // If dates are in the same month and year, return 1
-    if (
-      checkIn.getMonth() === checkOut.getMonth() &&
-      checkIn.getFullYear() === checkOut.getFullYear()
-    ) {
-      return 1;
-    }
-
-    // Calculate months difference
-    const months =
-      (checkOut.getFullYear() - checkIn.getFullYear()) * 12 +
-      (checkOut.getMonth() - checkIn.getMonth());
-
-    // If check-out day is less than check-in day, it's not a full month
-    if (checkOut.getDate() < checkIn.getDate()) {
-      return months;
-    }
-
-    return months;
+    const date = new Date(checkInDate);
+    date.setMonth(date.getMonth() + months);
+    return formatDateForInput(date);
   };
 
   /**
@@ -122,7 +111,7 @@ const RoomBooking = () => {
    * Standard rate is 1.5 million IDR per month
    */
   const calculateTotal = () => {
-    const months = calculateMonths();
+    const months = getMonths();
     // Standard price per month is 1.5 million
     return months * 1500000;
   };
@@ -173,7 +162,8 @@ const RoomBooking = () => {
             ...prev,
             check_in: defaultCheckInDate,
             check_out: defaultCheckOutDate,
-            guests: data.capacity || 1,
+            duration_months: 1, // Default to 1 month stay
+            guests: 1, // Always fixed to 1 guest regardless of room capacity
           }));
         }
 
@@ -201,10 +191,33 @@ const RoomBooking = () => {
     >
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    // Skip updating guests value - always keep it at 1
+    if (name === 'guests') return;
+
+    if (name === 'check_in') {
+      // When check-in date changes, recalculate check-out date based on duration
+      const newCheckOut = calculateCheckOutDate(value, formData.duration_months);
+      setFormData((prev) => ({
+        ...prev,
+        check_in: value,
+        check_out: newCheckOut,
+      }));
+    } else if (name === 'duration_months') {
+      // When duration changes, recalculate check-out date
+      const months = parseInt(value) || 1;
+      const newCheckOut = calculateCheckOutDate(formData.check_in, months);
+      setFormData((prev) => ({
+        ...prev,
+        duration_months: months,
+        check_out: newCheckOut,
+      }));
+    } else {
+      // For other fields, just update normally
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   /**
@@ -250,6 +263,7 @@ const RoomBooking = () => {
       formDataToSend.append("room_id", roomId!);
       formDataToSend.append("check_in", formData.check_in);
       formDataToSend.append("check_out", formData.check_out);
+      formDataToSend.append("duration_months", formData.duration_months.toString());
       formDataToSend.append("guests", formData.guests.toString());
       formDataToSend.append("special_requests", formData.special_requests);
       formDataToSend.append("payment_method", formData.payment_method);
@@ -430,21 +444,38 @@ const RoomBooking = () => {
 
                       <div>
                         <label
-                          htmlFor="check_out"
+                          htmlFor="duration_months"
                           className="block text-sm font-medium text-gray-700 mb-1"
                         >
-                          {translations.auth.roomBooking.form.checkOutDate}
+                          {translations.auth.roomBooking.form.durationMonths || "Duration (Months)"}
                         </label>
-                        <input
-                          type="date"
-                          id="check_out"
-                          name="check_out"
-                          value={formData.check_out}
+                        <select
+                          id="duration_months"
+                          name="duration_months"
+                          value={formData.duration_months}
                           onChange={handleChange}
-                          min={minCheckOut}
                           required
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
-                        />
+                        >
+                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => (
+                            <option key={month} value={month}>
+                              {month} {month === 1 ?
+                                (translations.auth.roomBooking.form.month || "Month") :
+                                (translations.auth.roomBooking.form.months || "Months")}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="mt-2">
+                          <p className="text-xs text-gray-500">
+                            {translations.auth.roomBooking.form.checkOutDate}: {formData.check_out ?
+                              new Date(formData.check_out).toLocaleDateString("en-US", {
+                                weekday: "short",
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              }) : "-"}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
@@ -455,22 +486,20 @@ const RoomBooking = () => {
                       >
                         {translations.auth.roomBooking.form.numberOfGuests}
                       </label>
-                      <select
+                      <input
+                        type="number"
                         id="guests"
                         name="guests"
-                        value={formData.guests}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-elkaavie-500 focus:border-elkaavie-500"
-                      >
-                        {Array.from(
-                          { length: room?.capacity || room?.roomType?.capacity || 1 },
-                          (_, i) => (
-                            <option key={i + 1} value={i + 1}>
-                              {i + 1} {i === 0 ? translations.auth.roomBooking.form.guest : translations.auth.roomBooking.form.guests}
-                            </option>
-                          )
-                        )}
-                      </select>
+                        value={1}
+                        readOnly
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
+                      />
+                      <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p className="text-xs text-yellow-700 flex items-center">
+                          <Info className="w-4 h-4 mr-1 flex-shrink-0" />
+                          {translations.auth.roomBooking.form.guestLimitMessage}
+                        </p>
+                      </div>
                     </div>
 
                     <div>
@@ -753,7 +782,7 @@ const RoomBooking = () => {
                       <BedDouble className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
                       <div>
                         <h3 className="font-medium">
-                          {room?.name || room?.roomType?.name || `Room ${room?.number}`}
+                          {room?.roomType?.name || `Room ${room?.number}`}
                         </h3>
                         <p className="text-sm text-gray-600">
                           {translations.auth.roomBooking.summary.room} {room?.number}, {translations.auth.roomBooking.summary.floor} {room?.floor}
@@ -769,7 +798,7 @@ const RoomBooking = () => {
                           {formData.guests === 1 ? translations.auth.roomBooking.form.guest : translations.auth.roomBooking.form.guests}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          {translations.auth.roomBooking.summary.maxCapacity}: {room?.capacity || room?.roomType?.capacity}
+                          {translations.auth.roomBooking.summary.maxCapacity}: 1
                         </p>
                       </div>
                     </div>
@@ -778,8 +807,8 @@ const RoomBooking = () => {
                       <Calendar className="w-5 h-5 text-gray-400 mr-3 mt-0.5" />
                       <div>
                         <h3 className="font-medium">
-                          {calculateMonths()}{" "}
-                          {calculateMonths() === 1 ? translations.auth.roomBooking.summary.month : translations.auth.roomBooking.summary.months}
+                          {getMonths()}{" "}
+                          {getMonths() === 1 ? translations.auth.roomBooking.summary.month : translations.auth.roomBooking.summary.months}
                         </h3>
                         <p className="text-sm text-gray-600">
                           {formData.check_in && formData.check_out && (
@@ -819,16 +848,9 @@ const RoomBooking = () => {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">{translations.auth.roomBooking.summary.numberOfMonths}</span>
-                      <span className="font-medium">{calculateMonths()}</span>
+                      <span className="font-medium">{getMonths()}</span>
                     </div>
-                    {formData.guests > 1 && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">{translations.auth.roomBooking.summary.extraGuests}</span>
-                        <span className="font-medium">
-                          {formData.guests - 1}
-                        </span>
-                      </div>
-                    )}
+
                   </div>
 
                   <div className="border-t border-gray-200 pt-4">

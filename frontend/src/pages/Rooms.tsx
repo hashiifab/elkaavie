@@ -390,13 +390,19 @@ const Rooms = () => {
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">{translations.rooms.booking.howToBook}</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-                  <div className="flex flex-col items-center text-center">
+                  <div className="flex flex-col items-center text-center relative">
                     <div className="w-12 h-12 bg-elkaavie-100 text-elkaavie-600 flex items-center justify-center rounded-full mb-4">
                       <span className="font-bold">1</span>
                     </div>
                     <h3 className="font-medium text-gray-900 mb-2">{translations.rooms.booking.steps.step1.title}</h3>
                     <p className="text-gray-600 text-sm">{translations.rooms.booking.steps.step1.description}</p>
+
+                    <div className="hidden md:block absolute top-8 left-full -translate-x-4">
+                      <ArrowRight className="text-gray-300 h-8 w-8" />
+                    </div>
                   </div>
+
+
 
                   <div className="flex flex-col items-center text-center relative">
                     <div className="w-12 h-12 bg-elkaavie-100 text-elkaavie-600 flex items-center justify-center rounded-full mb-4">

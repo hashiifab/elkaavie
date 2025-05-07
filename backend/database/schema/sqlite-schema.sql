@@ -115,6 +115,7 @@ CREATE TABLE IF NOT EXISTS "bookings"(
   room_id INTEGER NOT NULL,
   check_in DATE NOT NULL,
   check_out DATE NOT NULL,
+  duration_months INTEGER NOT NULL DEFAULT 1,
   status TEXT CHECK(status IN("pending", "approved", "rejected", "completed", "cancelled", "paid")) DEFAULT "pending",
   phone_number TEXT NOT NULL,
   identity_card TEXT NOT NULL,
