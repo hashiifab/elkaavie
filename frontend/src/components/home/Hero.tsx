@@ -42,7 +42,7 @@ const Hero = () => {
             <div className="relative overflow-hidden rounded-2xl shadow-xl aspect-[4/3]">
               <div className="absolute inset-0 bg-gradient-to-r from-elkaavie-400/20 to-elkaavie-300/10 mix-blend-multiply z-10 rounded-2xl" />
               <img
-                src="https://images.unsplash.com/photo-1586105251261-72a756497a11?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                src="../public/assets/elkaavie-awal.webp"
                 alt="Elkaavie Kost"
                 className="object-cover w-full h-full transform transition duration-700 hover:scale-105"
                 loading="lazy"

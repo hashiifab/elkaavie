@@ -154,20 +154,12 @@ const Header = () => {
           {isAuthenticated ? (
             <>
               <Link
-                to="/profile"
-                className="flex items-center text-gray-800 hover:text-elkaavie-600"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <User className="h-5 w-5 mr-2" />
-                Profil
-              </Link>
-              <Link
-                to="/profile"
+                to="/pesanan"
                 className="flex items-center text-gray-800 hover:text-elkaavie-600"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Calendar className="h-5 w-5 mr-2" />
-                Booking
+                Pesanan
               </Link>
               <button
                 onClick={() => {
@@ -230,15 +222,7 @@ const Header = () => {
                     <p className="text-xs text-gray-500 truncate">{userData?.email || ''}</p>
                   </div>
                   <Link 
-                    to="/profile"
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    onClick={() => setIsProfileMenuOpen(false)}
-                  >
-                    <UserCircle size={16} />
-                    Profil
-                  </Link>
-                  <Link 
-                    to="/profile"
+                    to="/pesanan"
                     className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     onClick={() => setIsProfileMenuOpen(false)}
                   >

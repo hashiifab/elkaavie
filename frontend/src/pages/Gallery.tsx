@@ -13,7 +13,7 @@ interface GalleryImage {
   featured?: boolean;
 }
 
-type Category = "semua" | "kamar" | "fasilitas" | "exterior" | "makan";
+type Category = "semua" | "kamar" | "wisata" | "rumah sakit" | "tempat makan";
 
 const galleryImages: GalleryImage[] = [
   {
@@ -37,22 +37,22 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: 4,
-    src: "https://images.unsplash.com/photo-1615874959474-d609969a20ed",
-    alt: "Fully equipped kitchen with stainless steel appliances",
-    category: "fasilitas",
+    src: "https://images.unsplash.com/photo-1646736121441-c6163d77627a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHR1Z3UlMjBqb2dqYXxlbnwwfHwwfHx8MA%3D%3D",
+    alt: "Stasiun Yogyakarta",
+    category: "wisata",
     featured: true,
   },
   {
     id: 5,
-    src: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c",
-    alt: "Elegant dining area with natural lighting",
-    category: "makan",
+    src: "https://images.unsplash.com/photo-1631795617958-3ddcf718d6aa?q=80&w=3328&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    alt: "Tugu Yogya",
+    category: "wisata",
   },
   {
     id: 6,
-    src: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3",
-    alt: "Modern building exterior with landscaped entrance",
-    category: "exterior",
+    src: "https://images.unsplash.com/photo-1543874768-af0b9c4090d5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHlvZ3lha2FydGF8ZW58MHx8MHx8fDA%3D",
+    alt: "Jalan Malioboro",
+    category: "wisata",
     featured: true,
   },
   {
@@ -63,9 +63,9 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: 8,
-    src: "https://images.unsplash.com/photo-1587985064135-a1a8cb43838b",
-    alt: "Refreshing swimming pool with loungers",
-    category: "fasilitas",
+    src: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHlvZ3lha2FydGF8ZW58MHx8MHx8fDA%3D",
+    alt: "Candi",
+    category: "wisata",
   },
   {
     id: 9,
@@ -170,11 +170,11 @@ const Gallery = () => {
   }, [isLightboxOpen, selectedImage]);
 
   const categories: { value: Category; label: string }[] = [
-    { value: "semua", label: "Semua Foto" },
+    { value: "semua", label: "Semua" },
     { value: "kamar", label: "Kamar" },
-    { value: "fasilitas", label: "Fasilitas" },
-    { value: "exterior", label: "Exterior" },
-    { value: "makan", label: "Tempat makan" },
+    { value: "wisata", label: "wisata" },
+    { value: "rumah sakit", label: "rumah sakit" },
+    { value: "tempat makan", label: "Tempat makan" },
   ];
 
   return (

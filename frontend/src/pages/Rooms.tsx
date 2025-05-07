@@ -353,7 +353,7 @@ const Rooms = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center"
             style={{ 
-              backgroundImage: "url('https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=1600&auto=format&fit=crop')",
+              backgroundColor: 'green',
               backgroundPosition: "center",
             }}
           >
@@ -458,7 +458,7 @@ const Rooms = () => {
                   <span className="text-sm">Kamar kamu</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm ring-2 ring-blue-500"></div>
+                  <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm ring-2 ring-orange-500"></div>
                   <span className="text-sm">Terpilih</span>
                 </div>
               </div>
@@ -505,7 +505,7 @@ const Rooms = () => {
                                     : room.is_available 
                                       ? "cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-md transition-all hover:scale-105" 
                                       : ""
-                              } ${selectedRoom?.id === room.id ? "ring-4 ring-blue-500 transform scale-105" : ""}`}
+                              } ${selectedRoom?.id === room.id ? "ring-4 ring-orange-500 transform scale-105" : ""}`}
                               onClick={() => {
                                 if (room.is_available || isUserBooked) {
                                   handleRoomClick(room);

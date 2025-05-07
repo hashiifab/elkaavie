@@ -238,7 +238,7 @@ class RoomsTab extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.grey.shade300,
                           borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: Colors.blue, width: 2),
+                          border: Border.all(color: Colors.amber, width: 2),
                         ),
                         child: Align(
                           alignment: Alignment.topRight,
@@ -246,7 +246,7 @@ class RoomsTab extends StatelessWidget {
                             width: 6,
                             height: 6,
                             decoration: const BoxDecoration(
-                              color: Colors.blue,
+                              color: Colors.amber,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -352,7 +352,7 @@ class RoomsTab extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: isAvailable ? Colors.green : Colors.red.withOpacity(0.7),
                               borderRadius: BorderRadius.circular(8),
-                              border: isBooked ? Border.all(color: Colors.blue, width: 2) : null,
+                              border: isBooked ? Border.all(color: Colors.amber, width: 5) : null,
                             ),
                             child: Stack(
                               children: [
@@ -373,7 +373,7 @@ class RoomsTab extends StatelessWidget {
                                       width: 8,
                                       height: 8,
                                       decoration: const BoxDecoration(
-                                        color: Colors.blue,
+                                        color: Colors.amber,
                                         shape: BoxShape.circle,
                                       ),
                                     ),

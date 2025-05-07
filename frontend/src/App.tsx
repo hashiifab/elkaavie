@@ -12,7 +12,7 @@ import Rooms from "./pages/Rooms";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RoomBooking from "./pages/RoomBooking";
-import Profile from "./pages/Profile";
+import Profile from "./pages/Pesanan";
 import Settings from "./pages/Settings";
 import BookingDetails from "./pages/BookingDetails";
 import PaymentGuide from "./pages/PaymentGuide";
@@ -69,7 +69,7 @@ const App = () => {
             <Route path="/help-center" element={<HelpCenter />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/pesanan" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/bookings/:id" element={<BookingDetails />} />
             <Route path="/bookings/:id/payment-guide" element={<PaymentGuide />} />

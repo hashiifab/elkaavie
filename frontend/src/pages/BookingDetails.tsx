@@ -69,7 +69,7 @@ interface Booking {
   room_id: number;
   check_in: string;
   check_out: string;
-  status: "pending" | "approved" | "rejected" | "completed" | "cancelled" | "paid";
+  status: "pending" | "approved" | "rejected" | "completed" | "cancelled" | "dibayar";
   total_price: number;
   guests?: number;
   phone_number?: string;
@@ -181,7 +181,7 @@ const BookingDetails = () => {
                 onClick={() => navigate("/profile")}
                 className="px-6 py-2 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
               >
-                Kemblai ke Profil
+                Kembali ke Profil
               </button>
             </div>
           </Container>
@@ -311,7 +311,7 @@ const BookingDetails = () => {
                   </button>
                 )}
 
-                {booking.status === "paid" && (
+                {booking.status === "dibayar" && (
                   <div className="bg-green-50 p-4 rounded-lg">
                     <div className="flex items-start">
                       <FileText className="h-5 w-5 text-green-600 mt-0.5 mr-3" />
@@ -334,8 +334,8 @@ const BookingDetails = () => {
                         <p className="text-sm font-medium text-yellow-800">Contact Admin</p>
                         <p className="text-sm text-yellow-700">
                           Pemesanan Anda sedang menunggu persetujuan. Silakan hubungi admin kami di{" "}
-                          <a href="tel:+6281234567890" className="font-medium underline">
-                            +62 812-3456-7890
+                          <a href="tel:+628179370631" className="font-medium underline">
+                            +62 817‑9370‑631
                           </a>{" "}
                           untuk mempercepat proses
                         </p>

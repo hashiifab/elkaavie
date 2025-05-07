@@ -258,7 +258,7 @@ const Profile = () => {
                 <Home className="h-4 w-4" />
               </button>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <span>Profil</span>
+              <span>Pesanan</span>
             </div>
             
             <button
