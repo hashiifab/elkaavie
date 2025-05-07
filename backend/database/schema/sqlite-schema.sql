@@ -89,7 +89,6 @@ CREATE TABLE IF NOT EXISTS "rooms"(
   "updated_at" datetime,
   "price" numeric not null default('1500000'),
   "capacity" integer not null default('2'),
-  "image_url" varchar
 );
 CREATE TABLE IF NOT EXISTS "personal_access_tokens"(
   "id" integer primary key autoincrement not null,

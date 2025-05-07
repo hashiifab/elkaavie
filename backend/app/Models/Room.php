@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $capacity
  * @property string $status
  * @property bool $is_available
- * @property string|null $image_url
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  */
@@ -31,7 +30,6 @@ class Room extends Model
         'capacity',
         'status',
         'is_available',
-        'image_url',
     ];
 
     protected function casts(): array
