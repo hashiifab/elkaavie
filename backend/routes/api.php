@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/auto-login', [AuthController::class, 'autoLogin']);
+Route::get('/auto-login-redirect/{bookingId}/{userId}', [AuthController::class, 'generateAutoLoginRedirect']);
 Route::middleware(['web'])->group(function () {
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle']);
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
@@ -33,14 +35,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    
+
     // User bookings - with full data but filtered by user
     Route::get('/bookings/user', [BookingController::class, 'userBookings']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
     Route::post('/bookings/associate', [BookingController::class, 'associateBookingsWithUser']);
     Route::post('/bookings/{booking}/payment-proof', [BookingController::class, 'uploadPaymentProof']);
-    
+
     // Create booking - now requires authentication
     Route::post('/bookings', [BookingController::class, 'store']);
 });
@@ -49,13 +51,13 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Users management
     Route::get('/users', [AuthController::class, 'getUsers']);
-    
+
     // Rooms management
     Route::post('/rooms', [RoomController::class, 'store']);
     Route::put('/rooms/{room}', [RoomController::class, 'update']);
     Route::delete('/rooms/{room}', [RoomController::class, 'destroy']);
     Route::post('/rooms/{room}/toggle-availability', [RoomController::class, 'toggleAvailability']);
-    
+
     // Bookings management
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::put('/bookings/{booking}', [BookingController::class, 'update']);

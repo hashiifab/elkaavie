@@ -115,7 +115,7 @@ class AuthController extends Controller
     {
         try {
             $user = Auth::user();
-            
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -165,7 +165,7 @@ class AuthController extends Controller
     {
         try {
             $credentials = request()->only('email', 'password');
-            
+
             if (!Auth::attempt($credentials)) {
                 return response()->json([
                     'message' => 'Invalid credentials',
@@ -237,7 +237,7 @@ class AuthController extends Controller
             $user->email_verified_at = now();
             $user->verification_code = null;
             $user->save();
-            
+
             // Generate auth token
             $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -261,12 +261,12 @@ class AuthController extends Controller
             if (request()->has('remember_me')) {
                 session(['google_remember_me' => request()->get('remember_me')]);
             }
-            
+
             $url = Socialite::driver('google')
                 ->stateless()
                 ->redirect()
                 ->getTargetUrl();
-            
+
             return response()->json(['url' => $url]);
         } catch (\Exception $e) {
             Log::error('Google redirect failed: ' . $e->getMessage());
@@ -281,13 +281,13 @@ class AuthController extends Controller
     {
         try {
             \Log::info('Google callback received', ['request' => $request->all()]);
-            
+
             // Use stateless to avoid session issues
             $googleUser = Socialite::driver('google')->stateless()->user();
             \Log::info('Google user data received', ['email' => $googleUser->email]);
-            
+
             $user = User::where('email', $googleUser->email)->first();
-            
+
             if (!$user) {
                 \Log::info('Creating new user from Google data');
                 $user = User::create([
@@ -303,38 +303,38 @@ class AuthController extends Controller
                     'google_id' => $googleUser->id
                 ]);
             }
-            
+
             $token = $user->createToken('auth_token')->plainTextToken;
             \Log::info('Auth token created for user', ['user_id' => $user->id]);
-            
+
             // Get remember_me preference from session
             $rememberMe = session('google_remember_me', 'false');
             \Log::info('Remember me preference', ['remember_me' => $rememberMe]);
-            
+
             // Redirect to frontend with token and remember_me parameter
             $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
             $redirectUrl = $frontendUrl . '/auth/google/callback?token=' . $token . '&remember_me=' . $rememberMe;
             \Log::info('Redirecting to frontend', ['url' => $redirectUrl]);
-            
+
             return redirect($redirectUrl);
-            
+
         } catch (\Exception $e) {
             \Log::error('Google callback error: ' . $e->getMessage(), [
                 'exception' => get_class($e),
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
             $redirectUrl = $frontendUrl . '/login?error=google_login_failed';
             \Log::info('Redirecting to login with error', ['url' => $redirectUrl]);
-            
+
             return redirect($redirectUrl);
         }
     }
 
     /**
      * Get all users (admin only)
-     * 
+     *
      * @return JsonResponse
      */
     public function getUsers(): JsonResponse
@@ -358,6 +358,116 @@ class AuthController extends Controller
                 'message' => 'Failed to get users',
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    /**
+     * Generate an auto-login redirect URL with token
+     *
+     * @param int $bookingId
+     * @param int $userId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function generateAutoLoginRedirect($bookingId, $userId)
+    {
+        try {
+            // Find the user
+            $user = User::find($userId);
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            // Generate token
+            $token = $user->createAutoLoginToken($bookingId);
+
+            // Log token generation
+            Log::info('Auto-login token generated for redirect', [
+                'user_id' => $userId,
+                'booking_id' => $bookingId,
+                'token_length' => strlen($token)
+            ]);
+
+            // Redirect to frontend with token
+            $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+            $redirectUrl = $frontendUrl . '/auto-login?token=' . urlencode($token);
+
+            return redirect($redirectUrl);
+        } catch (\Exception $e) {
+            Log::error('Auto-login redirect generation failed: ' . $e->getMessage());
+            return redirect(config('app.frontend_url', 'http://localhost:3000') . '/login?error=auto_login_failed');
+        }
+    }
+
+    /**
+     * Auto-login a user using a secure token
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function autoLogin(Request $request): JsonResponse
+    {
+        try {
+            // Validate the token parameter
+            $request->validate([
+                'token' => 'required|string',
+            ]);
+
+            $token = $request->input('token');
+
+            // Log token for debugging
+            Log::info('Auto-login attempt', [
+                'token_length' => strlen($token),
+                'token_parts' => explode('.', $token)
+            ]);
+
+            // Split token into payload and signature
+            $parts = explode('.', $token);
+            if (count($parts) !== 2) {
+                return response()->json(['message' => 'Invalid token format'], 400);
+            }
+
+            [$base64Payload, $signature] = $parts;
+
+            // Verify signature
+            $expectedSignature = hash_hmac('sha256', $base64Payload, config('app.key'));
+            if (!hash_equals($expectedSignature, $signature)) {
+                return response()->json(['message' => 'Invalid token signature'], 401);
+            }
+
+            // Decode payload
+            $jsonPayload = base64_decode($base64Payload);
+            $payload = json_decode($jsonPayload, true);
+
+            // Validate payload structure
+            if (!isset($payload['user_id']) || !isset($payload['booking_id']) || !isset($payload['expires_at'])) {
+                return response()->json(['message' => 'Invalid token payload'], 400);
+            }
+
+            // Check if token is expired
+            if ($payload['expires_at'] < now()->timestamp) {
+                return response()->json(['message' => 'Token has expired'], 401);
+            }
+
+            // Find the user
+            $user = User::find($payload['user_id']);
+            if (!$user) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            // Create a new token for the user
+            $newToken = $user->createToken('auto-login')->plainTextToken;
+
+            // Return the token and booking ID for redirection
+            return response()->json([
+                'token' => $newToken,
+                'user' => $user,
+                'booking_id' => $payload['booking_id'],
+                'redirect_to' => "/bookings/{$payload['booking_id']}"
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Auto-login error: ' . $e->getMessage());
+            return response()->json(['message' => 'Auto-login failed: ' . $e->getMessage()], 500);
         }
     }
 }

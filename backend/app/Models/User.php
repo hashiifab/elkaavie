@@ -12,7 +12,7 @@ use App\Traits\HasCustomEmailVerification;
 
 /**
  * User Model
- * 
+ *
  * @property int $id
  * @property string $name
  * @property string $email
@@ -24,7 +24,7 @@ use App\Traits\HasCustomEmailVerification;
  * @property string|null $google_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- * 
+ *
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Booking[] $bookings
  */
 class User extends Authenticatable
@@ -79,5 +79,30 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Generate a secure auto-login token for this user
+     *
+     * @param int $bookingId The booking ID to include in the token
+     * @param int $expiresInMinutes How long the token should be valid (default: 1440 minutes = 24 hours)
+     * @return string The generated token
+     */
+    public function createAutoLoginToken(int $bookingId, int $expiresInMinutes = 1440): string
+    {
+        // Create a payload with user ID, booking ID and expiration time
+        $payload = [
+            'user_id' => $this->id,
+            'booking_id' => $bookingId,
+            'expires_at' => now()->addMinutes($expiresInMinutes)->timestamp
+        ];
+
+        // Encode and sign the payload
+        $jsonPayload = json_encode($payload);
+        $base64Payload = base64_encode($jsonPayload);
+        $signature = hash_hmac('sha256', $base64Payload, config('app.key'));
+
+        // Return the complete token
+        return $base64Payload . '.' . $signature;
     }
 }

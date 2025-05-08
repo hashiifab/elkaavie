@@ -34,9 +34,9 @@ class _BookingsTabState extends State<BookingsTab> {
     'rejected': 'Rejected',
     'canceled': 'Canceled',
   };
-  
+
   Map<int, bool> _expandedBookings = {};
-  
+
   // Method to set filter externally (can be called from dashboard)
   void setFilter(String filter) {
     if (_filters.containsKey(filter)) {
@@ -53,7 +53,7 @@ class _BookingsTabState extends State<BookingsTab> {
         .where((booking) => booking['user']?['name'] != null)
         .toList()
       ..sort((a, b) => (b['id'] as int).compareTo(a['id'] as int));
-      
+
     final filteredBookings = _selectedFilter == 'all'
         ? validBookings
         : validBookings.where((booking) => booking['status'] == _selectedFilter).toList();
@@ -94,7 +94,7 @@ class _BookingsTabState extends State<BookingsTab> {
         children: [
           _buildFilterSection(validBookings),
           Expanded(
-            child: filteredBookings.isEmpty 
+            child: filteredBookings.isEmpty
                 ? Center(
                     child: Text(
                       'No ${_filters[_selectedFilter]?.toLowerCase() ?? _selectedFilter} bookings found',
@@ -132,14 +132,14 @@ class _BookingsTabState extends State<BookingsTab> {
       ),
     );
   }
-  
+
   Widget _buildFilterSection(List<dynamic> bookings) {
     // Count bookings by status
     Map<String, int> statusCounts = {'all': bookings.length};
     for (var status in _filters.keys.where((s) => s != 'all')) {
       statusCounts[status] = bookings.where((b) => b['status'] == status).length;
     }
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -190,7 +190,7 @@ class _BookingsTabState extends State<BookingsTab> {
               children: _filters.entries.map((entry) {
                 final isSelected = _selectedFilter == entry.key;
                 final count = statusCounts[entry.key] ?? 0;
-                
+
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: FilterChip(
@@ -221,14 +221,14 @@ class _BookingsTabState extends State<BookingsTab> {
   Widget _buildHeader(Map<String, dynamic> booking, bool isExpanded, VoidCallback onToggle) {
     final roomNumber = booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown';
     final guestName = booking['user']?['name'] ?? 'Guest';
-    
+
     return InkWell(
       onTap: onToggle,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: getStatusColor(booking['status']).withOpacity(0.1),
-          borderRadius: isExpanded 
+          borderRadius: isExpanded
               ? const BorderRadius.vertical(top: Radius.circular(12))
               : BorderRadius.circular(12),
         ),
@@ -254,7 +254,7 @@ class _BookingsTabState extends State<BookingsTab> {
                         child: Text(
                           booking['status'].toString().toUpperCase(),
                           style: const TextStyle(
-                            color: Colors.white, 
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 10,
                           ),
@@ -583,15 +583,34 @@ class _BookingsTabState extends State<BookingsTab> {
                   if (confirm == true) {
                     final phoneNumber = booking['phone_number']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
                     if (phoneNumber.isNotEmpty) {
-                      final message = 'Your booking #${booking['id']} has been approved! Room ${booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown'} is now confirmed for your stay.';
+                      // Get booking details for message
+                      final bookingId = booking['id'].toString();
+                      final roomNumber = booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown';
+
+                      // Use the special endpoint that generates a token and redirects to the frontend
+                      final userId = booking['user']?['id']?.toString() ?? '';
+                      final autoLoginUrl = 'http://localhost:8000/api/auto-login-redirect/$bookingId/$userId';
+
+                      // Create WhatsApp message with auto-login link
+                      final message = 'Your booking #$bookingId has been approved! Room $roomNumber is now confirmed for your stay.\n\nClick here to view your booking details (no login required): $autoLoginUrl';
                       final encodedMessage = Uri.encodeComponent(message);
                       final whatsappUrl = 'https://wa.me/$phoneNumber?text=$encodedMessage';
-                      if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
-                        await launchUrl(Uri.parse(whatsappUrl));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Failed to open WhatsApp')),
-                        );
+
+                      try {
+                        final canLaunch = await canLaunchUrl(Uri.parse(whatsappUrl));
+                        if (canLaunch) {
+                          await launchUrl(Uri.parse(whatsappUrl));
+                        } else if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Failed to open WhatsApp')),
+                          );
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}')),
+                          );
+                        }
                       }
                     }
                     await widget.onUpdateBookingStatus(booking['id'].toString(), 'approved');

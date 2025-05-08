@@ -99,7 +99,7 @@ export const en = {
     room: {
       available: 'Available',
       title: 'Exclusive Room',
-      size: '3x3 meters with AC & Private Bathroom',
+      size: '3x3 meters Room Size & Private Bathroom',
       details: 'Room Details',
       subtitle: 'Exclusive Room with Complete Facilities',
       description: 'Enjoy the comfort of a 3x3 meter room with premium facilities to meet your needs.',

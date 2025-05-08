@@ -99,7 +99,7 @@ export const id = {
     room: {
       available: 'Tersedia',
       title: 'Kamar Eksklusif',
-      size: '3x3 meter dengan AC & Kamar Mandi Dalam',
+      size: '3x3 meter Luas Kamar & Kamar Mandi Dalam',
       details: 'Detail Kamar',
       subtitle: 'Kamar Eksklusif dengan Fasilitas Lengkap',
       description: 'Nikmati kenyamanan kamar berukuran 3x3 meter dengan fasilitas premium untuk memenuhi kebutuhan Anda.',
