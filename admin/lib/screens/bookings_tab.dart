@@ -485,6 +485,7 @@ class _BookingsTabState extends State<BookingsTab> {
 
   Widget _buildActionButtons(BuildContext context, Map<String, dynamic> booking) {
     final status = booking['status']?.toString() ?? 'pending';
+    final paymentUrl = 'http://localhost:3000/bookings/${booking['id']}';
 
     switch (status) {
       case 'pending':
@@ -495,7 +496,7 @@ class _BookingsTabState extends State<BookingsTab> {
                 onPressed: () async {
                   final phoneNumber = booking['phone_number']?.toString().replaceAll(RegExp(r'[^0-9]'), '') ?? '';
                   if (phoneNumber.isNotEmpty) {
-                    final message = 'Your booking #${booking['id']} has been approved! Room ${booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown'} is now confirmed for your stay.';
+                    final message = 'Your booking #${booking['id']} has been approved! Room ${booking['room']?['number'] ?? booking['room_number'] ?? 'Unknown'} is now confirmed for your stay, you can complete your payment here: $paymentUrl';
                     final encodedMessage = Uri.encodeComponent(message);
                     final whatsappUrl = 'https://wa.me/$phoneNumber?text=$encodedMessage';
                     if (await canLaunchUrl(Uri.parse(whatsappUrl))) {

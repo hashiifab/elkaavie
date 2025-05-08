@@ -184,7 +184,7 @@ const Settings = () => {
                   <div className="flex justify-end space-x-3 pt-4">
                     <button
                       type="button"
-                      onClick={() => navigate("/profile")}
+                      onClick={() => navigate("/pesanan")}
                       className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
                     >
                       Batal

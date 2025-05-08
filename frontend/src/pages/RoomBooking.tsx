@@ -343,7 +343,7 @@ const RoomBooking = () => {
               </p>
               <div className="flex flex-col md:flex-row gap-4 justify-center">
                 <button
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate("/pesanan")}
                   className="px-6 py-3 bg-elkaavie-600 text-white rounded-lg hover:bg-elkaavie-700 transition"
                 >
                   Lihat Pesanan Saya

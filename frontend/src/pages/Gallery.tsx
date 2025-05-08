@@ -13,28 +13,9 @@ interface GalleryImage {
   featured?: boolean;
 }
 
-type Category = "semua" | "kamar" | "wisata" | "rumah sakit" | "tempat makan";
+type Category = "semua" | "kamar" | "wisata" | "rumahSakit" | "tempat makan";
 
 const galleryImages: GalleryImage[] = [
-  {
-    id: 1,
-    src: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304",
-    alt: "Luxury king bedroom with spacious design",
-    category: "kamar",
-    featured: true,
-  },
-  {
-    id: 2,
-    src: "https://images.unsplash.com/photo-1624834452214-38c02f9ae3c9",
-    alt: "Modern bathroom with rain shower",
-    category: "kamar",
-  },
-  {
-    id: 3,
-    src: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc",
-    alt: "Cozy living area with contemporary furnishings",
-    category: "kamar",
-  },
   {
     id: 4,
     src: "https://images.unsplash.com/photo-1646736121441-c6163d77627a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHR1Z3UlMjBqb2dqYXxlbnwwfHwwfHx8MA%3D%3D",
@@ -57,9 +38,9 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: 7,
-    src: "https://images.unsplash.com/photo-1617098474202-0d0d7f60c56a",
-    alt: "Deluxe room with balcony and city view",
-    category: "kamar",
+    src: "https://images.unsplash.com/photo-1691137601835-da67b4483322?w=1000&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bW9uamFsaSUyMHlvZ3lha2FydGF8ZW58MHx8MHx8fDA%3D",
+    alt: "monjali",
+    category: "wisata",
   },
   {
     id: 8,
@@ -69,46 +50,46 @@ const galleryImages: GalleryImage[] = [
   },
   {
     id: 9,
-    src: "https://images.unsplash.com/photo-1566665797739-1674de7a421a",
-    alt: "Tranquil garden with seating areas",
-    category: "exterior",
+    src: "https://images.unsplash.com/photo-1697387224930-8adaaa1ceb1e?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cnVtYWglMjBzYWtpdCUyMHlvZ3lha2FydGF8ZW58MHx8MHx8fDA%3D",
+    alt: "Rs. sardjito",
+    category: "rumahSakit",
   },
   {
     id: 10,
-    src: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    src: "../public/assets/elkaavie-2.png",
     alt: "Premium twin bedroom with desk area",
     category: "kamar",
   },
   {
     id: 11,
-    src: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7",
-    alt: "Rooftop terrace with panoramic views",
-    category: "fasilitas",
+    src: "https://images.unsplash.com/photo-1699628039216-2d51de425f81?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGFzYXIlMjB5b2d5YWthcnRhfGVufDB8fDB8fHww",
+    alt: "Pasar bringharjo",
+    category: "wisata",
   },
   {
     id: 12,
-    src: "https://images.unsplash.com/photo-1544148103-0773bf10d330",
-    alt: "Fine dining restaurant with elegant decor",
-    category: "makan",
+    src: "../public/assets/makan/latanza.png",
+    alt: "Warmindo Latanza",
+    category: "tempat makan",
     featured: true,
   },
   {
     id: 13,
-    src: "https://images.unsplash.com/photo-1572267447684-c625798b99cd",
+    src: "../public/assets/elkaavie-1.png",
     alt: "Pusat kesehatan dengan peralatan olahraga",
-    category: "fasilitas",
+    category: "kamar",
   },
   {
     id: 14,
-    src: "https://images.unsplash.com/photo-1519690889869-e705e59f72e1",
-    alt: "Prasmanan sarapan dengan pilihan segar",
-    category: "makan",
+    src: "https://plus.unsplash.com/premium_photo-1682145288913-979906a9ebc8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cnVtYWglMjBzYWtpdHxlbnwwfHwwfHx8MA%3D%3D",
+    alt: "Rs. Sakinah idaman",
+    category: "rumahSakit",
   },
   {
     id: 15,
-    src: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7",
+    src: "../public/assets/elkaavie-3.png",
     alt: "Pemandangan malam dari fasad bangunan",
-    category: "exterior",
+    category: "kamar",
   },
 ];
 
@@ -173,7 +154,7 @@ const Gallery = () => {
     { value: "semua", label: "Semua" },
     { value: "kamar", label: "Kamar" },
     { value: "wisata", label: "wisata" },
-    { value: "rumah sakit", label: "rumah sakit" },
+    { value: "rumahSakit", label: "rumah sakit" },
     { value: "tempat makan", label: "Tempat makan" },
   ];
 
