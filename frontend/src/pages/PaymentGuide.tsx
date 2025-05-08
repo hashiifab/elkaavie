@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
-import { Home, ChevronRight, Upload, Send, FileText, AlertCircle, Loader2, CreditCard, ImageIcon, Clock } from "lucide-react";
+import { Home, ChevronRight, Upload, Send, FileText, AlertCircle, Loader2, CreditCard, ImageIcon, Clock, ClipboardCopy, Check, ChevronDown, ChevronUp, Landmark } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
@@ -29,6 +29,8 @@ const PaymentGuide = () => {
   const [token, setToken] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [showBankDetails, setShowBankDetails] = useState(false);
 
   useEffect(() => {
     const savedToken = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
@@ -115,6 +117,22 @@ const PaymentGuide = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleCopyAccountNumber = () => {
+    const accountNumber = translations.paymentGuide.guide.bankAccount.accountNumber;
+    navigator.clipboard.writeText(accountNumber)
+      .then(() => {
+        setCopied(true);
+        toast({
+          title: translations.paymentGuide.guide.bankAccount.copied,
+          variant: "default",
+        });
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+      });
   };
 
   const handleUpload = async () => {
@@ -267,7 +285,7 @@ const PaymentGuide = () => {
                             </button>
                           </div>
                           <p className="text-sm text-gray-600">
-                            {file?.name} - {(file?.size / 1024 / 1024).toFixed(2)}{translations.paymentGuide.fileInfo.size}
+                            {file?.name} - {(file?.size / 1024 / 1024).toFixed(2)}{'MB'}
                           </p>
                         </div>
                       ) : (
@@ -349,10 +367,70 @@ const PaymentGuide = () => {
                     <CardTitle className="text-xl">{translations.paymentGuide.guide.title}</CardTitle>
                     <CardDescription>{translations.paymentGuide.guide.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-6 flex-grow">
-                    <div className="space-y-6">
-                      <div className="space-y-4">
-                        {[
+                  <CardContent className="pt-4">
+                    <div className="space-y-3">
+                      {/* Bank Account Details Dropdown - More Compact */}
+                      <div className="border rounded-lg overflow-hidden mb-2">
+                        <button
+                          className="w-full flex items-center justify-between p-2 bg-elkaavie-50 hover:bg-elkaavie-100 transition-colors text-left"
+                          onClick={() => setShowBankDetails(!showBankDetails)}
+                          aria-expanded={showBankDetails}
+                        >
+                          <div className="flex items-center">
+                            <Landmark className="h-4 w-4 text-elkaavie-600 mr-1.5" />
+                            <span className="font-medium text-sm">{translations.paymentGuide.guide.bankAccount.title}</span>
+                          </div>
+                          {showBankDetails ? (
+                            <ChevronUp className="h-4 w-4 text-gray-500" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 text-gray-500" />
+                          )}
+                        </button>
+
+                        {showBankDetails && (
+                          <div className="p-2 border-t bg-white">
+                            <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2 text-xs">
+                              <div className="flex items-center">
+                                <span className="text-gray-500 mr-1">Bank:</span>
+                                <span className="text-gray-700">
+                                  {translations.paymentGuide.guide.bankAccount.bankName}
+                                </span>
+                              </div>
+                              <div className="flex items-center">
+                                <span className="text-gray-500 mr-1">Atas Nama:</span>
+                                <span className="text-gray-700">
+                                  {translations.paymentGuide.guide.bankAccount.accountName}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex items-center bg-elkaavie-50 rounded border p-1.5">
+                              <span className="text-xs font-medium flex-grow ml-1">
+                                {translations.paymentGuide.guide.bankAccount.accountNumber}
+                              </span>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 px-2 text-elkaavie-600 hover:text-elkaavie-700 hover:bg-elkaavie-100"
+                                onClick={handleCopyAccountNumber}
+                              >
+                                {copied ? (
+                                  <Check className="h-3 w-3 mr-1" />
+                                ) : (
+                                  <ClipboardCopy className="h-3 w-3 mr-1" />
+                                )}
+                                <span className="text-xs">
+                                  {copied
+                                    ? translations.paymentGuide.guide.bankAccount.copied
+                                    : translations.paymentGuide.guide.bankAccount.copy}
+                                </span>
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Steps */}
+                      {[
                           {
                             icon: <CreditCard className="w-5 h-5 text-elkaavie-600" />,
                             title: translations.paymentGuide.guide.steps.transfer.title,
@@ -379,20 +457,19 @@ const PaymentGuide = () => {
                             description: translations.paymentGuide.guide.steps.wait.description
                           }
                         ].map((step, index) => (
-                          <div key={index} className="flex gap-3">
-                            <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-elkaavie-100 text-elkaavie-700">
+                          <div key={index} className="flex gap-2">
+                            <div className="shrink-0 flex items-center justify-center w-7 h-7 rounded-full bg-elkaavie-100 text-elkaavie-700">
                               {step.icon}
                             </div>
                             <div>
-                              <h3 className="font-medium">{step.title}</h3>
-                              <p className="text-sm text-gray-500">{step.description}</p>
+                              <h3 className="font-medium text-sm">{step.title}</h3>
+                              <p className="text-xs text-gray-500">{step.description}</p>
                             </div>
                           </div>
                         ))}
-                      </div>
                     </div>
                   </CardContent>
-                  <CardFooter className="bg-gray-50 text-sm text-gray-500 italic p-5">
+                  <CardFooter className="bg-gray-50 text-sm text-gray-500 italic p-4">
                     {translations.paymentGuide.guide.support}
                   </CardFooter>
                 </Card>

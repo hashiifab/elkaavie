@@ -195,7 +195,7 @@ const Login = () => {
                       <Clock className="h-4 w-4" />
                       {translations.auth.login.pendingBooking.title}
                     </h3>
-                    <p className="text-sm text-elkaavie-600">
+                    <p className="text-sm text-elkaavie-600 text-left">
                       {translations.auth.login.pendingBooking.description}
                     </p>
                   </div>
@@ -210,8 +210,8 @@ const Login = () => {
                           <p className="font-medium text-gray-900">
                             {pendingBooking.name || pendingBooking.roomType || `Room ${pendingBooking.roomNumber}`}
                           </p>
-                          <p className="text-gray-600">
-                            {translations.auth.login.pendingBooking.room} {pendingBooking.roomNumber}, {translations.auth.login.pendingBooking.floor} {pendingBooking.floor}
+                          <p className="text-gray-600 text-left">
+                           {translations.auth.login.pendingBooking.floor} {pendingBooking.floor}
                           </p>
                         </div>
                       </div>

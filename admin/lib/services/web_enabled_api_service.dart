@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 class WebEnabledApiService {
   String? _token;
   Map<String, dynamic>? userData;
-  
+
   // Get the appropriate base URL based on platform
   String get baseUrl {
     if (kIsWeb) {
@@ -49,36 +49,38 @@ class WebEnabledApiService {
       if (headers['Authorization'] == null) {
         return false;
       }
-      
+
       final response = await http.get(
         Uri.parse('$baseUrl/user'),
         headers: headers,
       );
-      
+
       return response.statusCode == 200;
     } catch (e) {
       print('Token validation error: $e');
       return false;
     }
   }
-  
+
   // Get auth headers with option to skip error handling
   Future<Map<String, String>> _getAuthHeaders({bool skipErrorHandle = false}) async {
     String? token = await getToken();
-    
+
     // Create base headers
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     };
-    
+
     // Add auth token if exists
     if (token != null) {
       headers['Authorization'] = 'Bearer $token';
+      // Store token in memory for faster access
+      _token = token;
     } else if (!skipErrorHandle) {
       throw Exception('Unauthorized: No token found');
     }
-    
+
     return headers;
   }
 
@@ -87,7 +89,10 @@ class WebEnabledApiService {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: jsonEncode({
           'email': email,
           'password': password,
@@ -96,14 +101,16 @@ class WebEnabledApiService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        
+
         // Check if user is admin
         if (data['user']['role'] != 'admin') {
           throw Exception('Unauthorized: Admin access required');
         }
-        
+
         userData = data['user'];
-        // Store token and user data
+        // Store token in memory
+        _token = data['token'];
+        // Store token and user data in persistent storage
         await setToken(data['token']);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('userData', jsonEncode(data['user']));
@@ -119,19 +126,27 @@ class WebEnabledApiService {
   // Logout
   Future<void> logout() async {
     try {
-      final headers = await _getAuthHeaders();
-      await http.post(
-        Uri.parse('$baseUrl/logout'),
-        headers: headers,
-      );
-      
-      // Clear the token from storage
+      // Get token directly to ensure it's fresh
+      final token = await getToken();
+      if (token != null) {
+        await http.post(
+          Uri.parse('$baseUrl/logout'),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+      }
+
+      // Clear the token from storage and memory
+      _token = null;
+      userData = null;
       await removeToken();
-      
-      print('Logged out successfully');
     } catch (e) {
-      print('Logout error: $e');
       // Still clear the token even if the API call fails
+      _token = null;
+      userData = null;
       await removeToken();
       throw Exception('Failed to logout: $e');
     }
@@ -157,24 +172,37 @@ class WebEnabledApiService {
       throw Exception('Failed to get user data: $e');
     }
   }
-  
+
   // Get all users
   Future<List<dynamic>> getUsers() async {
     try {
-      final headers = await _getAuthHeaders();
+      // Get token directly to ensure it's fresh
+      final token = await getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      print('Using token for users request: $token');
+
       final response = await http.get(
         Uri.parse('$baseUrl/users'),
-        headers: headers,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
       );
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
+        print('Users response: $responseData');
         if (responseData['data'] != null) {
           return responseData['data'];
         } else {
           throw Exception('Invalid response format');
         }
       } else {
+        print('Error response: ${response.body}');
         final errorData = jsonDecode(response.body);
         throw Exception(errorData['message'] ?? 'Failed to get users');
       }
@@ -183,9 +211,9 @@ class WebEnabledApiService {
       throw Exception('Failed to get users: ${e.toString()}');
     }
   }
-  
+
   // ROOMS API
-  
+
   // Get all rooms
   Future<List<dynamic>> getRooms() async {
     try {
@@ -204,7 +232,7 @@ class WebEnabledApiService {
       throw Exception('Failed to get rooms: ${e.toString()}');
     }
   }
-  
+
   // Get room details
   Future<Map<String, dynamic>> getRoom(int id) async {
     try {
@@ -223,7 +251,7 @@ class WebEnabledApiService {
       throw Exception('Failed to get room details: ${e.toString()}');
     }
   }
-  
+
   // Create room
   Future<Map<String, dynamic>> createRoom(Map<String, dynamic> roomData) async {
     try {
@@ -245,7 +273,7 @@ class WebEnabledApiService {
       throw Exception('Failed to create room: ${e.toString()}');
     }
   }
-  
+
   // Update room
   Future<Map<String, dynamic>> updateRoom(int id, Map<String, dynamic> roomData) async {
     try {
@@ -267,7 +295,7 @@ class WebEnabledApiService {
       throw Exception('Failed to update room: ${e.toString()}');
     }
   }
-  
+
   // Delete room
   Future<void> deleteRoom(int id) async {
     try {
@@ -286,9 +314,9 @@ class WebEnabledApiService {
       throw Exception('Failed to delete room: ${e.toString()}');
     }
   }
-  
+
   // BOOKINGS API
-  
+
   // Helper method to format image URLs
   String formatImageUrl(String? path) {
     if (path == null || path.isEmpty) return '';
@@ -303,7 +331,7 @@ class WebEnabledApiService {
   Future<List<dynamic>> getBookings() async {
     try {
       final headers = await _getAuthHeaders();
-      
+
       print('Getting bookings...');
       final response = await http.get(
         Uri.parse('$baseUrl/bookings'),
@@ -313,7 +341,7 @@ class WebEnabledApiService {
       if (response.statusCode == 200) {
         print('Got bookings successfully');
         final responseData = jsonDecode(response.body);
-        
+
         // Handle Laravel API response format
         if (responseData is Map) {
           if (responseData.containsKey('data')) {
@@ -337,7 +365,7 @@ class WebEnabledApiService {
             }
           }
         }
-        
+
         // If we get here, something unexpected happened
         print('Unexpected response format: $responseData');
         throw Exception('Unexpected response format from server');
@@ -351,7 +379,7 @@ class WebEnabledApiService {
       throw Exception('Failed to get bookings: ${e.toString()}');
     }
   }
-  
+
   // Get booking details
   Future<Map<String, dynamic>> getBooking(int id) async {
     try {
@@ -371,7 +399,7 @@ class WebEnabledApiService {
       throw Exception('Failed to get booking details: ${e.toString()}');
     }
   }
-  
+
   // Update booking status
   Future<Map<String, dynamic>> updateBookingStatus(String bookingId, String status) async {
     final token = await getToken();
@@ -379,7 +407,7 @@ class WebEnabledApiService {
       throw Exception('No authentication token found');
     }
     print('Using token for status update: $token');
-    
+
     final response = await http.put(
       Uri.parse('$baseUrl/bookings/$bookingId/status'),
       headers: {
@@ -399,7 +427,7 @@ class WebEnabledApiService {
       throw Exception('Failed to update booking status: ${response.body}');
     }
   }
-  
+
   // Delete booking
   Future<void> deleteBooking(int id) async {
     try {
@@ -423,15 +451,15 @@ class WebEnabledApiService {
   Future<Map<String, dynamic>> createRoomWithImage(Map<String, dynamic> roomData, Uint8List imageBytes, String filename) async {
     try {
       final headers = await _getAuthHeaders();
-      
+
       // Remove auth header as we'll use a multipart request
       headers.remove('Authorization');
-      
+
       final token = await getToken();
       if (token == null) throw Exception('Not authenticated');
-      
+
       final uri = Uri.parse('$baseUrl/rooms');
-      
+
       final request = http.MultipartRequest('POST', uri)
         ..headers.addAll({
           'Accept': 'application/json',
@@ -443,19 +471,19 @@ class WebEnabledApiService {
         ..fields['capacity'] = roomData['capacity'].toString()
         ..fields['description'] = roomData['description']
         ..fields['is_available'] = roomData['is_available'].toString();
-      
+
       final multipartFile = http.MultipartFile.fromBytes(
         'image',
         imageBytes,
         filename: filename,
         contentType: MediaType('image', 'jpeg'),
       );
-      
+
       request.files.add(multipartFile);
-      
+
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      
+
       if (response.statusCode == 201) {
         return jsonDecode(response.body);
       } else {
@@ -467,15 +495,15 @@ class WebEnabledApiService {
       throw Exception('Failed to create room with image: ${e.toString()}');
     }
   }
-  
+
   // Update room with image
   Future<Map<String, dynamic>> updateRoomWithImage(int id, Map<String, dynamic> roomData, Uint8List? imageBytes, String? filename) async {
     try {
       final token = await getToken();
       if (token == null) throw Exception('Not authenticated');
-      
+
       final uri = Uri.parse('$baseUrl/rooms/$id');
-      
+
       final request = http.MultipartRequest('POST', uri) // Using POST with _method=PUT
         ..headers.addAll({
           'Accept': 'application/json',
@@ -488,7 +516,7 @@ class WebEnabledApiService {
         ..fields['capacity'] = roomData['capacity'].toString()
         ..fields['description'] = roomData['description']
         ..fields['is_available'] = roomData['is_available'].toString();
-      
+
       if (imageBytes != null && filename != null) {
         final multipartFile = http.MultipartFile.fromBytes(
           'image',
@@ -496,13 +524,13 @@ class WebEnabledApiService {
           filename: filename,
           contentType: MediaType('image', 'jpeg'),
         );
-        
+
         request.files.add(multipartFile);
       }
-      
+
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
-      
+
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
@@ -523,7 +551,7 @@ class WebEnabledApiService {
         Uri.parse('$baseUrl/rooms/$id/toggle-availability'),
         headers: headers,
       );
-      
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return data['is_available'] ?? false;
@@ -549,7 +577,7 @@ class WebEnabledApiService {
           'price': price,
         }),
       );
-      
+
       if (response.statusCode != 200) {
         throw Exception('Failed to update room price');
       }
@@ -569,7 +597,7 @@ class WebEnabledApiService {
           'Content-Type': 'application/json',
         },
       );
-      
+
       if (response.statusCode != 200) {
         final error = jsonDecode(response.body);
         throw Exception(error['message'] ?? 'Failed to initialize rooms');
@@ -597,7 +625,7 @@ class WebEnabledApiService {
       throw Exception('No authentication token found');
     }
     print('Using token for payment due update: $token');
-    
+
     final response = await http.post(
       Uri.parse('$baseUrl/bookings/$bookingId/payment-due'),
       headers: {

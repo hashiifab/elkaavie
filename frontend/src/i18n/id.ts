@@ -27,6 +27,14 @@ export const id = {
     guide: {
       title: 'Panduan Pembayaran',
       description: 'Ikuti langkah-langkah ini untuk menyelesaikan pembayaran Anda',
+      bankAccount: {
+        title: 'Detail Rekening Bank',
+        bankName: 'Bank Central Asia (BCA)',
+        accountNumber: '1234567890',
+        accountName: 'Elkaavie Residence',
+        copy: 'Salin',
+        copied: 'Tersalin!',
+      },
       steps: {
         transfer: {
           title: 'Transfer Pembayaran',
@@ -634,7 +642,8 @@ export const id = {
         bookingFailed: 'Gagal memproses pemesanan Anda. Silakan coba lagi nanti.',
         errorTitle: 'Ups! Terjadi kesalahan',
         fileTypeError: 'Silakan unggah file gambar',
-        fileSizeError: 'Ukuran file harus kurang dari 5MB'
+        fileSizeError: 'Ukuran file harus kurang dari 2MB',
+        identityCardRequired: 'Kartu identitas diperlukan. Silakan unggah KTP Anda.'
       },
       loading: {
         processing: 'Memproses...'
@@ -658,7 +667,7 @@ export const id = {
         phoneNumberPlaceholder: 'Masukkan nomor telepon Anda',
         identityCard: 'Kartu Identitas',
         uploadTitle: 'Klik untuk mengunggah atau seret & lepas',
-        uploadFormat: 'JPG atau PNG (Maks 5MB)',
+        uploadFormat: 'JPG atau PNG (Maks 2MB)',
         uploadInfo: 'Unggah foto jelas kartu identitas Anda (KTP/SIM/Paspor)',
         specialRequests: 'Permintaan Khusus',
         specialRequestsPlaceholder: 'Beri tahu kami jika Anda memiliki permintaan atau kebutuhan khusus',

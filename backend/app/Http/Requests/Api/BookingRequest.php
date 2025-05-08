@@ -25,7 +25,7 @@ class BookingRequest extends FormRequest
             'room_id' => 'required|exists:rooms,id',
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
-            'duration_months' => 'required|integer|min:1|max:12',
+            'duration_months' => 'nullable|integer|min:1|max:12',
             'guests' => 'required|integer|min:1',
             'special_requests' => 'nullable|string',
             'payment_method' => 'required|in:credit_card,bank_transfer',

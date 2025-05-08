@@ -17,191 +17,258 @@ class UsersTab extends StatelessWidget {
     required this.onRefresh,
   });
 
+  // Separate admin and regular users
+  List<dynamic> getAdminUsers(List<dynamic> allUsers) {
+    return allUsers.where((user) => user['role'] == 'admin').toList();
+  }
+
+  List<dynamic> getRegularUsers(List<dynamic> allUsers) {
+    return allUsers.where((user) => user['role'] != 'admin').toList();
+  }
+
   List<dynamic> getUserBookings(dynamic userId) {
     return bookings.where((booking) => booking['user']?['id'] == userId).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : RefreshIndicator(
-            onRefresh: onRefresh,
-            child: Column(
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Separate admin and regular users
+    final adminUsers = getAdminUsers(users);
+    final regularUsers = getRegularUsers(users);
+
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: Column(
+        children: [
+          // Simple admin indicator in header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Users',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
+                Row(
+                  children: [
+                    Text(
+                      'Users',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
                       ),
-                      TextButton.icon(
-                        onPressed: isLoading ? null : onRefresh,
-                        icon: isLoading
-                            ? SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                    ),
+                    if (adminUsers.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 12,
+                              backgroundColor: Colors.amber,
+                              child: Text(
+                                adminUsers.first['name']?[0]?.toUpperCase() ?? 'A',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
                                 ),
-                              )
-                            : const Icon(Icons.refresh, size: 16),
-                        label: Text(isLoading ? 'Refreshing...' : 'Refresh'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: users.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.people_outline,
-                                  size: 64,
-                                  color: AppColors.textSecondary,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'No users found',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textSecondary,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Try refreshing the list',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: AppColors.textSecondary,
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton.icon(
-                                  onPressed: onRefresh,
-                                  icon: const Icon(Icons.refresh),
-                                  label: const Text('Refresh'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Admin: ${adminUsers.first['name'] ?? 'Admin'}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+                TextButton.icon(
+                  onPressed: isLoading ? null : onRefresh,
+                  icon: isLoading
+                      ? SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
                           ),
                         )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: users.length,
-                          itemBuilder: (context, index) {
-                            final user = users[index];
-                            final bool isAdmin = user['role'] == 'admin';
-                            final userBookings = getUserBookings(user['id']);
-
-                            return Card(
-                              margin: const EdgeInsets.only(bottom: 16),
-                              elevation: 1,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      backgroundColor: isAdmin ? Colors.amber : AppColors.primary,
-                                      child: Text(
-                                        user['name']?[0]?.toUpperCase() ?? 'U',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            user['name'] ?? 'Unknown',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            user['email'] ?? 'No email',
-                                            style: TextStyle(
-                                              color: AppColors.textSecondary,
-                                            ),
-                                          ),
-                                          if (!isAdmin && userBookings.isNotEmpty)
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 4),
-                                              child: Text(
-                                                '${userBookings.length} booking(s)',
-                                                style: const TextStyle(
-                                                  fontStyle: FontStyle.italic,
-                                                  color: Colors.blue,
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Chip(
-                                          label: Text(
-                                            user['role'] ?? 'user',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                          backgroundColor: isAdmin ? Colors.amber : AppColors.secondary,
-                                        ),
-                                        if (!isAdmin && userBookings.isNotEmpty)
-                                          IconButton(
-                                            icon: const Icon(Icons.expand_more),
-                                            onPressed: () {
-                                              _showUserBookings(context, user, userBookings);
-                                            },
-                                          ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                      : const Icon(Icons.refresh, size: 16),
+                  label: Text(isLoading ? 'Refreshing...' : 'Refresh'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                  ),
                 ),
               ],
             ),
-          );
+          ),
+          const Divider(height: 24),
+
+          // User count indicator
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${regularUsers.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  regularUsers.length == 1 ? 'User' : 'Users',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Regular users list
+          Expanded(
+            child: regularUsers.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 64,
+                            color: AppColors.textSecondary,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No users found',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Try refreshing the list',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: onRefresh,
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Refresh'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: regularUsers.length,
+                    itemBuilder: (context, index) {
+                      final user = regularUsers[index];
+                      final userBookings = getUserBookings(user['id']);
+
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        elevation: 1,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: AppColors.primary,
+                                child: Text(
+                                  user['name']?[0]?.toUpperCase() ?? 'U',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      user['name'] ?? 'Unknown',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      user['email'] ?? 'No email',
+                                      style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                    if (userBookings.isNotEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: Text(
+                                          '${userBookings.length} booking(s)',
+                                          style: const TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              if (userBookings.isNotEmpty)
+                                IconButton(
+                                  icon: const Icon(Icons.expand_more),
+                                  onPressed: () {
+                                    _showUserBookings(context, user, userBookings);
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showUserBookings(BuildContext context, dynamic user, List<dynamic> userBookings) {
@@ -253,6 +320,7 @@ class UsersTab extends StatelessWidget {
                               ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_out']))
                               : 'N/A';
                           final status = booking['status'] ?? 'unknown';
+                          final statusColor = _getStatusColor(status);
 
                           return Card(
                             margin: const EdgeInsets.only(bottom: 8),
@@ -262,7 +330,7 @@ class UsersTab extends StatelessWidget {
                             ),
                             child: ListTile(
                               leading: CircleAvatar(
-                                backgroundColor: AppColors.primary.withOpacity(0.1),
+                                backgroundColor: AppColors.primary.withAlpha(25), // 0.1 * 255 = ~25
                                 child: Text(
                                   roomNumber,
                                   style: TextStyle(color: AppColors.primary),
@@ -274,12 +342,12 @@ class UsersTab extends StatelessWidget {
                                 label: Text(
                                   status.toUpperCase(),
                                   style: TextStyle(
-                                    color: _getStatusColor(status),
+                                    color: statusColor,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                backgroundColor: _getStatusColor(status).withOpacity(0.1),
+                                backgroundColor: statusColor.withAlpha(25), // 0.1 * 255 = ~25
                               ),
                             ),
                           );
@@ -298,10 +366,14 @@ class UsersTab extends StatelessWidget {
       case 'pending':
         return Colors.orange;
       case 'confirmed':
+      case 'approved':
         return Colors.green;
       case 'canceled':
+      case 'cancelled':
+      case 'rejected':
         return Colors.red;
       case 'completed':
+      case 'paid':
         return Colors.blue;
       default:
         return Colors.grey;

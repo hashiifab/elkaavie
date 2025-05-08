@@ -289,7 +289,7 @@ const Rooms = () => {
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
                   <Users className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">{selectedRoom.capacity || selectedRoom.roomType?.capacity || 1} {translations.booking.guests}</span>
+                  <span className="text-sm text-gray-600">{1 === selectedRoom.capacity || selectedRoom.roomType?.capacity || 1} {translations.booking.guests}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
                   <BedDouble className="h-4 w-4 text-gray-500" />
@@ -428,7 +428,7 @@ const Rooms = () => {
             </div>
 
             {/* Legend */}
-            <div className="max-w-3xl mx-auto mb-8 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="max-w-4xl mx-auto mb-8 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
               <h3 className="text-lg font-medium text-gray-900 mb-4">{translations.rooms.legend.title}</h3>
               <div className="flex items-center justify-center gap-8 flex-wrap">
                 <div className="flex items-center">
@@ -444,14 +444,14 @@ const Rooms = () => {
                   <span className="text-sm">{translations.rooms.legend.booked}</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm ring-2 ring-blue-500"></div>
+                  <div className="w-8 h-8 bg-green-500 rounded mr-3 shadow-sm ring-2 ring-blue-900"></div>
                   <span className="text-sm">{translations.rooms.legend.selected}</span>
                 </div>
               </div>
             </div>
 
             {/* Cinema-style floor layout */}
-            <div className="space-y-12 max-w-3xl mx-auto">
+            <div className="space-y-12 max-w-4xl mx-auto">
               {floors.map(floor => (
                 <div key={floor} className="mb-8">
                   <h2 className="text-xl font-semibold bg-blue-900 text-white py-3 px-6 rounded-t-xl mb-0 text-center">
@@ -491,7 +491,7 @@ const Rooms = () => {
                                     : room.is_available
                                       ? "cursor-pointer bg-green-500 hover:bg-green-600 hover:shadow-md transition-all hover:scale-105"
                                       : ""
-                              } ${selectedRoom?.id === room.id ? "ring-4 ring-blue-500 transform scale-105" : ""}`}
+                              } ${selectedRoom?.id === room.id ? "ring-4 ring-blue-900 transform scale-105" : ""}`}
                               onClick={() => {
                                 if (room.is_available || isUserBooked) {
                                   handleRoomClick(room);

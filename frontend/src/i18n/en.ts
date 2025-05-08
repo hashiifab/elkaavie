@@ -27,6 +27,14 @@ export const en = {
     guide: {
       title: 'Payment Guide',
       description: 'Follow these steps to complete your payment',
+      bankAccount: {
+        title: 'Bank Account Details',
+        bankName: 'Bank Central Asia (BCA)',
+        accountNumber: '1234567890',
+        accountName: 'Elkaavie Residence',
+        copy: 'Copy',
+        copied: 'Copied!',
+      },
       steps: {
         transfer: {
           title: 'Transfer Payment',
@@ -634,7 +642,8 @@ export const en = {
         bookingFailed: 'Failed to process your booking. Please try again later.',
         errorTitle: 'Oops! Something went wrong',
         fileTypeError: 'Please upload an image file',
-        fileSizeError: 'File size should be less than 5MB'
+        fileSizeError: 'File size should be less than 2MB',
+        identityCardRequired: 'Identity card is required. Please upload your ID card.'
       },
       loading: {
         processing: 'Processing...'
@@ -658,7 +667,7 @@ export const en = {
         phoneNumberPlaceholder: 'Enter your phone number',
         identityCard: 'Identity Card',
         uploadTitle: 'Click to upload or drag & drop',
-        uploadFormat: 'JPG or PNG (Max 5MB)',
+        uploadFormat: 'JPG or PNG (Max 2MB)',
         uploadInfo: 'Upload a clear photo of your ID card (KTP/SIM/Passport)',
         specialRequests: 'Special Requests',
         specialRequestsPlaceholder: 'Let us know if you have any special requests or requirements',

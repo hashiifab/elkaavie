@@ -70,7 +70,7 @@ const ForgotPassword = () => {
         </div>
       )}
 
-      <main className="pt-24 pb-16">
+      <main className="p-24">
         <Container>
           <div className="max-w-md mx-auto">
             <div className="text-center mb-8">

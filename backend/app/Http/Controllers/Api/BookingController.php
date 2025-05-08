@@ -127,18 +127,29 @@ class BookingController extends Controller
                 Log::info('File uploaded successfully', ['path' => $data['identity_card']]);
             }
 
-            // Validate that check-out date matches the expected date based on duration_months
-            if (!$this->bookingService->validateCheckOutDate($data['check_in'], $data['check_out'], $data['duration_months'])) {
-                // If not, recalculate the check-out date
-                $data['check_out'] = $this->bookingService->calculateCheckOutDate($data['check_in'], $data['duration_months']);
+            // Calculate duration_months if not provided
+            if (!isset($data['duration_months'])) {
+                // Calculate months between check-in and check-out dates
+                $checkIn = new \DateTime($data['check_in']);
+                $checkOut = new \DateTime($data['check_out']);
+                $interval = $checkIn->diff($checkOut);
+                $months = ($interval->y * 12) + $interval->m;
+                $months = max(1, $months); // Ensure at least 1 month
+            } else {
+                $months = $data['duration_months'];
             }
 
             // Set default status and calculate price
             $data['status'] = BookingService::STATUS_PENDING;
-            $data['total_price'] = 1500000 * $data['duration_months']; // Use duration_months directly
+            $data['total_price'] = 1500000 * $months; // Standard monthly rate
 
             // Always set user_id from authenticated user
             $data['user_id'] = auth()->id();
+
+            // Remove duration_months from data since the column doesn't exist in the database yet
+            if (isset($data['duration_months'])) {
+                unset($data['duration_months']);
+            }
 
             // Create the booking record in database
             $booking = Booking::create($data);

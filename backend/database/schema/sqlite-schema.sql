@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS "rooms"(
   "created_at" datetime,
   "updated_at" datetime,
   "price" numeric not null default('1500000'),
-  "capacity" integer not null default('2'),
+  "capacity" integer not null default('2')
 );
 CREATE TABLE IF NOT EXISTS "personal_access_tokens"(
   "id" integer primary key autoincrement not null,
