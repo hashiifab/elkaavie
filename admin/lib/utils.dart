@@ -33,3 +33,11 @@ Color getStatusColor(String status) {
       return AppColors.textSecondary;
   }
 }
+
+class AppColorss {
+  static const Color primary = Color(0xFF007AFF); // iOS blue
+  static const Color accent = Color(0xFF34C759); // iOS green
+  static const Color warning = Color(0xFFFF9500); // iOS orange
+  static const Color textPrimary = Color(0xFF1C1C1E);
+  static const Color textSecondary = Color(0xFF8E8E93);
+}

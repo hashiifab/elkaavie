@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../main.dart';
 import '../utils.dart';
-
 
 class DashboardTab extends StatelessWidget {
   final Map<String, dynamic>? userData;
@@ -33,19 +31,37 @@ class DashboardTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Welcome, ${userData?['name'] ?? 'Admin'}',
-                style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Dashboard',
+                    style: GoogleFonts.poppins(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black.withOpacity(0.6), // Darker text
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    'Welcome, ${userData?['name'] ?? 'Admin'}',
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black, // Black text for better contrast
+                    ),
+                  ),
+                ],
               ),
-              IconButton(
-                onPressed: onRefresh,
-                icon: const Icon(Icons.refresh),
-                tooltip: 'Refresh data',
-                color: AppColors.primary,
+              Material(
+                color: Colors.black.withOpacity(0.08),
+                shape: const CircleBorder(),
+                child: IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: onRefresh,
+                  color: Colors.black,
+                  tooltip: 'Refresh',
+                ),
               ),
             ],
           ),
@@ -71,7 +87,7 @@ class DashboardTab extends StatelessWidget {
           title: 'Total Users',
           value: users.length.toString(),
           icon: Icons.people,
-          color: AppColors.primary,
+          color: Colors.blueAccent, // Changed to blue
           tabIndex: 1, // Users tab index
         ),
         _buildStatCard(
@@ -79,7 +95,7 @@ class DashboardTab extends StatelessWidget {
           title: 'Total Rooms',
           value: rooms.length.toString(),
           icon: Icons.hotel,
-          color: AppColors.secondary,
+          color: Colors.orangeAccent, // Changed to orange
           tabIndex: 2, // Rooms tab index
         ),
         _buildStatCard(
@@ -87,15 +103,16 @@ class DashboardTab extends StatelessWidget {
           title: 'Total Bookings',
           value: bookings.length.toString(),
           icon: Icons.book_online,
-          color: AppColors.accent,
+          color: Colors.greenAccent, // Changed to green
           tabIndex: 3, // Bookings tab index
         ),
         _buildStatCard(
           context: context,
           title: 'Pending Bookings',
-          value: bookings.where((b) => b['status'] == 'pending').length.toString(),
+          value:
+              bookings.where((b) => b['status'] == 'pending').length.toString(),
           icon: Icons.pending_actions,
-          color: AppColors.warning,
+          color: Colors.amberAccent, // Changed to amber
           tabIndex: 3, // Bookings tab index
           filter: 'pending', // Filter to pending bookings
         ),
@@ -116,11 +133,7 @@ class DashboardTab extends StatelessWidget {
       onTap: () {
         if (tabController != null) {
           tabController!.animateTo(tabIndex);
-          
-          // Pass filter information through a callback or other mechanism if needed
           if (filter != null && tabIndex == 3) {
-            // This is a potential hook for the Bookings tab to know it should filter
-            // In a real implementation, you might use a state management solution
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Showing $filter bookings'),
@@ -130,41 +143,75 @@ class DashboardTab extends StatelessWidget {
           }
         }
       },
-      borderRadius: BorderRadius.circular(12),
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16), // Slightly rounded corners
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          color: Colors.white, // Clean white background
+          borderRadius: BorderRadius.circular(16), // Rounded corners
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12, // Light shadow for subtle depth
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(icon, size: 40, color: color),
-              const SizedBox(height: 12),
-              Text(
-                value,
-                style: GoogleFonts.poppins(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+              Center(
+                child: Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black.withOpacity(0.7), // Darker text for better contrast
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
+              Center(
+                child: Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    color: Colors.black, // Black text for better readability
+                  ),
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 4),
-              Icon(
-                Icons.touch_app,
-                size: 16,
-                color: color.withOpacity(0.5),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    AnimatedScale(
+                      duration: Duration(milliseconds: 200),
+                      scale: 1.1, // Slightly larger on tap for animation effect
+                      child: Container(
+                        padding: EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(icon, size: 24, color: color),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    AnimatedScale(
+                      duration: Duration(milliseconds: 200),
+                      scale: 1.1, // Slightly enlarge the chevron icon as well
+                      child: Icon(
+                        Icons.chevron_right,
+                        size: 24,
+                        color: Colors.black.withOpacity(0.6), // Darker chevron icon
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -185,26 +232,22 @@ class DashboardTab extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                color: Colors.black,
               ),
             ),
-            if (bookings.isNotEmpty) 
+            if (bookings.isNotEmpty)
               TextButton(
-                onPressed: () {
-                  if (tabController != null) {
-                    tabController!.animateTo(3); // Navigate to bookings tab
-                  }
-                },
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.black,
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  textStyle: GoogleFonts.poppins(fontSize: 14),
+                ),
+                onPressed: () => tabController?.animateTo(3),
                 child: Row(
-                  children: [
-                    Text(
-                      'View All',
-                      style: GoogleFonts.poppins(
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(Icons.arrow_forward, size: 16, color: AppColors.primary),
+                  children: const [
+                    Text('View All'),
+                    SizedBox(width: 4),
+                    Icon(Icons.arrow_forward_ios, size: 14),
                   ],
                 ),
               ),
@@ -219,14 +262,14 @@ class DashboardTab extends StatelessWidget {
                     Icon(
                       Icons.book_online_outlined,
                       size: 64,
-                      color: AppColors.textSecondary,
+                      color: Colors.black.withOpacity(0.2),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'No bookings found',
                       style: TextStyle(
                         fontSize: 18,
-                        color: AppColors.textSecondary,
+                        color: Colors.black.withOpacity(0.6),
                       ),
                     ),
                   ],
@@ -238,49 +281,75 @@ class DashboardTab extends StatelessWidget {
                 itemCount: bookings.length > 5 ? 5 : bookings.length,
                 itemBuilder: (context, index) {
                   final booking = bookings[index];
-                  final checkIn = booking['check_in'] != null
-                      ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_in']))
-                      : 'N/A';
-                  final checkOut = booking['check_out'] != null
-                      ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_out']))
-                      : 'N/A';
+                  final checkIn =
+                      booking['check_in'] != null
+                          ? DateFormat(
+                              'dd MMM yyyy',
+                            ).format(DateTime.parse(booking['check_in']))
+                          : 'N/A';
+                  final checkOut =
+                      booking['check_out'] != null
+                          ? DateFormat(
+                              'dd MMM yyyy',
+                            ).format(DateTime.parse(booking['check_out']))
+                          : 'N/A';
                   final roomNumber = booking['room']?['number'] ?? 'Unknown';
                   final guestName = booking['user']?['name'] ?? 'Guest';
 
                   return InkWell(
                     onTap: () {
                       if (tabController != null) {
-                        tabController!.animateTo(3); // Navigate to bookings tab
+                        tabController!.animateTo(3);
                       }
                     },
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                     child: Card(
                       margin: const EdgeInsets.only(bottom: 12),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
+                        side: BorderSide(color: Colors.grey.shade200),
                       ),
+                      elevation: 0.3,
                       child: ListTile(
-                        contentPadding: const EdgeInsets.all(16),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                         leading: CircleAvatar(
-                          backgroundColor: AppColors.primary.withOpacity(0.1),
-                          child: Icon(Icons.hotel, color: AppColors.primary),
+                          backgroundColor: Colors.black.withOpacity(0.1),
+                          child: Icon(
+                            Icons.hotel,
+                            color: Colors.black,
+                            size: 18,
+                          ),
                         ),
                         title: Text(
                           'Room $roomNumber',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
                         ),
-                        subtitle: Text('$guestName - $checkIn to $checkOut'),
+                        subtitle: Text(
+                          '$guestName\n$checkIn → $checkOut',
+                          style: GoogleFonts.poppins(fontSize: 12),
+                        ),
+                        isThreeLine: true,
                         trailing: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                            color: getStatusColor(booking['status']).withOpacity(0.1),
+                            color: AppColorss.accent,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             booking['status']?.toUpperCase() ?? 'UNKNOWN',
                             style: TextStyle(
-                              color: getStatusColor(booking['status']),
-                              fontSize: 12,
+                              color: Colors.white,
+                              fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

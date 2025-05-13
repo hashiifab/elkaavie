@@ -54,9 +54,11 @@ class RoomsTab extends StatelessWidget {
               children: <Widget>[
                 Text('Status: ${isAvailable ? 'Available' : 'Unavailable'}'),
                 const SizedBox(height: 8),
-                if (!isAvailable && booking != null) ...[                  
+                if (!isAvailable && booking != null) ...[
                   Text('Booked by: ${user?['name'] ?? 'Unknown'}'),
-                  Text('Status: ${booking['status']?.toUpperCase() ?? 'UNKNOWN'}'),
+                  Text(
+                    'Status: ${booking['status']?.toUpperCase() ?? 'UNKNOWN'}',
+                  ),
                   const SizedBox(height: 8),
                 ],
                 Text('What would you like to do with this room?'),
@@ -64,7 +66,7 @@ class RoomsTab extends StatelessWidget {
             ),
           ),
           actions: <Widget>[
-            if (!isAvailable && booking != null) ...[              
+            if (!isAvailable && booking != null) ...[
               TextButton(
                 child: const Text('View Booking Details'),
                 onPressed: () {
@@ -97,14 +99,18 @@ class RoomsTab extends StatelessWidget {
                   bool newStatus = await onToggleRoomAvailability(roomId);
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Room marked as ${newStatus ? 'available' : 'unavailable'}')),
+                      SnackBar(
+                        content: Text(
+                          'Room marked as ${newStatus ? 'available' : 'unavailable'}',
+                        ),
+                      ),
                     );
                   }
                 } catch (e) {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(e.toString())),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
                   }
                 }
               },
@@ -174,10 +180,15 @@ class RoomsTab extends StatelessWidget {
   void _showUserDetails(BuildContext context, dynamic user) {
     if (user == null) return;
 
-    final userBookings = bookings.where((booking) =>
-        booking['user']?['id'] == user['id'] &&
-        booking['status'] != 'canceled' &&
-        booking['status'] != 'rejected').toList();
+    final userBookings =
+        bookings
+            .where(
+              (booking) =>
+                  booking['user']?['id'] == user['id'] &&
+                  booking['status'] != 'canceled' &&
+                  booking['status'] != 'rejected',
+            )
+            .toList();
 
     showDialog(
       context: context,
@@ -190,7 +201,7 @@ class RoomsTab extends StatelessWidget {
             children: [
               _buildDetailRow('Name', user['name'] ?? 'Unknown'),
               _buildDetailRow('Email', user['email'] ?? 'N/A'),
-              if (userBookings.isNotEmpty) ...[                
+              if (userBookings.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Text(
                   'Booking History',
@@ -202,12 +213,14 @@ class RoomsTab extends StatelessWidget {
                 const SizedBox(height: 8),
                 ...userBookings.map((booking) {
                   final roomNumber = booking['room']?['number'] ?? 'Unknown';
-                  final checkIn = booking['check_in'] != null
-                      ? DateTime.parse(booking['check_in'])
-                      : null;
-                  final checkOut = booking['check_out'] != null
-                      ? DateTime.parse(booking['check_out'])
-                      : null;
+                  final checkIn =
+                      booking['check_in'] != null
+                          ? DateTime.parse(booking['check_in'])
+                          : null;
+                  final checkOut =
+                      booking['check_out'] != null
+                          ? DateTime.parse(booking['check_out'])
+                          : null;
                   final status = booking['status']?.toUpperCase() ?? 'UNKNOWN';
 
                   return Container(
@@ -341,8 +354,8 @@ class RoomsTab extends StatelessWidget {
                           : const Icon(Icons.refresh, size: 16),
                   label: Text(isLoading ? 'Refreshing...' : 'Refresh Rooms'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.black87, // warna gece
+                    foregroundColor: Colors.white, // teks dan ikon putih
                   ),
                 ),
               ],
@@ -351,8 +364,15 @@ class RoomsTab extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(8),
+                color: Colors.white, // dominan putih
+                borderRadius: BorderRadius.circular(12), // iOS-style rounded
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05), // shadow lembut
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -367,7 +387,10 @@ class RoomsTab extends StatelessWidget {
                         width: 18,
                         height: 18,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color:
+                              Colors
+                                  .grey
+                                  .shade100, // lebih terang karena background putih
                           borderRadius: BorderRadius.circular(4),
                           border: Border.all(color: Colors.blue, width: 2),
                         ),
@@ -386,21 +409,34 @@ class RoomsTab extends StatelessWidget {
                       const SizedBox(width: 8),
                       const Text(
                         'Booked',
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color:
+                              Colors.black87, // teks lebih gelap agar terbaca
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
+
             const SizedBox(height: 24),
             for (int floor in sortedFloors) ...[
+              // Header Title (Floor / Laundry Area)
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade900,
-                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Text(
                   floor == 3 ? 'Laundry Area' : 'Floor $floor',
@@ -408,16 +444,25 @@ class RoomsTab extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black87,
                   ),
                 ),
               ),
               const SizedBox(height: 16),
+
+              // Body Content
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
                 child:
                     floor == 3
@@ -426,7 +471,7 @@ class RoomsTab extends StatelessWidget {
                             Icon(
                               Icons.local_laundry_service,
                               size: 48,
-                              color: Colors.blue.shade900,
+                              color: Colors.blue.shade800,
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -434,7 +479,7 @@ class RoomsTab extends StatelessWidget {
                               style: GoogleFonts.poppins(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade900,
+                                color: Colors.black87,
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -454,13 +499,15 @@ class RoomsTab extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               margin: const EdgeInsets.only(bottom: 16),
                               decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
                                 'Hallway',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.grey.shade700),
+                                style: GoogleFonts.poppins(
+                                  color: Colors.grey.shade700,
+                                ),
                               ),
                             ),
                             GridView.builder(
@@ -492,13 +539,13 @@ class RoomsTab extends StatelessWidget {
                                           isAvailable
                                               ? Colors.green
                                               : Colors.red.withOpacity(0.7),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(10),
                                       border:
                                           !isAvailable && isBooked
                                               ? Border.all(
-                                                  color: Colors.blue,
-                                                  width: 2,
-                                                )
+                                                color: Colors.blue,
+                                                width: 2,
+                                              )
                                               : null,
                                     ),
                                     child: Stack(
@@ -534,6 +581,7 @@ class RoomsTab extends StatelessWidget {
                           ],
                         ),
               ),
+
               const SizedBox(height: 24),
             ],
           ],
