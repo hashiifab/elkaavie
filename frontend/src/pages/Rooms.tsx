@@ -328,46 +328,31 @@ const Rooms = () => {
       )}
 
       <main className="pt-24 pb-16">
-        {/* Hero section with image */}
-        <div className="relative">
-          {/* Background image with overlay */}
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: "url('https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=1600&auto=format&fit=crop')",
-              backgroundPosition: "center",
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-elkaavie-900/80 to-elkaavie-800/70"></div>
-          </div>
+        {/* Hero section */}
+        <div className="bg-gradient-to-r from-elkaavie-600 to-elkaavie-800 py-16 mb-12">
+          <Container>
+            <div className="text-white text-left max-w-3xl px-4">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">{translations.rooms.hero.title}</h1>
+              <p className="text-xl text-white/90 mb-8">
+                {translations.rooms.hero.description}
+              </p>
 
-          {/* Content */}
-          <div className="relative z-10 py-24">
-            <Container>
-              <div className="text-white max-w-2xl">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">{translations.rooms.hero.title}</h1>
-                <div className="w-20 h-1 bg-elkaavie-400 mb-6"></div>
-                <p className="text-xl text-white/90 mb-8">
-                  {translations.rooms.hero.description}
-                </p>
-
-                <div className="flex flex-wrap gap-4 items-center">
-                  <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
-                    <Check className="h-4 w-4 text-green-400" />
-                    <span>{translations.rooms.hero.features.modernComfort}</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
-                    <Check className="h-4 w-4 text-green-400" />
-                    <span>{translations.rooms.hero.features.primeLocations}</span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
-                    <Check className="h-4 w-4 text-green-400" />
-                    <span>{translations.rooms.hero.features.excellentService}</span>
-                  </div>
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
+                  <Check className="h-4 w-4 text-green-400" />
+                  <span>{translations.rooms.hero.features.modernComfort}</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
+                  <Check className="h-4 w-4 text-green-400" />
+                  <span>{translations.rooms.hero.features.primeLocations}</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
+                  <Check className="h-4 w-4 text-green-400" />
+                  <span>{translations.rooms.hero.features.excellentService}</span>
                 </div>
               </div>
-            </Container>
-          </div>
+            </div>
+          </Container>
         </div>
 
         <div className="py-12 bg-gray-50">

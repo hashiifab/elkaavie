@@ -104,3 +104,192 @@ Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
 9:04:48 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
 9:07:49 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
 9:08:03 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+9:34:20 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+9:34:32 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+9:35:09 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+9:56:43 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+9:57:01 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:03:49 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:03:59 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:04:13 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:04:37 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:05:39 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+10:05:39 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+10:05:39 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+10:05:57 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+10:05:57 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+10:05:57 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+Files in the public directory are served at the root path.
+Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33662.png, use /Frame 33662.png.
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
+10:06:10 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+10:06:10 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+10:06:10 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+10:06:22 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+10:06:22 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+10:06:22 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+10:06:39 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+10:06:39 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+10:06:39 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+10:06:54 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+10:06:55 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+10:06:55 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+10:08:04 AM [vite] hmr update /src/components/layout/Header.tsx, /src/index.css
+10:08:14 AM [vite] hmr update /src/components/layout/Header.tsx, /src/index.css
+10:08:36 AM [vite] hmr update /src/components/layout/Header.tsx, /src/index.css
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33662.png, use /Frame 33662.png.
+Files in the public directory are served at the root path.
+Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
+10:10:07 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:10:15 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:10:20 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+Error processing file src/pages/Rooms.tsx: SyntaxError: Expected corresponding JSX closing tag for <main>. (365:8)
+    at constructor (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:362:19)
+    at TypeScriptParserMixin.raise (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:3259:19)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6774:16)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6745:32)
+    at TypeScriptParserMixin.jsxParseElement (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6796:17)
+    at TypeScriptParserMixin.parseExprAtom (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6806:19)
+    at TypeScriptParserMixin.parseExprSubscripts (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:10592:23)
+    at TypeScriptParserMixin.parseUpdate (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:10577:21)
+    at TypeScriptParserMixin.parseMaybeUnary (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:10557:23)
+    at TypeScriptParserMixin.parseMaybeUnary (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:9483:18) {
+  code: 'BABEL_PARSER_SYNTAX_ERROR',
+  reasonCode: 'MissingClosingTagElement',
+  loc: Position { line: 365, column: 8, index: 12766 },
+  pos: 12766,
+  syntaxPlugin: 'jsx'
+}
+10:10:20 AM [vite] Internal server error:   [31mx[0m Expression expected
+     ,-[[36;1;4m/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/pages/Rooms.tsx[0m:266:1]
+ [2m263[0m |   const floors = Object.keys(roomsByFloor).map(Number).sort();
+ [2m264[0m | 
+ [2m265[0m |   return (
+ [2m266[0m |     <>
+     : [35;1m     ^[0m
+ [2m267[0m |       <Header />
+ [2m268[0m | 
+ [2m269[0m |       {/* Floating Card */}
+     `----
+  [31mx[0m Expected ',', got '{'
+     ,-[[36;1;4m/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/pages/Rooms.tsx[0m:269:1]
+ [2m266[0m |     <>
+ [2m267[0m |       <Header />
+ [2m268[0m | 
+ [2m269[0m |       {/* Floating Card */}
+     : [35;1m      ^[0m
+ [2m270[0m |       {selectedRoom && showFloatingCard && (
+ [2m271[0m |         <div className="fixed bottom-6 left-0 right-0 z-50 mx-auto px-4 max-w-lg">
+ [2m272[0m |           <div className="bg-white rounded-xl shadow-2xl border border-gray-200 relative">
+     `----
+
+
+Caused by:
+    Syntax Error
+  Plugin: vite:react-swc
+  File: /Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/pages/Rooms.tsx
+  
+10:10:27 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:10:43 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:10:46 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:10:56 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:11:18 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+Error processing file src/pages/Rooms.tsx: SyntaxError: Expected corresponding JSX closing tag for <div>. (517:6)
+    at constructor (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:362:19)
+    at TypeScriptParserMixin.raise (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:3259:19)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6774:16)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6745:32)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6745:32)
+    at TypeScriptParserMixin.jsxParseElement (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6796:17)
+    at TypeScriptParserMixin.parseExprAtom (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6806:19)
+    at TypeScriptParserMixin.parseExprSubscripts (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:10592:23)
+    at TypeScriptParserMixin.parseUpdate (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:10577:21)
+    at TypeScriptParserMixin.parseMaybeUnary (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:10557:23) {
+  code: 'BABEL_PARSER_SYNTAX_ERROR',
+  reasonCode: 'MissingClosingTagElement',
+  loc: Position { line: 517, column: 6, index: 21374 },
+  pos: 21374,
+  syntaxPlugin: 'jsx'
+}
+10:11:18 AM [vite] Internal server error:   [31mx[0m Expression expected
+     ,-[[36;1;4m/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/pages/Rooms.tsx[0m:266:1]
+ [2m263[0m |   const floors = Object.keys(roomsByFloor).map(Number).sort();
+ [2m264[0m | 
+ [2m265[0m |   return (
+ [2m266[0m |     <>
+     : [35;1m     ^[0m
+ [2m267[0m |       <Header />
+ [2m268[0m | 
+ [2m269[0m |       {/* Floating Card */}
+     `----
+  [31mx[0m Expected ',', got '{'
+     ,-[[36;1;4m/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/pages/Rooms.tsx[0m:269:1]
+ [2m266[0m |     <>
+ [2m267[0m |       <Header />
+ [2m268[0m | 
+ [2m269[0m |       {/* Floating Card */}
+     : [35;1m      ^[0m
+ [2m270[0m |       {selectedRoom && showFloatingCard && (
+ [2m271[0m |         <div className="fixed bottom-6 left-0 right-0 z-50 mx-auto px-4 max-w-lg">
+ [2m272[0m |           <div className="bg-white rounded-xl shadow-2xl border border-gray-200 relative">
+     `----
+
+
+Caused by:
+    Syntax Error
+  Plugin: vite:react-swc
+  File: /Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/pages/Rooms.tsx
+  
+10:11:21 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:11:29 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:11:32 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:11:42 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:16:19 AM [vite] hmr update /src/pages/HelpCenter.tsx, /src/index.css
+10:17:46 AM [vite] hmr update /src/pages/HelpCenter.tsx, /src/index.css
+10:17:49 AM [vite] hmr update /src/pages/HelpCenter.tsx, /src/index.css
+10:17:58 AM [vite] hmr update /src/pages/HelpCenter.tsx, /src/index.css
+10:18:01 AM [vite] hmr update /src/pages/HelpCenter.tsx, /src/index.css
+10:18:23 AM [vite] hmr update /src/pages/HelpCenter.tsx, /src/index.css
+10:19:37 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:19:59 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:20:19 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:22:01 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:22:24 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:22:45 AM [vite] hmr update /src/pages/HelpCenter.tsx, /src/index.css
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33662.png, use /Frame 33662.png.
+Files in the public directory are served at the root path.
+Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
+10:26:16 AM [vite] hmr update /src/components/layout/Header.tsx, /src/index.css
+10:35:24 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:35:28 AM [vite] hmr update /src/pages/Rooms.tsx, /src/index.css
+10:35:39 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:35:39 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:35:53 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:35:54 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:37:02 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:37:15 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:37:28 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:37:49 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:38:00 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:39:37 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:39:40 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:40:08 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:40:15 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:40:21 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:40:30 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+10:40:31 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+Files in the public directory are served at the root path.
+Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33662.png, use /Frame 33662.png.

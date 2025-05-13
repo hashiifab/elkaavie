@@ -3,7 +3,14 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Container from "@/components/ui/Container";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  MapPin,
+  Coffee,
+} from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 
 interface GalleryImage {
@@ -14,114 +21,60 @@ interface GalleryImage {
   featured?: boolean;
 }
 
-type Category = "all" | "rooms_facilities" | "surroundings" | "cultural" | "culinary";
+type Category = "all" | "cultural" | "culinary";
 
 const galleryImages: GalleryImage[] = [
-  // Rooms & Facilities (4 images)
+  // Cultural Tourism (4 images)
   {
     id: 1,
-    src: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304",
-    alt: "Luxury king bedroom with spacious design",
-    category: "rooms_facilities",
+    src: "/tourism/tugu.jpg",
+    alt: "Tugu Jogja - Iconic landmark of Yogyakarta",
+    category: "cultural",
     featured: true,
   },
   {
     id: 2,
-    src: "https://images.unsplash.com/photo-1624834452214-38c02f9ae3c9",
-    alt: "Modern bathroom with rain shower",
-    category: "rooms_facilities",
+    src: "/tourism/malioboro.jpg",
+    alt: "Malioboro - Famous shopping street with traditional crafts",
+    category: "cultural",
   },
   {
     id: 3,
-    src: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc",
-    alt: "Cozy living area with contemporary furnishings",
-    category: "rooms_facilities",
+    src: "/tourism/keraton.jpg",
+    alt: "Keraton Yogyakarta - The Sultan's Palace with rich history",
+    category: "cultural",
   },
   {
     id: 4,
-    src: "https://images.unsplash.com/photo-1615874959474-d609969a20ed",
-    alt: "Fully equipped kitchen with stainless steel appliances",
-    category: "rooms_facilities",
-  },
-
-  // Surrounding Environment (4 images)
-  {
-    id: 5,
-    src: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3",
-    alt: "Modern building exterior with landscaped entrance",
-    category: "surroundings",
-    featured: true,
-  },
-  {
-    id: 6,
-    src: "https://images.unsplash.com/photo-1566665797739-1674de7a421a",
-    alt: "Tranquil garden with seating areas",
-    category: "surroundings",
-  },
-  {
-    id: 7,
-    src: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7",
-    alt: "Night view of the building facade",
-    category: "surroundings",
-  },
-  {
-    id: 8,
-    src: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7",
-    alt: "Rooftop terrace with panoramic views",
-    category: "surroundings",
-  },
-
-  // Cultural Tourism (4 images)
-  {
-    id: 9,
-    src: "https://images.unsplash.com/photo-1584810359583-96fc3448beaa",
-    alt: "Tugu Jogja landmark at sunset",
-    category: "cultural",
-    featured: true,
-  },
-  {
-    id: 10,
-    src: "https://images.unsplash.com/photo-1627567293910-8b5421fcf513",
-    alt: "Malioboro street with traditional shops",
-    category: "cultural",
-  },
-  {
-    id: 11,
-    src: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272",
-    alt: "Yogyakarta Palace (Kraton) entrance",
-    category: "cultural",
-  },
-  {
-    id: 12,
-    src: "https://images.unsplash.com/photo-1590136590531-7833759eca3a",
-    alt: "Alun-Alun Kidul with its iconic twin banyan trees",
+    src: "/tourism/taman.jpeg",
+    alt: "Taman Sari - Historic royal garden and water castle",
     category: "cultural",
   },
 
   // Culinary & Hangout Spots (4 images)
   {
-    id: 13,
-    src: "https://images.unsplash.com/photo-1544148103-0773bf10d330",
-    alt: "Cozy cafe with comfortable seating",
+    id: 5,
+    src: "/culinary/tanahresto.png",
+    alt: "Tanah Kita Resto - Popular restaurant near Elkaavie",
     category: "culinary",
     featured: true,
   },
   {
-    id: 14,
-    src: "https://images.unsplash.com/photo-1519690889869-e705e59f72e1",
-    alt: "Local food stall with traditional dishes",
+    id: 6,
+    src: "/culinary/tongkah.png",
+    alt: "TONGKAH KOPI - Cozy coffee shop for studying",
     category: "culinary",
   },
   {
-    id: 15,
-    src: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c",
-    alt: "Modern restaurant with outdoor seating",
+    id: 7,
+    src: "/culinary/longkang.png",
+    alt: "Longkangkopi - Unique coffee shop with great ambiance",
     category: "culinary",
   },
   {
-    id: 16,
-    src: "https://images.unsplash.com/photo-1554118811-1e0d58224f24",
-    alt: "Coffee shop with study area for students",
+    id: 8,
+    src: "/culinary/kebon.png",
+    alt: "Kebon Plandi - Garden-themed cafe with outdoor seating",
     category: "culinary",
   },
 ];
@@ -129,18 +82,20 @@ const galleryImages: GalleryImage[] = [
 const Gallery = () => {
   const { translations } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<Category>("all");
-  const [filteredImages, setFilteredImages] = useState<GalleryImage[]>(galleryImages);
+  const [filteredImages, setFilteredImages] =
+    useState<GalleryImage[]>(galleryImages);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
-  // Featured image - always the first in the list
-  const featuredImages = galleryImages.filter(img => img.featured);
+  // No longer need featured images since we're using a gradient background
 
   useEffect(() => {
     if (selectedCategory === "all") {
       setFilteredImages(galleryImages);
     } else {
-      setFilteredImages(galleryImages.filter(img => img.category === selectedCategory));
+      setFilteredImages(
+        galleryImages.filter((img) => img.category === selectedCategory)
+      );
     }
   }, [selectedCategory]);
 
@@ -158,13 +113,16 @@ const Gallery = () => {
   const navigateImage = (direction: "next" | "prev") => {
     if (!selectedImage) return;
 
-    const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+    const currentIndex = filteredImages.findIndex(
+      (img) => img.id === selectedImage.id
+    );
     let newIndex: number;
 
     if (direction === "next") {
       newIndex = (currentIndex + 1) % filteredImages.length;
     } else {
-      newIndex = (currentIndex - 1 + filteredImages.length) % filteredImages.length;
+      newIndex =
+        (currentIndex - 1 + filteredImages.length) % filteredImages.length;
     }
 
     setSelectedImage(filteredImages[newIndex]);
@@ -192,8 +150,6 @@ const Gallery = () => {
 
   const categories: { value: Category; label: string }[] = [
     { value: "all", label: translations.gallery.categories.all },
-    { value: "rooms_facilities", label: translations.gallery.categories.rooms_facilities },
-    { value: "surroundings", label: translations.gallery.categories.surroundings },
     { value: "cultural", label: translations.gallery.categories.cultural },
     { value: "culinary", label: translations.gallery.categories.culinary },
   ];
@@ -202,37 +158,39 @@ const Gallery = () => {
     <>
       <Header />
       <main className="pt-24 pb-16">
-        {/* Hero section with featured images */}
-        <div className="relative h-[50vh] mb-16 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/10 z-10" />
-          <img
-            src={`${featuredImages[0]?.src}?w=1920&auto=format&fit=crop&q=80`}
-            alt={featuredImages[0]?.alt}
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
-            <motion.h1
-              className="text-5xl font-bold text-white mb-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              {translations.gallery.title}
-            </motion.h1>
-            <motion.p
-              className="text-xl text-white/90 max-w-2xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              {translations.gallery.description}
-            </motion.p>
-          </div>
+        {/* Hero section */}
+        <div className="bg-gradient-to-r from-elkaavie-600 to-elkaavie-800 py-16 mb-12">
+          <Container>
+            <div className="text-left text-white max-w-3xl px-4">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                {translations.gallery.title}
+              </h1>
+              <div className="w-20 h-1 bg-elkaavie-400 mb-6"></div>
+              <p className="text-xl text-white/90 mb-8">
+                {translations.gallery.description}
+              </p>
+
+              {/* Feature badges to add more visual elements */}
+              <div className="flex flex-wrap gap-4 items-center mb-1">
+                <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
+                  <MapPin className="h-4 w-4 text-elkaavie-200" />
+                  <span>{translations.gallery.categories.cultural}</span>
+                </div>
+                <div className="flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 text-sm backdrop-blur-sm">
+                  <Coffee className="h-4 w-4 text-elkaavie-200" />
+                  <span>{translations.gallery.categories.culinary}</span>
+                </div>
+              </div>
+            </div>
+          </Container>
         </div>
 
         <Container>
           {/* Category filters */}
-          <div className="flex flex-col items-center mb-12">
+          <div
+            id="gallery-categories"
+            className="flex flex-col items-center mb-12"
+          >
             <div className="flex flex-wrap justify-center gap-3 mb-6">
               {categories.map((category) => (
                 <button
@@ -287,7 +245,9 @@ const Gallery = () => {
                     </div>
                   </div>
                   <div className="p-3 bg-white">
-                    <p className="text-sm text-gray-700 line-clamp-1">{getImageDescriptionKey(image.alt)}</p>
+                    <p className="text-sm text-gray-700 line-clamp-1">
+                      {getImageDescriptionKey(image.alt)}
+                    </p>
                   </div>
                 </motion.div>
               ))}

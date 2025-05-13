@@ -410,21 +410,17 @@ export const en = {
     copyright: '© {year} Elkaavie. All rights reserved.',
   },
   gallery: {
-    title: 'Our Gallery',
-    description: 'Experience the elegance and comfort of Elkaavie through our carefully curated image gallery',
+    title: 'Explore Nearby Attractions',
+    description: 'Discover cultural sites and popular hangout spots around Elkaavie boarding house',
     categories: {
-      all: 'All Photos',
-      rooms_facilities: 'Rooms & Facilities',
-      surroundings: 'Surrounding Environment',
+      all: 'All Attractions',
       cultural: 'Cultural Tourism',
       culinary: 'Culinary & Hangout Spots'
     },
     descriptions: {
-      all: 'Explore our photo gallery showcasing various aspects of Elkaavie and its surroundings.',
-      rooms_facilities: 'See the comfort of our rooms and exclusive facilities we provide.',
-      surroundings: 'From street food stalls, city parks, to places of worship — everything is nearby!',
-      cultural: 'Check out iconic spots like Tugu Jogja, Malioboro, and Yogyakarta Palace.',
-      culinary: 'Discover nearby cafes and eateries for relaxation or remote work.'
+      all: 'Explore the cultural sites and popular hangout spots near Elkaavie boarding house.',
+      cultural: 'Visit iconic landmarks like Tugu Jogja, Malioboro, Keraton, and Taman Sari - all within 30 minutes from Elkaavie.',
+      culinary: 'Enjoy popular cafes and restaurants near Elkaavie, perfect for studying, relaxing, or meeting friends.'
     },
     viewButton: 'View',
     lightbox: {

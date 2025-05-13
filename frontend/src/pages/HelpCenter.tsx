@@ -312,14 +312,14 @@ const HelpCenter = () => {
         {/* Hero section */}
         <div className="bg-gradient-to-r from-elkaavie-600 to-elkaavie-800 py-16 mb-12">
           <Container>
-            <div className="text-center text-white max-w-3xl mx-auto px-4">
+            <div className="text-left text-white max-w-3xl px-4">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">{translations.helpCenter.hero.title}</h1>
               <p className="text-xl text-white/90 mb-8">
                 {translations.helpCenter.hero.description}
               </p>
 
               {/* Search bar */}
-              <div className="relative max-w-2xl mx-auto">
+              <div className="relative max-w-2xl">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Search className="h-5 w-5 text-white/70" />
                 </div>

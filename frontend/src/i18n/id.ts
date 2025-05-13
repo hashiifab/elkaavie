@@ -410,21 +410,17 @@ export const id = {
     copyright: '© {year} Elkaavie. All rights reserved.',
   },
   gallery: {
-    title: 'Galeri Kami',
-    description: 'Rasakan keanggunan dan kenyamanan Elkaavie melalui galeri gambar yang dikurasi dengan cermat',
+    title: 'Jelajahi Tempat Menarik di Sekitar',
+    description: 'Temukan situs budaya dan tempat nongkrong populer di sekitar kost Elkaavie',
     categories: {
-      all: 'Semua Foto',
-      rooms_facilities: 'Kamar & Fasilitas',
-      surroundings: 'Lingkungan Sekitar',
+      all: 'Semua Tempat',
       cultural: 'Wisata Budaya',
       culinary: 'Kuliner & Nongkrong'
     },
     descriptions: {
-      all: 'Jelajahi galeri foto kami yang menampilkan berbagai aspek Elkaavie dan lingkungan sekitarnya.',
-      rooms_facilities: 'Lihat kenyamanan kamar dan fasilitas eksklusif yang kami sediakan.',
-      surroundings: 'Mulai dari angkringan, taman kota, hingga tempat ibadah — semuanya dekat!',
-      cultural: 'Cek spot ikonik seperti Tugu Jogja, Malioboro, dan Kraton Yogyakarta.',
-      culinary: 'Temukan kafe dan tempat makan terdekat buat healing atau kerja remote.'
+      all: 'Jelajahi situs budaya dan tempat nongkrong populer di sekitar kost Elkaavie.',
+      cultural: 'Kunjungi landmark ikonik seperti Tugu Jogja, Malioboro, Keraton, dan Taman Sari - semua dalam jarak 30 menit dari Elkaavie.',
+      culinary: 'Nikmati kafe dan restoran populer di dekat Elkaavie, cocok untuk belajar, bersantai, atau bertemu teman.'
     },
     viewButton: 'Lihat',
     lightbox: {

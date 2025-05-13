@@ -166,7 +166,7 @@ const Header = () => {
           {isAuthenticated ? (
             <>
               <Link
-                to="/profile"
+                to="/settings"
                 className="flex items-center text-gray-800 hover:text-elkaavie-600"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -250,7 +250,7 @@ const Header = () => {
                     <p className="text-xs text-gray-500 truncate">{userData?.email || ''}</p>
                   </div>
                   <Link
-                    to="/profile"
+                    to="/settings"
                     className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     onClick={() => setIsProfileMenuOpen(false)}
                   >
@@ -265,14 +265,7 @@ const Header = () => {
                     <Calendar size={16} />
                     My Bookings
                   </Link>
-                  <Link
-                    to="/settings"
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    onClick={() => setIsProfileMenuOpen(false)}
-                  >
-                    <Settings size={16} />
-                    Account Settings
-                  </Link>
+                 
                   <div className="border-t border-gray-100 mt-1">
                     <button
                       onClick={() => {
