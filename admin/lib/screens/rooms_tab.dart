@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../main.dart';
@@ -10,6 +11,7 @@ class RoomsTab extends StatelessWidget {
   final Future<bool> Function(int) onToggleRoomAvailability;
   final Future<void> Function(int) onDeleteRoom;
   final List<dynamic> bookings;
+  final TabController? tabController;
 
   const RoomsTab({
     super.key,
@@ -20,6 +22,7 @@ class RoomsTab extends StatelessWidget {
     required this.onToggleRoomAvailability,
     required this.onDeleteRoom,
     required this.bookings,
+    this.tabController,
   });
 
   // Di fungsi _findBookingForRoom
@@ -43,19 +46,19 @@ class RoomsTab extends StatelessWidget {
     final bool isPending = booking != null && booking['status'] == 'pending';
     final dynamic user = booking?['user'];
 
-    return showDialog<void>(
+    return showCupertinoDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: Text('Room $roomNumber'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
+      builder:
+          (dialogContext) => CupertinoAlertDialog(
+            title: Text('Room $roomNumber'),
+            content: Column(
+              children: [
+                const SizedBox(height: 8),
                 Text('Status: ${isAvailable ? 'Available' : 'Unavailable'}'),
                 const SizedBox(height: 8),
                 if (!isAvailable && booking != null) ...[
                   Text('Booked by: ${user?['name'] ?? 'Unknown'}'),
+                  const SizedBox(height: 4),
                   Text(
                     'Status: ${booking['status']?.toUpperCase() ?? 'UNKNOWN'}',
                   ),
@@ -64,68 +67,70 @@ class RoomsTab extends StatelessWidget {
                 Text('What would you like to do with this room?'),
               ],
             ),
-          ),
-          actions: <Widget>[
-            if (!isAvailable && booking != null) ...[
-              TextButton(
-                child: const Text('View Booking Details'),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                  _showBookingDetails(context, booking, roomNumber);
-                },
-              ),
-              if (user != null)
-                TextButton(
-                  child: const Text('View Guest Profile'),
+            actions: <CupertinoDialogAction>[
+              if (!isAvailable && booking != null) ...[
+                CupertinoDialogAction(
+                  child: const Text('View Booking Details'),
                   onPressed: () {
                     Navigator.of(dialogContext).pop();
-                    _showUserDetails(context, user);
+                    _showBookingDetails(context, booking, roomNumber);
+                  },
+                ),
+                if (user != null)
+                  CupertinoDialogAction(
+                    child: const Text('View Guest Profile'),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                      if (tabController != null) {
+                        tabController!.animateTo(1);
+                      }
+                    },
+                  ),
+              ],
+              CupertinoDialogAction(
+                isDestructiveAction: false,
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+              CupertinoDialogAction(
+                child: Text(
+                  isAvailable ? 'Mark as Unavailable' : 'Mark as Available',
+                ),
+                onPressed: () async {
+                  Navigator.of(dialogContext).pop();
+                  try {
+                    bool newStatus = await onToggleRoomAvailability(roomId);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Room marked as ${newStatus ? 'available' : 'unavailable'}',
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(e.toString())));
+                    }
+                  }
+                },
+              ),
+              if (isPending)
+                CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  child: const Text('Batalkan Pending'),
+                  onPressed: () async {
+                    Navigator.of(dialogContext).pop();
+                    // Tambahkan logika pembatalan pending di sini
                   },
                 ),
             ],
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
-            ),
-            TextButton(
-              child: Text(
-                isAvailable ? 'Mark as Unavailable' : 'Mark as Available',
-              ),
-              onPressed: () async {
-                Navigator.of(dialogContext).pop();
-                try {
-                  bool newStatus = await onToggleRoomAvailability(roomId);
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Room marked as ${newStatus ? 'available' : 'unavailable'}',
-                        ),
-                      ),
-                    );
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(e.toString())));
-                  }
-                }
-              },
-            ),
-            if (isPending)
-              TextButton(
-                child: const Text('Batalkan Pending'),
-                onPressed: () async {
-                  Navigator.of(dialogContext).pop();
-                  // Tambahkan logika pembatalan pending di sini
-                },
-              ),
-          ],
-        );
-      },
+          ),
     );
   }
 
