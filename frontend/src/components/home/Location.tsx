@@ -1,8 +1,24 @@
 import { useState, useEffect } from "react";
 import Container from "../ui/Container";
 import CustomBadge from "../ui/CustomBadge";
-import { MapPin, School, Building, Home, Store, Utensils, Hotel, Building2, ChevronDown, ChevronUp } from "lucide-react";
+import { MapPin, School, Building, Home, Store, Utensils, Hotel, Building2, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
+
+// Map of place names to their Google Maps URLs
+const placeLinks: Record<string, string> = {
+  "Budi Utama School": "https://g.co/kgs/YyBhnq8",
+  "TVRI Yogyakarta": "https://g.co/kgs/P7TsEV5",
+  "Al-Ikhlas Mosque": "https://maps.app.goo.gl/Dm1XtLSi14v7GUnF7",
+  "Warmindo Latanza": "https://maps.app.goo.gl/3EbaGhPsxXxekmpE8",
+  "Sakinah Mart": "https://g.co/kgs/beFXZfh",
+  "Sakinah Idaman General Hospital": "https://g.co/kgs/HJcdU9C",
+  "Sardjito Hospital": "https://g.co/kgs/UbrgKcx",
+  "Gadjah Mada University": "https://g.co/kgs/GFCD6ZW",
+  "Hotel Tentrem": "https://www.google.com/search?q=Hotel+Tentrem+sleman&sourceid=chrome&ie=UTF-8",
+  "MAN 3 Sleman": "https://g.co/kgs/4nbdsGy",
+  "Warteg Al Rizki": "https://g.co/kgs/vzRJ6ZM",
+  "Indomaret Godean": "https://g.co/kgs/YQgVpgi",
+};
 
 const Location = () => {
   const { translations } = useLanguage();
@@ -59,11 +75,11 @@ const Location = () => {
           </p>
         </div>
 
-        <div className={`grid grid-cols-1 ${showAllPlaces && !isMobile ? 'lg:grid-cols-1' : 'lg:grid-cols-2'} gap-12 items-start transition-all ${showAllPlaces ? 'duration-700' : 'duration-300'} ease-in-out`}>
-          <div className={`transition-all ${showAllPlaces ? 'duration-700' : 'duration-300'} ease-in-out ${showAllPlaces && !isMobile ? 'col-span-1' : 'order-2 lg:order-1'}`}>
-            <div className={`bg-elkaavie-50 rounded-2xl p-8 animate-scale-in relative transition-all ${showAllPlaces ? 'duration-700' : 'duration-300'} ease-in-out ${showAllPlaces ? '' : 'h-[400px] md:h-[500px]'}`}>
+        <div className={`grid grid-cols-1 ${showAllPlaces && !isMobile ? 'lg:grid-cols-1' : 'lg:grid-cols-2'} gap-12 items-start transition-all duration-700 ease-in-out`}>
+          <div className={`transition-all duration-700 ease-in-out ${showAllPlaces && !isMobile ? 'col-span-1' : 'order-2 lg:order-1'}`}>
+            <div className={`bg-elkaavie-50 rounded-2xl p-8 animate-scale-in relative transition-all duration-700 ease-in-out ${showAllPlaces ? '' : ''}`}>
               <div
-                className={`transition-all ${showAllPlaces ? 'duration-700' : 'duration-300'} ease-in-out ${showAllPlaces ? 'max-h-[2000px]' : 'max-h-[320px] md:max-h-[420px] overflow-hidden'}`}
+                className={`transition-all duration-700 ease-in-out ${showAllPlaces ? 'max-h-[2000px]' : 'max-h-[320px] md:max-h-[420px] overflow-hidden'}`}
               >
                 <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
                   <MapPin className="text-elkaavie-500 mr-2" size={24} />
@@ -78,20 +94,24 @@ const Location = () => {
                   {translations.home.location.nearbyPlaces.title}
                 </h4>
 
-                <div className={`grid grid-cols-1 ${showAllPlaces ? (isMobile ? 'md:grid-cols-2' : 'md:grid-cols-3 lg:grid-cols-4') : 'md:grid-cols-2'} gap-3 transition-all ${showAllPlaces ? 'duration-700' : 'duration-300'} ease-in-out`}>
+                <div className={`grid grid-cols-1 ${showAllPlaces ? (isMobile ? 'md:grid-cols-2' : 'md:grid-cols-3 lg:grid-cols-4') : 'md:grid-cols-2'} gap-3 transition-all duration-700 ease-in-out`}>
                   {translations.home.location.nearbyPlaces.places.map((place, index) => (
-                    <div
+                    <a
                       key={index}
-                      className="flex items-center bg-white p-3 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                      href={placeLinks[place.name] || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center bg-white p-3 rounded-lg border border-gray-100 shadow-sm hover:shadow-md hover:bg-elkaavie-50 transition-all cursor-pointer group"
                     >
-                      <div className="w-10 h-10 rounded-full bg-elkaavie-100 flex items-center justify-center mr-3 text-elkaavie-700">
+                      <div className="w-10 h-10 rounded-full bg-elkaavie-100 flex items-center justify-center mr-3 text-elkaavie-700 group-hover:bg-elkaavie-200 transition-colors">
                         {getIconForType(place.type)}
                       </div>
-                      <div>
-                        <h5 className="font-medium text-gray-900">{place.name}</h5>
+                      <div className="flex-grow">
+                        <h5 className="font-medium text-gray-900 group-hover:text-elkaavie-700 transition-colors">{place.name}</h5>
                         <p className="text-sm text-gray-500">{place.distance}</p>
                       </div>
-                    </div>
+                      <ExternalLink size={16} className="text-gray-400 group-hover:text-elkaavie-500 transition-colors" />
+                    </a>
                   ))}
                 </div>
 
@@ -99,7 +119,7 @@ const Location = () => {
               </div>
 
               <div
-                className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-elkaavie-50 to-transparent h-24 flex items-end justify-center pb-4 transition-opacity ${showAllPlaces ? 'duration-700' : 'duration-300'} ease-in-out ${showAllPlaces ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-elkaavie-50 to-transparent h-24 flex items-end justify-center pb-4 rounded-b-2xl transition-opacity duration-700 ease-in-out ${showAllPlaces ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
               >
                 <button
                   onClick={() => setShowAllPlaces(true)}
@@ -111,7 +131,7 @@ const Location = () => {
               </div>
 
               <div
-                className={`mt-6 w-full flex justify-center transition-all ${showAllPlaces ? 'duration-700' : 'duration-300'} ease-in-out ${showAllPlaces ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-0 pointer-events-none absolute'}`}
+                className={`mt-6 w-full flex justify-center transition-all duration-700 ease-in-out ${showAllPlaces ? 'opacity-100 h-auto' : 'opacity-0 h-0 overflow-hidden pointer-events-none'}`}
               >
                 <button
                   onClick={() => setShowAllPlaces(false)}
@@ -124,7 +144,7 @@ const Location = () => {
             </div>
           </div>
 
-          <div className={`${showAllPlaces && !isMobile ? 'mt-8' : 'order-1 lg:order-2'} transition-all ${showAllPlaces ? 'duration-700' : 'duration-300'} ease-in-out`}>
+          <div className={`${showAllPlaces && !isMobile ? 'mt-8' : 'order-1 lg:order-2'} transition-all duration-700 ease-in-out`}>
             <div className="relative rounded-2xl overflow-hidden shadow-lg h-[400px] md:h-[500px] animate-scale-in">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.2217300641523!2d110.3646763!3d-7.7662954!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a58453c3f9ca1%3A0xf0e252b6131c38ba!2sKOS%20EXCLUSIVE%20ELKAAVIE!5e0!3m2!1sen!2sid!4v1745549796972!5m2!1sen!2sid"

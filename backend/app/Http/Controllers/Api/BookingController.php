@@ -146,9 +146,9 @@ class BookingController extends Controller
             // Always set user_id from authenticated user
             $data['user_id'] = auth()->id();
 
-            // Remove duration_months from data since the column doesn't exist in the database yet
-            if (isset($data['duration_months'])) {
-                unset($data['duration_months']);
+            // Ensure duration_months is set (the column exists in the database)
+            if (!isset($data['duration_months'])) {
+                $data['duration_months'] = $months; // Use the calculated months value
             }
 
             // Create the booking record in database
@@ -230,6 +230,7 @@ class BookingController extends Controller
         $validated = $request->validate([
             'check_in' => 'sometimes|date',
             'check_out' => 'sometimes|date|after:check_in',
+            'duration_months' => 'sometimes|integer|min:1|max:12',
             'guests' => 'sometimes|integer|min:1',
             'special_requests' => 'sometimes|string',
             'payment_method' => 'sometimes|in:credit_card,bank_transfer',

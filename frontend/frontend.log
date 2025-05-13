@@ -3,100 +3,46 @@
 > vite
 
 
-  VITE v5.4.10  ready in 174 ms
+  VITE v5.4.10  ready in 608 ms
 
   ➜  Local:   http://localhost:3000/
-  ➜  Network: http://192.192.2.74:3000/
+  ➜  Network: http://192.192.2.166:3000/
 Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
 Files in the public directory are served at the root path.
-Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
-Files in the public directory are served at the root path.
-Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
-Files in the public directory are served at the root path.
-Instead of /public/Frame 33662.png, use /Frame 33662.png.
-Files in the public directory are served at the root path.
-Instead of /public/Frame 33662.png, use /Frame 33662.png.
-Files in the public directory are served at the root path.
-Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
-Files in the public directory are served at the root path.
-Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
-7:51:34 PM [vite] hmr update /src/pages/GoogleCallback.tsx, /src/index.css
-7:51:49 PM [vite] hmr update /src/pages/GoogleCallback.tsx, /src/index.css
-7:52:12 PM [vite] hmr update /src/pages/GoogleCallback.tsx, /src/index.css
-7:52:29 PM [vite] hmr update /src/pages/Login.tsx, /src/index.css, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/Settings.tsx, /src/pages/GoogleCallback.tsx, /src/pages/EmailVerification.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/pages/ResetPassword.tsx, /src/components/layout/Header.tsx
-7:53:20 PM [vite] hmr update /src/pages/Login.tsx, /src/index.css, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/Settings.tsx, /src/pages/GoogleCallback.tsx, /src/pages/EmailVerification.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/pages/ResetPassword.tsx, /src/components/layout/Header.tsx
-7:53:20 PM [vite] hmr update /src/pages/GoogleCallback.tsx, /src/index.css
-7:53:20 PM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
-7:53:20 PM [vite] hmr update /src/pages/RoomBooking.tsx, /src/index.css
-7:53:20 PM [vite] hmr update /src/pages/Login.tsx, /src/index.css
-Files in the public directory are served at the root path.
-Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
-Files in the public directory are served at the root path.
-Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
-Files in the public directory are served at the root path.
-Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
-Files in the public directory are served at the root path.
-Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
-Files in the public directory are served at the root path.
 Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
 Files in the public directory are served at the root path.
 Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
 Files in the public directory are served at the root path.
 Instead of /public/Frame 33662.png, use /Frame 33662.png.
-8:58:54 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-8:58:54 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-8:58:54 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-8:58:56 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-8:58:56 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-8:58:56 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-8:59:03 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-8:59:04 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-8:59:04 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
+7:32:57 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:32:57 AM [vite] hmr update /src/pages/Index.tsx, /src/index.css
+7:33:16 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:33:34 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:33:36 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:33:38 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:33:40 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:34:18 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:34:20 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:34:22 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:34:23 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:34:25 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:34:29 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:34:44 AM [vite] hmr update /src/pages/Index.tsx, /src/index.css
+7:34:44 AM [vite] hmr update /src/pages/BookingDetails.tsx, /src/index.css
+7:37:30 AM [vite] hmr update /src/components/layout/Footer.tsx, /src/index.css
+7:40:58 AM [vite] hmr update /src/pages/Index.tsx, /src/index.css
+7:44:37 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+7:44:37 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+7:44:37 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+7:44:48 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+7:44:48 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+7:44:48 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+7:45:02 AM [vite] hmr update /src/pages/Index.tsx, /src/index.css
+7:45:15 AM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
 Files in the public directory are served at the root path.
 Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
-Files in the public directory are served at the root path.
-Instead of /public/Frame 33662.png, use /Frame 33662.png.
-Files in the public directory are served at the root path.
-Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
-8:59:17 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-8:59:17 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-8:59:17 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-8:59:28 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-8:59:33 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-8:59:36 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-8:59:59 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-8:59:59 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-8:59:59 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:00:01 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:00:01 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:00:01 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:00:02 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:00:02 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:00:02 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:00:04 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:00:04 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:00:04 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:00:10 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-9:00:12 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-9:02:53 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-9:03:12 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-9:03:40 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:03:40 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:03:40 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:03:48 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:03:49 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:03:49 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:03:50 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:03:50 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:03:50 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:03:55 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:03:55 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:03:55 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:03:59 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:03:59 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:03:59 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
 Files in the public directory are served at the root path.
 Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
 Files in the public directory are served at the root path.
@@ -109,35 +55,52 @@ Files in the public directory are served at the root path.
 Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
 Files in the public directory are served at the root path.
 Instead of /public/Frame 33662.png, use /Frame 33662.png.
-9:07:07 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-Files in the public directory are served at the root path.
-Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
+7:46:19 AM [vite] hmr update /src/pages/Index.tsx, /src/index.css
 Files in the public directory are served at the root path.
 Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
 Files in the public directory are served at the root path.
+Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
+Files in the public directory are served at the root path.
 Instead of /public/Frame 33662.png, use /Frame 33662.png.
-9:09:35 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-9:09:53 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-9:10:05 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
-9:10:39 PM [vite] hmr update /src/components/home/Hero.tsx, /src/index.css
+Files in the public directory are served at the root path.
+Instead of /public/Frame 33662.png, use /Frame 33662.png.
 Files in the public directory are served at the root path.
 Instead of /public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg, use /WhatsApp Image 2025-04-19 at 21.40.09.jpeg.
 Files in the public directory are served at the root path.
-Instead of /public/Frame 33662.png, use /Frame 33662.png.
-Files in the public directory are served at the root path.
 Instead of /public/Frame 33644 (1).png, use /Frame 33644 (1).png.
-9:11:59 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:11:59 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:11:59 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:12:03 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:12:03 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:12:03 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:12:06 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:12:06 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:12:06 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:12:11 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:12:11 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:12:11 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
-9:12:25 PM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
-9:12:25 PM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
-9:12:25 PM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Gallery.tsx, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Login.tsx, /src/pages/Rooms.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/ForgotPassword.tsx, /src/components/layout/Header.tsx, /src/components/layout/Footer.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Location.tsx, /src/components/home/Reviews.tsx
+8:16:09 AM [vite] hmr update /src/components/home/Location.tsx, /src/index.css
+8:16:37 AM [vite] hmr update /src/components/home/Location.tsx, /src/index.css
+8:16:52 AM [vite] hmr update /src/components/home/Location.tsx, /src/index.css
+8:17:05 AM [vite] hmr update /src/components/home/Location.tsx, /src/index.css
+8:17:20 AM [vite] hmr update /src/components/home/Location.tsx, /src/index.css
+8:46:18 AM [vite] hmr update /src/components/home/Location.tsx, /src/index.css
+8:46:35 AM [vite] hmr update /src/components/home/Location.tsx, /src/index.css
+8:52:19 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+8:53:02 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+8:53:17 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+8:53:35 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+8:53:54 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+8:54:40 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+8:55:54 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+8:55:54 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+8:55:54 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+8:56:22 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+8:56:22 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+8:56:22 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+8:56:47 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+8:57:18 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+9:01:38 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+9:01:38 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+9:01:38 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+9:02:07 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+9:02:08 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+9:02:08 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+9:02:29 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+9:04:30 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+9:04:30 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+9:04:30 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+9:04:48 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+9:04:48 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+9:04:48 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+9:07:49 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css
+9:08:03 AM [vite] hmr update /src/pages/Gallery.tsx, /src/index.css

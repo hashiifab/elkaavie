@@ -102,10 +102,10 @@ const Hero = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="#book"
+                href="/rooms"
                 className="inline-flex items-center justify-center px-6 py-3 bg-elkaavie-500 text-white font-medium rounded-lg shadow-md hover:bg-elkaavie-600 transition duration-200 text-center hover-scale"
               >
-                {translations.home.hero.cta.inquire}
+                {translations.rooms.book}
                 <ArrowRight size={18} className="ml-2" />
               </a>
               <a

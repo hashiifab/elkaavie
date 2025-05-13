@@ -283,7 +283,7 @@ const HelpCenter = () => {
       const encodedMessage = encodeURIComponent(message);
 
       // Nomor WhatsApp admin
-      const adminPhone = "6282220760272";
+      const adminPhone = "628179370631";
 
       // Buka WhatsApp dengan pesan yang sudah disiapkan
       window.open(`https://wa.me/${adminPhone}?text=${encodedMessage}`, '_blank');

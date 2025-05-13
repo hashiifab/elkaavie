@@ -123,9 +123,11 @@ const Header = () => {
     >
       <Container className="flex items-center justify-between">
         <Link to="/" className="relative z-10">
-          <h1 className="text-2xl font-bold text-elkaavie-800">
-            Elkaavie<span className="text-elkaavie-500">.</span>
-          </h1>
+          <img
+            src="/Logo.png"
+            alt="Elkaavie Logo"
+            className="h-10 w-auto"
+          />
         </Link>
 
         {/* Mobile Menu Button */}
@@ -227,7 +229,7 @@ const Header = () => {
 
           {isAuthenticated ? (
             <div className="relative" ref={profileMenuRef}>
-              <button 
+              <button
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                 className="flex items-center gap-2 focus:outline-none"
               >
@@ -239,7 +241,7 @@ const Header = () => {
                 </span>
                 <ChevronDown size={16} className={`transition-transform duration-200 ${isProfileMenuOpen ? 'rotate-180' : ''}`} />
               </button>
-              
+
               {/* Profile Dropdown Menu */}
               {isProfileMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-100">
@@ -247,7 +249,7 @@ const Header = () => {
                     <p className="text-sm font-medium text-gray-900">{userData?.name || 'User'}</p>
                     <p className="text-xs text-gray-500 truncate">{userData?.email || ''}</p>
                   </div>
-                  <Link 
+                  <Link
                     to="/profile"
                     className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     onClick={() => setIsProfileMenuOpen(false)}
@@ -255,7 +257,7 @@ const Header = () => {
                     <UserCircle size={16} />
                     My Profile
                   </Link>
-                  <Link 
+                  <Link
                     to="/profile"
                     className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     onClick={() => setIsProfileMenuOpen(false)}
@@ -263,7 +265,7 @@ const Header = () => {
                     <Calendar size={16} />
                     My Bookings
                   </Link>
-                  <Link 
+                  <Link
                     to="/settings"
                     className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     onClick={() => setIsProfileMenuOpen(false)}

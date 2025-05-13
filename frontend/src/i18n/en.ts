@@ -92,7 +92,7 @@ export const en = {
       subtitle: 'Comfortable, Peaceful, and Strategic',
       description: 'Find premium boarding rooms with complete facilities, peaceful atmosphere, and strategic location in the heart of Jogja.',
       cta: {
-        inquire: 'Inquire Now',
+        inquire: 'Book Now',
         viewFacilities: 'View Facilities'
       }
     },
@@ -414,10 +414,17 @@ export const en = {
     description: 'Experience the elegance and comfort of Elkaavie through our carefully curated image gallery',
     categories: {
       all: 'All Photos',
-      rooms: 'Rooms',
-      amenities: 'Amenities',
-      exterior: 'Exterior',
-      dining: 'Dining'
+      rooms_facilities: 'Rooms & Facilities',
+      surroundings: 'Surrounding Environment',
+      cultural: 'Cultural Tourism',
+      culinary: 'Culinary & Hangout Spots'
+    },
+    descriptions: {
+      all: 'Explore our photo gallery showcasing various aspects of Elkaavie and its surroundings.',
+      rooms_facilities: 'See the comfort of our rooms and exclusive facilities we provide.',
+      surroundings: 'From street food stalls, city parks, to places of worship — everything is nearby!',
+      cultural: 'Check out iconic spots like Tugu Jogja, Malioboro, and Yogyakarta Palace.',
+      culinary: 'Discover nearby cafes and eateries for relaxation or remote work.'
     },
     viewButton: 'View',
     lightbox: {
@@ -496,9 +503,9 @@ export const en = {
     otherContact: {
       title: 'Other Ways to Contact Us',
       email: 'Email',
-      emailAddress: 'support@elkaavie.com',
+      emailAddress: 'dbayuaji@gmail.com',
       phone: 'Phone',
-      phoneNumber: '+62 812-3456-7890',
+      phoneNumber: '+62 817-9370-631',
       visit: 'Visit Us',
       address: 'Mlati, Kabupaten Sleman, Jogja'
     },

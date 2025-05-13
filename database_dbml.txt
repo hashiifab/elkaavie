@@ -33,6 +33,7 @@ Table bookings {
   room_id integer [not null]
   check_in date
   check_out date
+  duration_months integer [default: 1, note: 'Number of months for the booking duration']
   status enum [note: 'pending, approved, rejected, completed, cancelled, paid']
   phone_number varchar
   identity_card varchar [note: 'Path to uploaded identity card file']

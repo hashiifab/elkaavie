@@ -107,7 +107,7 @@ const PaymentGuide = () => {
     try {
       const message = `*Payment Proof Uploaded*\n\nBooking ID: #${bookingId}\n\nA user has uploaded payment proof for booking #${bookingId}. Please verify the payment and update the booking status.\n\nImage: ${imageUrl}`;
       const encodedMessage = encodeURIComponent(message);
-      const adminPhone = "6282220760272";
+      const adminPhone = "628179370631";
       window.open(`https://wa.me/${adminPhone}?text=${encodedMessage}`, '_blank');
     } catch (error) {
       console.error('Error sending WhatsApp notification:', error);

@@ -92,7 +92,7 @@ export const id = {
       subtitle: 'Nyaman, Tenang, dan Strategis',
       description: 'Temukan hunian kos premium dengan fasilitas lengkap, suasana tenang, dan lokasi strategis di tengah kota Jogja.',
       cta: {
-        inquire: 'Tanya tanya Dulu',
+        inquire: 'Pesan Sekarang',
         viewFacilities: 'Lihat Fasilitas'
       }
     },
@@ -414,10 +414,17 @@ export const id = {
     description: 'Rasakan keanggunan dan kenyamanan Elkaavie melalui galeri gambar yang dikurasi dengan cermat',
     categories: {
       all: 'Semua Foto',
-      rooms: 'Kamar',
-      amenities: 'Fasilitas',
-      exterior: 'Eksterior',
-      dining: 'Ruang Makan'
+      rooms_facilities: 'Kamar & Fasilitas',
+      surroundings: 'Lingkungan Sekitar',
+      cultural: 'Wisata Budaya',
+      culinary: 'Kuliner & Nongkrong'
+    },
+    descriptions: {
+      all: 'Jelajahi galeri foto kami yang menampilkan berbagai aspek Elkaavie dan lingkungan sekitarnya.',
+      rooms_facilities: 'Lihat kenyamanan kamar dan fasilitas eksklusif yang kami sediakan.',
+      surroundings: 'Mulai dari angkringan, taman kota, hingga tempat ibadah — semuanya dekat!',
+      cultural: 'Cek spot ikonik seperti Tugu Jogja, Malioboro, dan Kraton Yogyakarta.',
+      culinary: 'Temukan kafe dan tempat makan terdekat buat healing atau kerja remote.'
     },
     viewButton: 'Lihat',
     lightbox: {
@@ -496,9 +503,9 @@ export const id = {
     otherContact: {
       title: 'Cara Lain untuk Menghubungi Kami',
       email: 'Email',
-      emailAddress: 'support@elkaavie.com',
+      emailAddress: 'dbayuaji@gmail.com',
       phone: 'Telepon',
-      phoneNumber: '+62 812-3456-7890',
+      phoneNumber: '+62 817-9370-631',
       visit: 'Kunjungi Kami',
       address: 'Mlati, Kabupaten Sleman, Jogja'
     },

@@ -14,102 +14,115 @@ interface GalleryImage {
   featured?: boolean;
 }
 
-type Category = "all" | "rooms" | "amenities" | "exterior" | "dining";
+type Category = "all" | "rooms_facilities" | "surroundings" | "cultural" | "culinary";
 
 const galleryImages: GalleryImage[] = [
+  // Rooms & Facilities (4 images)
   {
     id: 1,
     src: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304",
     alt: "Luxury king bedroom with spacious design",
-    category: "rooms",
+    category: "rooms_facilities",
     featured: true,
   },
   {
     id: 2,
     src: "https://images.unsplash.com/photo-1624834452214-38c02f9ae3c9",
     alt: "Modern bathroom with rain shower",
-    category: "rooms",
+    category: "rooms_facilities",
   },
   {
     id: 3,
     src: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc",
     alt: "Cozy living area with contemporary furnishings",
-    category: "rooms",
+    category: "rooms_facilities",
   },
   {
     id: 4,
     src: "https://images.unsplash.com/photo-1615874959474-d609969a20ed",
     alt: "Fully equipped kitchen with stainless steel appliances",
-    category: "amenities",
-    featured: true,
+    category: "rooms_facilities",
   },
+
+  // Surrounding Environment (4 images)
   {
     id: 5,
-    src: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c",
-    alt: "Elegant dining area with natural lighting",
-    category: "dining",
+    src: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3",
+    alt: "Modern building exterior with landscaped entrance",
+    category: "surroundings",
+    featured: true,
   },
   {
     id: 6,
-    src: "https://images.unsplash.com/photo-1563298723-dcfebaa392e3",
-    alt: "Modern building exterior with landscaped entrance",
-    category: "exterior",
-    featured: true,
+    src: "https://images.unsplash.com/photo-1566665797739-1674de7a421a",
+    alt: "Tranquil garden with seating areas",
+    category: "surroundings",
   },
   {
     id: 7,
-    src: "https://images.unsplash.com/photo-1617098474202-0d0d7f60c56a",
-    alt: "Deluxe room with balcony and city view",
-    category: "rooms",
+    src: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7",
+    alt: "Night view of the building facade",
+    category: "surroundings",
   },
   {
     id: 8,
-    src: "https://images.unsplash.com/photo-1587985064135-a1a8cb43838b",
-    alt: "Refreshing swimming pool with loungers",
-    category: "amenities",
-  },
-  {
-    id: 9,
-    src: "https://images.unsplash.com/photo-1566665797739-1674de7a421a",
-    alt: "Tranquil garden with seating areas",
-    category: "exterior",
-  },
-  {
-    id: 10,
-    src: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
-    alt: "Premium twin bedroom with desk area",
-    category: "rooms",
-  },
-  {
-    id: 11,
     src: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7",
     alt: "Rooftop terrace with panoramic views",
-    category: "amenities",
+    category: "surroundings",
   },
+
+  // Cultural Tourism (4 images)
   {
-    id: 12,
-    src: "https://images.unsplash.com/photo-1544148103-0773bf10d330",
-    alt: "Fine dining restaurant with elegant decor",
-    category: "dining",
+    id: 9,
+    src: "https://images.unsplash.com/photo-1584810359583-96fc3448beaa",
+    alt: "Tugu Jogja landmark at sunset",
+    category: "cultural",
     featured: true,
   },
   {
+    id: 10,
+    src: "https://images.unsplash.com/photo-1627567293910-8b5421fcf513",
+    alt: "Malioboro street with traditional shops",
+    category: "cultural",
+  },
+  {
+    id: 11,
+    src: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272",
+    alt: "Yogyakarta Palace (Kraton) entrance",
+    category: "cultural",
+  },
+  {
+    id: 12,
+    src: "https://images.unsplash.com/photo-1590136590531-7833759eca3a",
+    alt: "Alun-Alun Kidul with its iconic twin banyan trees",
+    category: "cultural",
+  },
+
+  // Culinary & Hangout Spots (4 images)
+  {
     id: 13,
-    src: "https://images.unsplash.com/photo-1572267447684-c625798b99cd",
-    alt: "Wellness center with gym equipment",
-    category: "amenities",
+    src: "https://images.unsplash.com/photo-1544148103-0773bf10d330",
+    alt: "Cozy cafe with comfortable seating",
+    category: "culinary",
+    featured: true,
   },
   {
     id: 14,
     src: "https://images.unsplash.com/photo-1519690889869-e705e59f72e1",
-    alt: "Breakfast buffet with fresh options",
-    category: "dining",
+    alt: "Local food stall with traditional dishes",
+    category: "culinary",
   },
   {
     id: 15,
-    src: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7",
-    alt: "Night view of the building facade",
-    category: "exterior",
+    src: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c",
+    alt: "Modern restaurant with outdoor seating",
+    category: "culinary",
+  },
+  {
+    id: 16,
+    src: "https://images.unsplash.com/photo-1554118811-1e0d58224f24",
+    alt: "Coffee shop with study area for students",
+    category: "culinary",
   },
 ];
 
@@ -146,7 +159,7 @@ const Gallery = () => {
     if (!selectedImage) return;
 
     const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
-    let newIndex;
+    let newIndex: number;
 
     if (direction === "next") {
       newIndex = (currentIndex + 1) % filteredImages.length;
@@ -171,36 +184,18 @@ const Gallery = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isLightboxOpen, selectedImage]);
 
-  // Function to get the translation key for image descriptions
+  // Function to get the description for image
   const getImageDescriptionKey = (alt: string): string => {
-    const descriptionMap: Record<string, keyof typeof translations.gallery.imageDescriptions> = {
-      "Luxury king bedroom with spacious design": "luxuryBedroom",
-      "Modern bathroom with rain shower": "modernBathroom",
-      "Cozy living area with contemporary furnishings": "cozyLivingArea",
-      "Fully equipped kitchen with stainless steel appliances": "fullyEquippedKitchen",
-      "Elegant dining area with natural lighting": "elegantDiningArea",
-      "Modern building exterior with landscaped entrance": "modernBuilding",
-      "Deluxe room with balcony and city view": "deluxeRoom",
-      "Refreshing swimming pool with loungers": "swimmingPool",
-      "Tranquil garden with seating areas": "tranquilGarden",
-      "Premium twin bedroom with desk area": "premiumBedroom",
-      "Rooftop terrace with panoramic views": "rooftopTerrace",
-      "Fine dining restaurant with elegant decor": "fineDining",
-      "Wellness center with gym equipment": "wellnessCenter",
-      "Breakfast buffet with fresh options": "breakfastBuffet",
-      "Night view of the building facade": "nightView"
-    };
-
-    const key = descriptionMap[alt];
-    return key ? translations.gallery.imageDescriptions[key] : alt;
+    // Just return the alt text directly as the description
+    return alt;
   };
 
   const categories: { value: Category; label: string }[] = [
     { value: "all", label: translations.gallery.categories.all },
-    { value: "rooms", label: translations.gallery.categories.rooms },
-    { value: "amenities", label: translations.gallery.categories.amenities },
-    { value: "exterior", label: translations.gallery.categories.exterior },
-    { value: "dining", label: translations.gallery.categories.dining },
+    { value: "rooms_facilities", label: translations.gallery.categories.rooms_facilities },
+    { value: "surroundings", label: translations.gallery.categories.surroundings },
+    { value: "cultural", label: translations.gallery.categories.cultural },
+    { value: "culinary", label: translations.gallery.categories.culinary },
   ];
 
   return (
@@ -237,20 +232,29 @@ const Gallery = () => {
 
         <Container>
           {/* Category filters */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map((category) => (
-              <button
-                key={category.value}
-                onClick={() => setSelectedCategory(category.value)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-                  selectedCategory === category.value
-                    ? "bg-elkaavie-600 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {category.label}
-              </button>
-            ))}
+          <div className="flex flex-col items-center mb-12">
+            <div className="flex flex-wrap justify-center gap-3 mb-6">
+              {categories.map((category) => (
+                <button
+                  key={category.value}
+                  onClick={() => setSelectedCategory(category.value)}
+                  className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                    selectedCategory === category.value
+                      ? "bg-elkaavie-600 text-white shadow-md"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {category.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Category description */}
+            <div className="max-w-3xl text-center px-4">
+              <p className="text-gray-600 leading-relaxed">
+                {translations.gallery.descriptions[selectedCategory]}
+              </p>
+            </div>
           </div>
 
           {/* Gallery grid */}

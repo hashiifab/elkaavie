@@ -309,6 +309,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   onToggleRoomAvailability: _toggleRoomAvailability,
                   onDeleteRoom: _deleteRoom,
                   bookings: _bookings,
+                  tabController: _tabController,
                 ),
                 BookingsTab(
                   bookings: _bookings,

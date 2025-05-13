@@ -10,6 +10,7 @@ class RoomsTab extends StatelessWidget {
   final Future<bool> Function(int) onToggleRoomAvailability;
   final Future<void> Function(int) onDeleteRoom;
   final List<dynamic> bookings;
+  final TabController? tabController;
 
   const RoomsTab({
     super.key,
@@ -20,6 +21,7 @@ class RoomsTab extends StatelessWidget {
     required this.onToggleRoomAvailability,
     required this.onDeleteRoom,
     required this.bookings,
+    this.tabController,
   });
 
   // Di fungsi _findBookingForRoom
@@ -54,7 +56,7 @@ class RoomsTab extends StatelessWidget {
               children: <Widget>[
                 Text('Status: ${isAvailable ? 'Available' : 'Unavailable'}'),
                 const SizedBox(height: 8),
-                if (!isAvailable && booking != null) ...[                  
+                if (!isAvailable && booking != null) ...[
                   Text('Booked by: ${user?['name'] ?? 'Unknown'}'),
                   Text('Status: ${booking['status']?.toUpperCase() ?? 'UNKNOWN'}'),
                   const SizedBox(height: 8),
@@ -64,7 +66,7 @@ class RoomsTab extends StatelessWidget {
             ),
           ),
           actions: <Widget>[
-            if (!isAvailable && booking != null) ...[              
+            if (!isAvailable && booking != null) ...[
               TextButton(
                 child: const Text('View Booking Details'),
                 onPressed: () {
@@ -77,7 +79,10 @@ class RoomsTab extends StatelessWidget {
                   child: const Text('View Guest Profile'),
                   onPressed: () {
                     Navigator.of(dialogContext).pop();
-                    _showUserDetails(context, user);
+                    // Navigate to Users tab
+                    if (tabController != null) {
+                      tabController!.animateTo(1); // Index 1 is the Users tab
+                    }
                   },
                 ),
             ],
@@ -161,7 +166,10 @@ class RoomsTab extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  _showUserDetails(context, booking['user']);
+                  // Navigate to Users tab
+                  if (tabController != null) {
+                    tabController!.animateTo(1); // Index 1 is the Users tab
+                  }
                 },
                 child: const Text('View Guest Profile'),
               ),
@@ -171,87 +179,7 @@ class RoomsTab extends StatelessWidget {
     );
   }
 
-  void _showUserDetails(BuildContext context, dynamic user) {
-    if (user == null) return;
 
-    final userBookings = bookings.where((booking) =>
-        booking['user']?['id'] == user['id'] &&
-        booking['status'] != 'canceled' &&
-        booking['status'] != 'rejected').toList();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Guest Profile: ${user['name']}'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDetailRow('Name', user['name'] ?? 'Unknown'),
-              _buildDetailRow('Email', user['email'] ?? 'N/A'),
-              if (userBookings.isNotEmpty) ...[                
-                const SizedBox(height: 16),
-                Text(
-                  'Booking History',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ...userBookings.map((booking) {
-                  final roomNumber = booking['room']?['number'] ?? 'Unknown';
-                  final checkIn = booking['check_in'] != null
-                      ? DateTime.parse(booking['check_in'])
-                      : null;
-                  final checkOut = booking['check_out'] != null
-                      ? DateTime.parse(booking['check_out'])
-                      : null;
-                  final status = booking['status']?.toUpperCase() ?? 'UNKNOWN';
-
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Room $roomNumber',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        if (checkIn != null)
-                          Text(
-                            'Check In: ${checkIn.day}/${checkIn.month}/${checkIn.year}',
-                          ),
-                        if (checkOut != null)
-                          Text(
-                            'Check Out: ${checkOut.day}/${checkOut.month}/${checkOut.year}',
-                          ),
-                        Text('Status: $status'),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ],
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
@@ -491,7 +419,7 @@ class RoomsTab extends StatelessWidget {
                                       color:
                                           isAvailable
                                               ? Colors.green
-                                              : Colors.red.withOpacity(0.7),
+                                              : Colors.red.withAlpha(179), // 0.7 * 255 = ~179
                                       borderRadius: BorderRadius.circular(8),
                                       border:
                                           !isAvailable && isBooked

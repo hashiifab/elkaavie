@@ -67,6 +67,7 @@ const CountdownTimer = ({ dueDate }: { dueDate: string }) => {
 };
 
 interface Booking {
+  duration_months: number;
   id: number;
   room_id: number;
   check_in: string;
@@ -341,8 +342,8 @@ const BookingDetails = () => {
                         <p className="text-sm font-medium text-yellow-800">{translations.auth.bookingDetails.statusMessages.pending.title}</p>
                         <p className="text-sm text-yellow-700">
                           Your booking is pending approval. Please contact our admin at{" "}
-                          <a href="tel:+6281234567890" className="font-medium underline">
-                            +62 812-3456-7890
+                          <a href="tel:+628179370631" className="font-medium underline">
+                            +62 817-937-0631
                           </a>{" "}
                           to expedite the process.
                         </p>
