@@ -138,7 +138,7 @@ export const en = {
           maxOccupancy: 'Maximum 1 person/room',
           noUnmarried: 'No unmarried couples',
           noChildren: 'No children allowed',
-          occupationType: 'Only for employees and students',
+          occupationType: 'For employees and students',
           parking: 'Motorcycle & car parking available',
         }
       }

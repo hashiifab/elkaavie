@@ -80,13 +80,31 @@
   .gradient-bg {
     @apply bg-gradient-to-b from-elkaavie-50 to-white;
   }
-  
+
   .section-heading {
     @apply text-3xl md:text-4xl font-bold text-gray-900 mb-8 relative;
   }
-  
+
   .section-heading:before {
     content: "";
     @apply absolute -bottom-3 left-0 w-12 h-1 bg-elkaavie-500;
+  }
+
+  /* Custom scrollbar styles */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-elkaavie-300 rounded-full hover:bg-elkaavie-400 transition-colors;
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.elkaavie.300') theme('colors.gray.100');
   }
 }

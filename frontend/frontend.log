@@ -573,3 +573,135 @@ Instead of /public/main/, use /main/.
 10:50:36 AM [vite] hmr update /src/components/home/Facilities.tsx, /src/index.css
 Files in the public directory are served at the root path.
 Instead of /public/main/hero-img.png, use /main/hero-img.png.
+10:52:19 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+10:52:19 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+10:52:19 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/parkir.png, use /main/parkir.png.
+10:52:49 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+10:52:49 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+10:52:49 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Login.tsx, /src/pages/Register.tsx, /src/pages/Rooms.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/PaymentGuide.tsx, /src/pages/ForgotPassword.tsx, /src/pages/RoomBooking.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/layout/Header.tsx, /src/components/home/Facilities.tsx, /src/components/home/Reviews.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Hero.tsx
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/parkir.png, use /main/parkir.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+10:55:47 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:56:13 AM [vite] hmr update /src/index.css
+10:56:35 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:56:41 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:56:46 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:56:48 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/parkir.png, use /main/parkir.png.
+10:56:57 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:57:41 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:57:47 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:57:52 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:57:56 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:57:57 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:58:15 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:58:22 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:58:32 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:58:34 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:58:37 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:58:46 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:58:49 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:59:07 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+Error processing file src/components/home/RoomDetails.tsx: SyntaxError: JSX value should be either an expression or a quoted JSX text. (68:34)
+    at constructor (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:362:19)
+    at TypeScriptParserMixin.raise (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:3259:19)
+    at TypeScriptParserMixin.jsxParseAttributeValue (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6660:20)
+    at TypeScriptParserMixin.jsxParseAttribute (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6700:38)
+    at TypeScriptParserMixin.jsxParseOpeningElementAfterName (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6714:28)
+    at TypeScriptParserMixin.jsxParseOpeningElementAfterName (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:9690:18)
+    at TypeScriptParserMixin.jsxParseOpeningElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6709:17)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6733:33)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6745:32)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6745:32) {
+  code: 'BABEL_PARSER_SYNTAX_ERROR',
+  reasonCode: 'UnsupportedJsxValue',
+  loc: Position { line: 68, column: 34, index: 3306 },
+  pos: 3306,
+  syntaxPlugin: 'jsx'
+}
+10:59:07 AM [vite] Internal server error:   [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/components/home/RoomDetails.tsx[0m:36:1]
+ [2m33[0m |   ];
+ [2m34[0m | 
+ [2m35[0m |   return (
+ [2m36[0m |     <section id="room" className="py-20 bg-white">
+    : [35;1m     ^^^^^^^[0m
+ [2m37[0m |       <Container>
+ [2m38[0m |         <div className="max-w-3xl mx-auto text-center mb-16">
+ [2m39[0m |           <CustomBadge className="mb-3">{translations.home.room.details}</CustomBadge>
+    `----
+
+
+Caused by:
+    Syntax Error
+  Plugin: vite:react-swc
+  File: /Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/components/home/RoomDetails.tsx
+  
+10:59:08 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+Error processing file src/components/home/RoomDetails.tsx: SyntaxError: JSX value should be either an expression or a quoted JSX text. (68:34)
+    at constructor (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:362:19)
+    at TypeScriptParserMixin.raise (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:3259:19)
+    at TypeScriptParserMixin.jsxParseAttributeValue (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6660:20)
+    at TypeScriptParserMixin.jsxParseAttribute (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6700:38)
+    at TypeScriptParserMixin.jsxParseOpeningElementAfterName (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6714:28)
+    at TypeScriptParserMixin.jsxParseOpeningElementAfterName (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:9690:18)
+    at TypeScriptParserMixin.jsxParseOpeningElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6709:17)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6733:33)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6745:32)
+    at TypeScriptParserMixin.jsxParseElementAt (/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/node_modules/@babel/parser/lib/index.js:6745:32) {
+  code: 'BABEL_PARSER_SYNTAX_ERROR',
+  reasonCode: 'UnsupportedJsxValue',
+  loc: Position { line: 68, column: 34, index: 3306 },
+  pos: 3306,
+  syntaxPlugin: 'jsx'
+}
+10:59:08 AM [vite] Internal server error:   [31mx[0m Unexpected token `section`. Expected jsx identifier
+    ,-[[36;1;4m/Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/components/home/RoomDetails.tsx[0m:36:1]
+ [2m33[0m |   ];
+ [2m34[0m | 
+ [2m35[0m |   return (
+ [2m36[0m |     <section id="room" className="py-20 bg-white">
+    : [35;1m     ^^^^^^^[0m
+ [2m37[0m |       <Container>
+ [2m38[0m |         <div className="max-w-3xl mx-auto text-center mb-16">
+ [2m39[0m |           <CustomBadge className="mb-3">{translations.home.room.details}</CustomBadge>
+    `----
+
+
+Caused by:
+    Syntax Error
+  Plugin: vite:react-swc
+  File: /Users/hashiifabdillah/clone elkapi/elkaavie/frontend/src/components/home/RoomDetails.tsx
+  
+10:59:11 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:59:21 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:59:24 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:59:27 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:59:32 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:59:34 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:59:43 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+10:59:47 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+11:00:12 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+11:00:19 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+11:00:35 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+11:01:16 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+11:02:52 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+11:04:52 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
+11:05:44 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css

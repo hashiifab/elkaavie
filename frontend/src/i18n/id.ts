@@ -138,7 +138,7 @@ export const id = {
           maxOccupancy: 'Maksimal 1 orang/kamar',
           noUnmarried: 'Tidak menerima pasangan belum kawin',
           noChildren: 'Tidak boleh membawa anak',
-          occupationType: 'Hanya untuk karyawan dan mahasiswa',
+          occupationType: 'Untuk karyawan dan mahasiswa',
           parking: 'Parkir motor & mobil tersedia',
         }
       }
