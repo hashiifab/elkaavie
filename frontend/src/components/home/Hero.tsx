@@ -121,7 +121,7 @@ const Hero = () => {
             <div className="relative overflow-hidden rounded-2xl shadow-xl aspect-[4/3]">
               <div className="absolute inset-0 bg-gradient-to-r from-elkaavie-400/20 to-elkaavie-300/10 mix-blend-multiply z-10 rounded-2xl" />
               <img
-                src="../public/WhatsApp Image 2025-04-19 at 21.40.09.jpeg"
+                src="../public/main/hero-img.png"
                 alt="Elkaavie Kost"
                 className="object-cover w-full h-full transform transition duration-700 hover:scale-105"
                 loading="lazy"

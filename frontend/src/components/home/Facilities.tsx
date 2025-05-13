@@ -51,7 +51,7 @@ const Facilities = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3">
               <div className="relative h-full min-h-[300px] lg:min-h-full">
                 <img
-                  src="https://images.unsplash.com/photo-1515965885361-f1e0095517ea?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                  src="../../../public/main/hero-img.png"
                   alt="Fasilitas Umum"
                   className="absolute inset-0 w-full h-full object-cover"
                   loading="lazy"
