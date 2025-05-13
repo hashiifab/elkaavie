@@ -3,12 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/web_enabled_api_service.dart';
 import 'login_screen.dart';
 import 'dashboard_tab.dart';
-import 'users_tab.dart';
+import 'users_tab.dart' hide AppColors;
 import 'rooms_tab.dart';
 import 'bookings_tab.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../main.dart';
 
 
 class DashboardScreen extends StatefulWidget {
@@ -261,7 +260,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             color: Colors.white,
           ),
         ),
-        backgroundColor: AppColors.primary,
+        backgroundColor: Colors.green.shade900,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

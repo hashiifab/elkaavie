@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import '../main.dart';
 import 'package:intl/intl.dart';
 
+class AppColors {
+  static const Color primary = Color(0xFF4CAF50); // Warna utama hijau
+  static const Color secondary = Color(0xFF9E9E9E); // Warna sekunder abu-abu
+  static const Color textPrimary = Color(0xFF212121); // Warna teks utama
+  static const Color textSecondary = Color(0xFF757575); // Warna teks sekunder
+  static const Color background = Color(0xFFF5F5F5); // Warna latar belakang
+}
 
 class UsersTab extends StatelessWidget {
   final List<dynamic> users;
@@ -27,7 +33,9 @@ class UsersTab extends StatelessWidget {
   }
 
   List<dynamic> getUserBookings(dynamic userId) {
-    return bookings.where((booking) => booking['user']?['id'] == userId).toList();
+    return bookings
+        .where((booking) => booking['user']?['id'] == userId)
+        .toList();
   }
 
   @override
@@ -46,7 +54,7 @@ class UsersTab extends StatelessWidget {
         children: [
           // Simple admin indicator in header
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -69,7 +77,8 @@ class UsersTab extends StatelessWidget {
                               radius: 12,
                               backgroundColor: Colors.amber,
                               child: Text(
-                                adminUsers.first['name']?[0]?.toUpperCase() ?? 'A',
+                                adminUsers.first['name']?[0]?.toUpperCase() ??
+                                    'A',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -92,16 +101,19 @@ class UsersTab extends StatelessWidget {
                 ),
                 TextButton.icon(
                   onPressed: isLoading ? null : onRefresh,
-                  icon: isLoading
-                      ? SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-                          ),
-                        )
-                      : const Icon(Icons.refresh, size: 16),
+                  icon:
+                      isLoading
+                          ? SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColors.primary,
+                              ),
+                            ),
+                          )
+                          : const Icon(Icons.refresh, size: 16),
                   label: Text(isLoading ? 'Refreshing...' : 'Refresh'),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primary,
@@ -110,7 +122,6 @@ class UsersTab extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 24),
 
           // User count indicator
           Padding(
@@ -118,7 +129,10 @@ class UsersTab extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.secondary,
                     borderRadius: BorderRadius.circular(12),
@@ -146,132 +160,144 @@ class UsersTab extends StatelessWidget {
 
           // Regular users list
           Expanded(
-            child: regularUsers.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.people_outline,
-                            size: 64,
-                            color: AppColors.textSecondary,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'No users found',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+            child:
+                regularUsers.isEmpty
+                    ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.people_outline,
+                              size: 64,
                               color: AppColors.textSecondary,
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Try refreshing the list',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: onRefresh,
-                            icon: const Icon(Icons.refresh),
-                            label: const Text('Refresh'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                            const SizedBox(height: 16),
+                            Text(
+                              'No users found',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textSecondary,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: regularUsers.length,
-                    itemBuilder: (context, index) {
-                      final user = regularUsers[index];
-                      final userBookings = getUserBookings(user['id']);
-
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        elevation: 1,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
+                            const SizedBox(height: 8),
+                            Text(
+                              'Try refreshing the list',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: onRefresh,
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Refresh'),
+                              style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
-                                child: Text(
-                                  user['name']?[0]?.toUpperCase() ?? 'U',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                    : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: regularUsers.length,
+                      itemBuilder: (context, index) {
+                        final user = regularUsers[index];
+                        final userBookings = getUserBookings(user['id']);
+
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: AppColors.primary,
+                                  child: Text(
+                                    user['name']?[0]?.toUpperCase() ?? 'U',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      user['name'] ?? 'Unknown',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      user['email'] ?? 'No email',
-                                      style: TextStyle(
-                                        color: AppColors.textSecondary,
-                                      ),
-                                    ),
-                                    if (userBookings.isNotEmpty)
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 4),
-                                        child: Text(
-                                          '${userBookings.length} booking(s)',
-                                          style: const TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                            color: Colors.blue,
-                                          ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        user['name'] ?? 'Unknown',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
                                         ),
                                       ),
-                                  ],
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        user['email'] ?? 'No email',
+                                        style: TextStyle(
+                                          color: AppColors.textSecondary,
+                                        ),
+                                      ),
+                                      if (userBookings.isNotEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 4,
+                                          ),
+                                          child: Text(
+                                            '${userBookings.length} booking(s)',
+                                            style: const TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              if (userBookings.isNotEmpty)
-                                IconButton(
-                                  icon: const Icon(Icons.expand_more),
-                                  onPressed: () {
-                                    _showUserBookings(context, user, userBookings);
-                                  },
-                                ),
-                            ],
+                                if (userBookings.isNotEmpty)
+                                  IconButton(
+                                    icon: const Icon(Icons.expand_more),
+                                    onPressed: () {
+                                      _showUserBookings(
+                                        context,
+                                        user,
+                                        userBookings,
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
           ),
         ],
       ),
     );
   }
 
-  void _showUserBookings(BuildContext context, dynamic user, List<dynamic> userBookings) {
+  void _showUserBookings(
+    BuildContext context,
+    dynamic user,
+    List<dynamic> userBookings,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -280,6 +306,7 @@ class UsersTab extends StatelessWidget {
       ),
       builder: (context) {
         return Container(
+          decoration: BoxDecoration(color: Colors.white),
           padding: const EdgeInsets.all(16),
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.6,
@@ -304,55 +331,67 @@ class UsersTab extends StatelessWidget {
                   ),
                 ],
               ),
-              const Divider(),
+              const Divider(color: Colors.grey),
               Expanded(
-                child: userBookings.isEmpty
-                    ? const Center(child: Text('No bookings found'))
-                    : ListView.builder(
-                        itemCount: userBookings.length,
-                        itemBuilder: (context, index) {
-                          final booking = userBookings[index];
-                          final roomNumber = booking['room']?['number'] ?? 'Unknown';
-                          final checkIn = booking['check_in'] != null
-                              ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_in']))
-                              : 'N/A';
-                          final checkOut = booking['check_out'] != null
-                              ? DateFormat('dd MMM yyyy').format(DateTime.parse(booking['check_out']))
-                              : 'N/A';
-                          final status = booking['status'] ?? 'unknown';
-                          final statusColor = _getStatusColor(status);
+                child:
+                    userBookings.isEmpty
+                        ? const Center(child: Text('No bookings found'))
+                        : ListView.builder(
+                          itemCount: userBookings.length,
+                          itemBuilder: (context, index) {
+                            final booking = userBookings[index];
+                            final roomNumber =
+                                booking['room']?['number'] ?? 'Unknown';
+                            final checkIn =
+                                booking['check_in'] != null
+                                    ? DateFormat('dd MMM yyyy').format(
+                                      DateTime.parse(booking['check_in']),
+                                    )
+                                    : 'N/A';
+                            final checkOut =
+                                booking['check_out'] != null
+                                    ? DateFormat('dd MMM yyyy').format(
+                                      DateTime.parse(booking['check_out']),
+                                    )
+                                    : 'N/A';
+                            final status = booking['status'] ?? 'unknown';
+                            final statusColor = _getStatusColor(status);
 
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 8),
-                            elevation: 1,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: AppColors.primary.withAlpha(25), // 0.1 * 255 = ~25
-                                child: Text(
-                                  roomNumber,
-                                  style: TextStyle(color: AppColors.primary),
-                                ),
+                            return Card(
+                              margin: const EdgeInsets.only(bottom: 8),
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              title: Text('Room $roomNumber'),
-                              subtitle: Text('$checkIn to $checkOut'),
-                              trailing: Chip(
-                                label: Text(
-                                  status.toUpperCase(),
-                                  style: TextStyle(
-                                    color: statusColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: AppColors.primary.withAlpha(
+                                    25,
+                                  ), // 0.1 * 255 = ~25
+                                  child: Text(
+                                    roomNumber,
+                                    style: TextStyle(color: AppColors.primary),
                                   ),
                                 ),
-                                backgroundColor: statusColor.withAlpha(25), // 0.1 * 255 = ~25
+                                title: Text('Room $roomNumber'),
+                                subtitle: Text('$checkIn to $checkOut'),
+                                trailing: Chip(
+                                  label: Text(
+                                    status.toUpperCase(),
+                                    style: TextStyle(
+                                      color: statusColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  backgroundColor: statusColor.withAlpha(
+                                    25,
+                                  ), // 0.1 * 255 = ~25
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                            );
+                          },
+                        ),
               ),
             ],
           ),
