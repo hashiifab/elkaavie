@@ -17,6 +17,8 @@ class BookingService
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
     public const STATUS_PAID = 'paid';
+    // We don't use this as an actual status in the database due to constraints
+    // It's just used as an action identifier
 
     /**
      * Get array of all valid booking statuses
@@ -46,6 +48,12 @@ class BookingService
     {
         // Load the booking with relationships
         $booking->load(['user', 'room']);
+
+        // Special case for payment rejection - don't actually change the status
+        if ($status === 'payment_rejected') {
+            $this->handlePaymentRejected($booking);
+            return $booking;
+        }
 
         // Update booking status
         $booking->update(['status' => $status]);
@@ -106,6 +114,27 @@ class BookingService
     {
         // When payment is verified, clear the payment due date
         $booking->update(['payment_due_at' => null]);
+    }
+
+    /**
+     * Handle payment rejection - clear payment proof but keep booking approved
+     *
+     * @param Booking $booking
+     * @return void
+     */
+    private function handlePaymentRejected(Booking $booking): void
+    {
+        // Clear payment proof but keep status as approved
+        if ($booking->payment_proof) {
+            // Delete the file from storage
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($booking->payment_proof);
+
+            // Update the booking to clear payment_proof field only
+            // Don't change the status as it should already be 'approved'
+            $booking->update([
+                'payment_proof' => null
+            ]);
+        }
     }
 
     /**

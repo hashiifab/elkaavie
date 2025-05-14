@@ -83,6 +83,10 @@ export const en = {
       notificationFailed: {
         title: 'Notification failed',
         message: 'Failed to send WhatsApp notification. Please contact support.'
+      },
+      verificationPending: {
+        title: 'Payment Verification Pending',
+        message: 'Your payment proof has been uploaded and is awaiting verification. We\'ll notify you once it\'s verified.'
       }
     }
   },

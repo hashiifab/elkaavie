@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../utils.dart';
+import '../utils/ui_components.dart';
+import '../main.dart';
 
 class DashboardTab extends StatelessWidget {
   final Map<String, dynamic>? userData;
@@ -53,15 +55,9 @@ class DashboardTab extends StatelessWidget {
                   ),
                 ],
               ),
-              Material(
-                color: Colors.black.withOpacity(0.08),
-                shape: const CircleBorder(),
-                child: IconButton(
-                  icon: const Icon(Icons.refresh),
-                  onPressed: onRefresh,
-                  color: Colors.black,
-                  tooltip: 'Refresh',
-                ),
+              AdminRefreshButton.refreshButton(
+                onPressed: onRefresh,
+                backgroundColor: AppColors.success,
               ),
             ],
           ),

@@ -311,13 +311,29 @@ const BookingDetails = () => {
               {/* Status-specific actions */}
               <div className="space-y-4">
                 {booking.status === "approved" && (
-                  <button
-                    onClick={() => navigate(`/bookings/${booking.id}/payment-guide`)}
-                    className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center justify-center"
-                  >
-                    <CreditCard className="h-5 w-5 mr-2" />
-                    {translations.auth.bookingDetails.actions.continuePayment}
-                  </button>
+                  <>
+                    {booking.payment_proof ? (
+                      <div className="bg-yellow-50 p-4 rounded-lg">
+                        <div className="flex items-start">
+                          <Clock className="h-5 w-5 text-yellow-600 mt-0.5 mr-3" />
+                          <div>
+                            <p className="text-sm font-medium text-yellow-800">{translations.paymentGuide.notifications.verificationPending.title}</p>
+                            <p className="text-sm text-yellow-700">
+                              {translations.paymentGuide.notifications.verificationPending.message}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => navigate(`/bookings/${booking.id}/payment-guide`)}
+                        className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center justify-center"
+                      >
+                        <CreditCard className="h-5 w-5 mr-2" />
+                        {translations.auth.bookingDetails.actions.continuePayment}
+                      </button>
+                    )}
+                  </>
                 )}
 
                 {booking.status === "paid" && (

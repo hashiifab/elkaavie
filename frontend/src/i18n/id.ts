@@ -83,6 +83,10 @@ export const id = {
       notificationFailed: {
         title: 'Notifikasi gagal',
         message: 'Gagal mengirim notifikasi WhatsApp. Silakan hubungi dukungan.'
+      },
+      verificationPending: {
+        title: 'Verifikasi Pembayaran Tertunda',
+        message: 'Bukti pembayaran Anda telah diunggah dan sedang menunggu verifikasi. Kami akan memberi tahu Anda setelah diverifikasi.'
       }
     }
   },

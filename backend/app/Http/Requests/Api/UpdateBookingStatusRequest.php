@@ -22,8 +22,11 @@ class UpdateBookingStatusRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Allow 'payment_rejected' as a special action, not a real status
+        $validStatuses = array_merge(BookingService::getValidStatuses(), ['payment_rejected']);
+
         return [
-            'status' => ['required', 'string', 'in:' . implode(',', BookingService::getValidStatuses())],
+            'status' => ['required', 'string', 'in:' . implode(',', $validStatuses)],
         ];
     }
 
@@ -34,9 +37,12 @@ class UpdateBookingStatusRequest extends FormRequest
      */
     public function messages(): array
     {
+        // Include 'payment_rejected' in the valid statuses for error messages
+        $validStatuses = array_merge(BookingService::getValidStatuses(), ['payment_rejected']);
+
         return [
             'status.required' => 'The booking status is required.',
-            'status.in' => 'The booking status must be one of: ' . implode(', ', BookingService::getValidStatuses()),
+            'status.in' => 'The booking status must be one of: ' . implode(', ', $validStatuses),
         ];
     }
-} 
+}

@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../main.dart';
 import '../utils.dart';
+import '../utils/ui_components.dart';
 
 class BookingsTab extends StatefulWidget {
   final List<dynamic> bookings;
@@ -35,7 +35,7 @@ class _BookingsTabState extends State<BookingsTab> {
     'canceled': 'Canceled',
   };
 
-  Map<int, bool> _expandedBookings = {};
+  final Map<int, bool> _expandedBookings = {};
 
   // Method to set filter externally (can be called from dashboard)
   void setFilter(String filter) {
@@ -44,6 +44,24 @@ class _BookingsTabState extends State<BookingsTab> {
         _selectedFilter = filter;
       });
     }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   @override
@@ -82,14 +100,11 @@ class _BookingsTabState extends State<BookingsTab> {
               style: TextStyle(fontSize: 18, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
+            AdminRefreshButton.refreshButton(
               onPressed: widget.onRefresh,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Refresh Bookings'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-              ),
+              isLoading: widget.isLoading,
+              label: 'Refresh Bookings',
+              backgroundColor: AppColors.success,
             ),
           ],
         ),
@@ -100,7 +115,10 @@ class _BookingsTabState extends State<BookingsTab> {
       onRefresh: widget.onRefresh,
       child: Column(
         children: [
+          // Add padding at the top to prevent filter from overlapping with list
+          const SizedBox(height: 24),
           _buildFilterSection(validBookings),
+          const SizedBox(height: 16),
           Expanded(
             child:
                 filteredBookings.isEmpty
@@ -168,7 +186,7 @@ class _BookingsTabState extends State<BookingsTab> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(13),
             blurRadius: 5,
             offset: const Offset(0, 2),
           ),
@@ -188,20 +206,11 @@ class _BookingsTabState extends State<BookingsTab> {
                   color: AppColors.textPrimary,
                 ),
               ),
-              if (widget.isLoading)
-                const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              else
-                IconButton(
-                  icon: const Icon(Icons.refresh, size: 20),
-                  onPressed: widget.onRefresh,
-                  tooltip: 'Refresh bookings',
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                ),
+              AdminRefreshButton.refreshButton(
+                onPressed: widget.onRefresh,
+                isLoading: widget.isLoading,
+                backgroundColor: AppColors.success,
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -224,7 +233,7 @@ class _BookingsTabState extends State<BookingsTab> {
                           });
                         },
                         backgroundColor: Colors.grey.shade100,
-                        selectedColor: AppColors.primary.withOpacity(0.2),
+                        selectedColor: AppColors.primary.withAlpha(51),
                         checkmarkColor: AppColors.primary,
                         labelStyle: TextStyle(
                           color:
@@ -258,7 +267,7 @@ class _BookingsTabState extends State<BookingsTab> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: getStatusColor(booking['status']).withOpacity(0.1),
+          color: getStatusColor(booking['status']).withAlpha(26),
           borderRadius:
               isExpanded
                   ? const BorderRadius.vertical(top: Radius.circular(12))
@@ -454,113 +463,7 @@ class _BookingsTabState extends State<BookingsTab> {
                     booking['payment_proof'].toString(),
                     'payment-proofs',
                   ),
-                  if (isApproved && hasPaymentProof) ...[
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () async {
-                              final bool? confirm = await showDialog<bool>(
-                                context: context,
-                                builder: (BuildContext confirmContext) {
-                                  return AlertDialog(
-                                    title: const Text(
-                                      'Konfirmasi Verifikasi Pembayaran',
-                                    ),
-                                    content: const Text(
-                                      'Apakah Anda yakin ingin memverifikasi pembayaran ini? Status booking akan berubah menjadi "PAID".',
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('Batal'),
-                                        onPressed: () {
-                                          Navigator.of(
-                                            confirmContext,
-                                          ).pop(false);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: const Text('Ya, Verifikasi'),
-                                        onPressed: () {
-                                          Navigator.of(
-                                            confirmContext,
-                                          ).pop(true);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-
-                              if (confirm == true) {
-                                await widget.onUpdateBookingStatus(
-                                  booking['id'].toString(),
-                                  'paid',
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.check_circle_outline),
-                            label: const Text('Verify Payment'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.success,
-                              foregroundColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () async {
-                              final bool? confirm = await showDialog<bool>(
-                                context: context,
-                                builder: (BuildContext confirmContext) {
-                                  return AlertDialog(
-                                    title: const Text(
-                                      'Konfirmasi Penolakan Pembayaran',
-                                    ),
-                                    content: const Text(
-                                      'Apakah Anda yakin ingin menolak pembayaran ini? Status booking akan berubah menjadi "REJECTED".',
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('Batal'),
-                                        onPressed: () {
-                                          Navigator.of(
-                                            confirmContext,
-                                          ).pop(false);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: const Text('Ya, Tolak'),
-                                        onPressed: () {
-                                          Navigator.of(
-                                            confirmContext,
-                                          ).pop(true);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-
-                              if (confirm == true) {
-                                await widget.onUpdateBookingStatus(
-                                  booking['id'].toString(),
-                                  'rejected',
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.cancel_outlined),
-                            label: const Text('Reject Payment'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.error,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  // Payment verification buttons moved outside this section
                 ],
               ),
             ),
@@ -670,38 +573,25 @@ class _BookingsTabState extends State<BookingsTab> {
     Map<String, dynamic> booking,
   ) {
     final status = booking['status']?.toString() ?? 'pending';
+    final hasPaymentProof = booking['payment_proof']?.toString().isNotEmpty ?? false;
 
     switch (status) {
       case 'pending':
         return Row(
           children: [
             Expanded(
-              child: ElevatedButton.icon(
+              child: AdminButtons.primaryButton(
+                label: 'Approve',
+                icon: Icons.check_circle,
+                backgroundColor: Colors.green,
                 onPressed: () async {
-                  final bool? confirm = await showDialog<bool>(
+                  final bool? confirm = await AdminDialogs.showConfirmationDialog(
                     context: context,
-                    builder: (BuildContext confirmContext) {
-                      return AlertDialog(
-                        title: const Text('Konfirmasi Persetujuan Booking'),
-                        content: const Text(
-                          'Apakah Anda yakin ingin menyetujui booking ini? Status akan berubah menjadi "APPROVED" dan pemberitahuan akan dikirim ke WhatsApp tamu.',
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Batal'),
-                            onPressed: () {
-                              Navigator.of(confirmContext).pop(false);
-                            },
-                          ),
-                          TextButton(
-                            child: const Text('Ya, Setujui'),
-                            onPressed: () {
-                              Navigator.of(confirmContext).pop(true);
-                            },
-                          ),
-                        ],
-                      );
-                    },
+                    title: 'Konfirmasi Persetujuan Booking',
+                    message: 'Apakah Anda yakin ingin menyetujui booking ini? Status akan berubah menjadi "APPROVED" dan pemberitahuan akan dikirim ke WhatsApp tamu.',
+                    cancelText: 'Batal',
+                    confirmText: 'Ya, Setujui',
+                    icon: Icons.check_circle,
                   );
 
                   if (confirm == true) {
@@ -735,20 +625,14 @@ class _BookingsTabState extends State<BookingsTab> {
                         final canLaunch = await canLaunchUrl(
                           Uri.parse(whatsappUrl),
                         );
-                        if (canLaunch) {
+                        if (!canLaunch && mounted) {
+                          _showErrorSnackBar('Failed to open WhatsApp');
+                        } else {
                           await launchUrl(Uri.parse(whatsappUrl));
-                        } else if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Failed to open WhatsApp'),
-                            ),
-                          );
                         }
                       } catch (e) {
                         if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error: ${e.toString()}')),
-                          );
+                          _showErrorSnackBar('Error: ${e.toString()}');
                         }
                       }
                     }
@@ -758,45 +642,23 @@ class _BookingsTabState extends State<BookingsTab> {
                     );
                   }
                 },
-                icon: const Icon(Icons.check_circle),
-                label: const Text('Approve'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
               ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: OutlinedButton.icon(
+              child: AdminButtons.secondaryButton(
+                label: 'Reject',
+                icon: Icons.cancel,
+                foregroundColor: Colors.red,
                 onPressed: () async {
-                  final bool? confirm = await showDialog<bool>(
+                  final bool? confirm = await AdminDialogs.showConfirmationDialog(
                     context: context,
-                    builder: (BuildContext confirmContext) {
-                      return AlertDialog(
-                        title: const Text('Konfirmasi Penolakan Booking'),
-                        content: const Text(
-                          'Apakah Anda yakin ingin menolak booking ini? Status akan berubah menjadi "REJECTED".',
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Batal'),
-                            onPressed: () {
-                              Navigator.of(confirmContext).pop(false);
-                            },
-                          ),
-                          TextButton(
-                            child: const Text('Ya, Tolak'),
-                            onPressed: () {
-                              Navigator.of(confirmContext).pop(true);
-                            },
-                          ),
-                        ],
-                      );
-                    },
+                    title: 'Konfirmasi Penolakan Booking',
+                    message: 'Apakah Anda yakin ingin menolak booking ini? Status akan berubah menjadi "REJECTED".',
+                    cancelText: 'Batal',
+                    confirmText: 'Ya, Tolak',
+                    isDestructive: true,
+                    icon: Icons.cancel,
                   );
 
                   if (confirm == true) {
@@ -806,100 +668,152 @@ class _BookingsTabState extends State<BookingsTab> {
                     );
                   }
                 },
-                icon: const Icon(Icons.cancel),
-                label: const Text('Reject'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
               ),
             ),
           ],
         );
       case 'approved':
-        return Center(
-          child: CupertinoButton.filled(
-            color: Colors.red,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            borderRadius: BorderRadius.circular(8),
-            onPressed: () async {
-              final bool? confirm = await showCupertinoDialog<bool>(
-                context: context,
-                builder: (confirmContext) {
-                  return CupertinoAlertDialog(
-                    title: const Text(
-                      'Konfirmasi Penyelesaian Booking',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    content: const Padding(
-                      padding: EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Apakah Anda yakin ingin menolak menyelesaikan booking ini? '
-                        'Status akan berubah menjadi "COMPLETE".',
-                      ),
-                    ),
-                    actions: <CupertinoDialogAction>[
-                      CupertinoDialogAction(
-                        onPressed:
-                            () => Navigator.of(confirmContext).pop(false),
-                        child: const Text('Batal'),
-                      ),
-                      CupertinoDialogAction(
-                        isDestructiveAction: true,
-                        onPressed: () => Navigator.of(confirmContext).pop(true),
-                        child: const Text('Ya, Selesai'),
-                      ),
-                    ],
-                  );
-                },
-              );
+        // For approved bookings, show different actions based on payment proof
+        if (hasPaymentProof) {
+          // If payment proof is uploaded, show verify/reject payment buttons
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: AdminButtons.primaryButton(
+                      label: 'Verify Payment',
+                      icon: Icons.check_circle_outline,
+                      backgroundColor: AppColors.success,
+                      onPressed: () async {
+                        final bool? confirm = await AdminDialogs.showConfirmationDialog(
+                          context: context,
+                          title: 'Konfirmasi Verifikasi Pembayaran',
+                          message: 'Apakah Anda yakin ingin memverifikasi pembayaran ini? Status booking akan berubah menjadi "PAID".',
+                          cancelText: 'Batal',
+                          confirmText: 'Ya, Verifikasi',
+                          icon: Icons.check_circle_outline,
+                        );
 
-              if (confirm == true) {
-                await widget.onUpdateBookingStatus(
-                  booking['id'].toString(),
-                  'completed',
+                        if (confirm == true) {
+                          await widget.onUpdateBookingStatus(
+                            booking['id'].toString(),
+                            'paid',
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: AdminButtons.secondaryButton(
+                      label: 'Reject Payment',
+                      icon: Icons.cancel_outlined,
+                      foregroundColor: AppColors.error,
+                      onPressed: () async {
+                        final bool? confirm = await AdminDialogs.showConfirmationDialog(
+                          context: context,
+                          title: 'Konfirmasi Penolakan Pembayaran',
+                          message: 'Apakah Anda yakin ingin menolak pembayaran ini? Status booking akan tetap "APPROVED" tapi user perlu upload ulang bukti pembayaran.',
+                          cancelText: 'Batal',
+                          confirmText: 'Ya, Tolak',
+                          isDestructive: true,
+                          icon: Icons.cancel_outlined,
+                        );
+
+                        if (confirm == true) {
+                          try {
+                            // Delete payment proof but keep status as approved
+                            // This will be handled by the backend
+                            await widget.onUpdateBookingStatus(
+                              booking['id'].toString(),
+                              'payment_rejected',
+                            );
+
+                            // Show success message
+                            if (mounted) {
+                              _showSuccessSnackBar('Payment proof rejected. User can upload a new one.');
+                            }
+                          } catch (e) {
+                            // Show error message
+                            if (mounted) {
+                              _showErrorSnackBar('Error rejecting payment: ${e.toString()}');
+                            }
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              AdminButtons.secondaryButton(
+                label: 'Cancel Booking',
+                icon: Icons.cancel,
+                foregroundColor: Colors.red,
+                onPressed: () async {
+                  final bool? confirm = await AdminDialogs.showConfirmationDialog(
+                    context: context,
+                    title: 'Konfirmasi Pembatalan Booking',
+                    message: 'Apakah Anda yakin ingin membatalkan booking ini? Status akan berubah menjadi "CANCELLED".',
+                    cancelText: 'Batal',
+                    confirmText: 'Ya, Batalkan',
+                    isDestructive: true,
+                    icon: Icons.cancel,
+                  );
+
+                  if (confirm == true) {
+                    await widget.onUpdateBookingStatus(
+                      booking['id'].toString(),
+                      'cancelled',
+                    );
+                  }
+                },
+              ),
+            ],
+          );
+        } else {
+          // If no payment proof yet, just show cancel button
+          return Center(
+            child: AdminButtons.secondaryButton(
+              label: 'Cancel Booking',
+              icon: Icons.cancel,
+              foregroundColor: Colors.red,
+              onPressed: () async {
+                final bool? confirm = await AdminDialogs.showConfirmationDialog(
+                  context: context,
+                  title: 'Konfirmasi Pembatalan Booking',
+                  message: 'Apakah Anda yakin ingin membatalkan booking ini? Status akan berubah menjadi "CANCELLED".',
+                  cancelText: 'Batal',
+                  confirmText: 'Ya, Batalkan',
+                  isDestructive: true,
+                  icon: Icons.cancel,
                 );
-              }
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                Text('Cancel Booking'),
-              ],
+
+                if (confirm == true) {
+                  await widget.onUpdateBookingStatus(
+                    booking['id'].toString(),
+                    'cancelled',
+                  );
+                }
+              },
             ),
-          ),
-        );
+          );
+        }
       case 'paid':
         return Center(
-          child: ElevatedButton.icon(
+          child: AdminButtons.primaryButton(
+            label: 'Mark as Completed',
+            icon: Icons.done_all,
+            backgroundColor: Colors.blue,
             onPressed: () async {
-              final bool? confirm = await showDialog<bool>(
+              final bool? confirm = await AdminDialogs.showConfirmationDialog(
                 context: context,
-                builder: (BuildContext confirmContext) {
-                  return AlertDialog(
-                    title: const Text('Konfirmasi Penyelesaian Booking'),
-                    content: const Text(
-                      'Apakah Anda yakin ingin menyelesaikan booking ini? Status akan berubah menjadi "COMPLETED".',
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text('Batal'),
-                        onPressed: () {
-                          Navigator.of(confirmContext).pop(false);
-                        },
-                      ),
-                      TextButton(
-                        child: const Text('Ya, Selesaikan'),
-                        onPressed: () {
-                          Navigator.of(confirmContext).pop(true);
-                        },
-                      ),
-                    ],
-                  );
-                },
+                title: 'Konfirmasi Penyelesaian Booking',
+                message: 'Apakah Anda yakin ingin menyelesaikan booking ini? Status akan berubah menjadi "COMPLETED".',
+                cancelText: 'Batal',
+                confirmText: 'Ya, Selesaikan',
+                icon: Icons.done_all,
               );
 
               if (confirm == true) {
@@ -909,15 +823,6 @@ class _BookingsTabState extends State<BookingsTab> {
                 );
               }
             },
-            icon: const Icon(Icons.done_all),
-            label: const Text('Mark as Completed'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
           ),
         );
       default:

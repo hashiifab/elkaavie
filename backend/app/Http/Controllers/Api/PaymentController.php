@@ -36,7 +36,13 @@ class PaymentController extends Controller
                 // Store the new payment proof
                 $path = $request->file('payment_proof')->store('payment-proofs', 'public');
                 $booking->payment_proof = $path;
-                $booking->status = 'pending'; // Reset to pending for admin approval
+
+                // If the booking is already approved, keep it approved
+                // Otherwise, set it to pending
+                if ($booking->status !== 'approved') {
+                    $booking->status = 'pending';
+                }
+
                 $booking->save();
 
                 return response()->json([
@@ -76,8 +82,8 @@ class PaymentController extends Controller
             $booking->save();
 
             return response()->json([
-                'message' => $request->is_verified 
-                    ? 'Payment verified successfully' 
+                'message' => $request->is_verified
+                    ? 'Payment verified successfully'
                     : 'Payment verification rejected',
                 'booking' => $booking
             ]);
@@ -88,4 +94,4 @@ class PaymentController extends Controller
             ], 500);
         }
     }
-} 
+}

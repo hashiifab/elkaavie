@@ -256,32 +256,22 @@ const RoomBooking = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    setError(null);
 
     try {
       // Create FormData for file upload
       const formDataToSend = new FormData();
-
-      // Make sure roomId is valid
-      if (!roomId) {
-        throw new Error(translations.auth.roomBooking.errors.noRoomSelected);
-      }
-
-      formDataToSend.append("room_id", roomId);
+      formDataToSend.append("room_id", roomId!);
       formDataToSend.append("check_in", formData.check_in);
       formDataToSend.append("check_out", formData.check_out);
-      // Remove duration_months as it's not in the database schema
-      // The backend will calculate the total price based on check-in and check-out dates
+      formDataToSend.append("duration_months", formData.duration_months.toString());
       formDataToSend.append("guests", formData.guests.toString());
-      formDataToSend.append("special_requests", formData.special_requests || "");
+      formDataToSend.append("special_requests", formData.special_requests);
       formDataToSend.append("payment_method", formData.payment_method);
       formDataToSend.append("phone_number", formData.phone_number);
 
       // Only append ID card if provided
       if (formData.identity_card) {
         formDataToSend.append("identity_card", formData.identity_card);
-      } else {
-        throw new Error("Identity card is required");
       }
 
       // Submit booking to API
@@ -290,26 +280,22 @@ const RoomBooking = () => {
       window.scrollTo(0, 0);
     } catch (err) {
       console.error("Error booking room:", err);
-
-      // Improved error handling for Axios errors
-      if (err.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error("Server responded with error:", err.response.data);
-
-        if (err.response.data && err.response.data.message) {
-          setError(err.response.data.message);
+      
+      // Tampilkan informasi error yang lebih detail
+      if (axios.isAxiosError(err)) {
+        console.error('Response status:', err.response?.status);
+        console.error('Response data:', err.response?.data);
+        
+        // Tampilkan pesan error spesifik jika tersedia
+        if (err.response?.data?.message) {
+          setError(`${translations.auth.roomBooking.errors.bookingFailed}: ${err.response.data.message}`);
+        } else if (err.response?.data?.error) {
+          setError(`${translations.auth.roomBooking.errors.bookingFailed}: ${err.response.data.error}`);
         } else {
-          setError(translations.auth.roomBooking.errors.bookingFailed);
+          setError(`${translations.auth.roomBooking.errors.bookingFailed} (${err.response?.status || 'unknown'})`);
         }
-      } else if (err.request) {
-        // The request was made but no response was received
-        console.error("No response received:", err.request);
-        setError(translations.auth.roomBooking.errors.bookingFailed);
       } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error("Error setting up request:", err.message);
-        setError(err.message || translations.auth.roomBooking.errors.bookingFailed);
+        setError(translations.auth.roomBooking.errors.bookingFailed);
       }
     } finally {
       setSubmitting(false);

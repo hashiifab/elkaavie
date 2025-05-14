@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/ui_components.dart';
+import '../main.dart';
 
 class RoomsTab extends StatelessWidget {
   final List<dynamic> rooms;
@@ -79,7 +81,10 @@ class RoomsTab extends StatelessWidget {
                     child: const Text('View Guest Profile'),
                     onPressed: () {
                       Navigator.of(dialogContext).pop();
-                      _showGuestProfile(context, user);
+                      // Navigate to Users tab
+                      if (tabController != null) {
+                        tabController!.animateTo(1); // Index 1 is the Users tab
+                      }
                     },
                   ),
               ],
@@ -181,94 +186,7 @@ class RoomsTab extends StatelessWidget {
     );
   }
 
-  void _showGuestProfile(BuildContext context, dynamic user) {
-    if (user == null) return;
-
-    final userBookings =
-        bookings
-            .where(
-              (booking) =>
-                  booking['user']?['id'] == user['id'] &&
-                  booking['status'] != 'canceled' &&
-                  booking['status'] != 'rejected',
-            )
-            .toList();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Guest Profile: ${user['name']}'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDetailRow('Name', user['name'] ?? 'Unknown'),
-              _buildDetailRow('Email', user['email'] ?? 'N/A'),
-              if (userBookings.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                Text(
-                  'Booking History',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                ...userBookings.map((booking) {
-                  final roomNumber = booking['room']?['number'] ?? 'Unknown';
-                  final checkIn =
-                      booking['check_in'] != null
-                          ? DateTime.parse(booking['check_in'])
-                          : null;
-                  final checkOut =
-                      booking['check_out'] != null
-                          ? DateTime.parse(booking['check_out'])
-                          : null;
-                  final status = booking['status']?.toUpperCase() ?? 'UNKNOWN';
-
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Room $roomNumber',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        if (checkIn != null)
-                          Text(
-                            'Check In: ${checkIn.day}/${checkIn.month}/${checkIn.year}',
-                          ),
-                        if (checkOut != null)
-                          Text(
-                            'Check Out: ${checkOut.day}/${checkOut.month}/${checkOut.year}',
-                          ),
-                        Text('Status: $status'),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // Removed unused _showGuestProfile method
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
@@ -308,10 +226,10 @@ class RoomsTab extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
+            AdminRefreshButton.refreshButton(
               onPressed: onInitializeRooms,
-              icon: const Icon(Icons.add_business),
-              label: const Text('Initialize Hotel Rooms'),
+              isLoading: isLoading,
+              backgroundColor: AppColors.success,
             ),
           ],
         ),
@@ -341,26 +259,10 @@ class RoomsTab extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ElevatedButton.icon(
+                AdminRefreshButton.refreshButton(
                   onPressed: onRefresh,
-                  icon:
-                      isLoading
-                          ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                          : const Icon(Icons.refresh, size: 16),
-                  label: Text(isLoading ? 'Refreshing...' : 'Refresh Rooms'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black87, // warna gece
-                    foregroundColor: Colors.white, // teks dan ikon putih
-                  ),
+                  isLoading: isLoading,
+                  backgroundColor: AppColors.success,
                 ),
               ],
             ),

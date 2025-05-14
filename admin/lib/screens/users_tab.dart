@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../utils/ui_components.dart';
+import '../main.dart';
 
 class AppColors {
   static const Color primary = Color(0xFF4CAF50); // Warna utama hijau
@@ -7,6 +9,7 @@ class AppColors {
   static const Color textPrimary = Color(0xFF212121); // Warna teks utama
   static const Color textSecondary = Color(0xFF757575); // Warna teks sekunder
   static const Color background = Color(0xFFF5F5F5); // Warna latar belakang
+  static const Color success = Color(0xFF2E7D32); // Success color (same as in main.dart)
 }
 
 class UsersTab extends StatelessWidget {
@@ -52,9 +55,11 @@ class UsersTab extends StatelessWidget {
       onRefresh: onRefresh,
       child: Column(
         children: [
+          // Add consistent top padding
+          const SizedBox(height: 24),
           // Simple admin indicator in header
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -99,25 +104,10 @@ class UsersTab extends StatelessWidget {
                       ),
                   ],
                 ),
-                TextButton.icon(
-                  onPressed: isLoading ? null : onRefresh,
-                  icon:
-                      isLoading
-                          ? SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primary,
-                              ),
-                            ),
-                          )
-                          : const Icon(Icons.refresh, size: 16),
-                  label: Text(isLoading ? 'Refreshing...' : 'Refresh'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: AppColors.primary,
-                  ),
+                AdminRefreshButton.refreshButton(
+                  onPressed: onRefresh,
+                  isLoading: isLoading,
+                  backgroundColor: AppColors.success,
                 ),
               ],
             ),
@@ -191,17 +181,11 @@ class UsersTab extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            ElevatedButton.icon(
+                            AdminRefreshButton.refreshButton(
                               onPressed: onRefresh,
-                              icon: const Icon(Icons.refresh),
-                              label: const Text('Refresh'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
+                              isLoading: isLoading,
+                              backgroundColor: AppColors.success,
+                              label: 'Refresh',
                             ),
                           ],
                         ),

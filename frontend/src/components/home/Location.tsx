@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/language-context";
 
 // Map of place names to their Google Maps URLs
 const placeLinks: Record<string, string> = {
+  // English place names
   "Budi Utama School": "https://g.co/kgs/YyBhnq8",
   "TVRI Yogyakarta": "https://g.co/kgs/P7TsEV5",
   "Al-Ikhlas Mosque": "https://maps.app.goo.gl/Dm1XtLSi14v7GUnF7",
@@ -18,6 +19,13 @@ const placeLinks: Record<string, string> = {
   "MAN 3 Sleman": "https://g.co/kgs/4nbdsGy",
   "Warteg Al Rizki": "https://g.co/kgs/vzRJ6ZM",
   "Indomaret Godean": "https://g.co/kgs/YQgVpgi",
+
+  // Indonesian place names
+  "Sekolah Budi Utama": "https://g.co/kgs/YyBhnq8",
+  "Masjid Al-Ikhlas": "https://maps.app.goo.gl/Dm1XtLSi14v7GUnF7",
+  "RS Umum Sakinah Idaman": "https://g.co/kgs/HJcdU9C",
+  "RS dr. Sardjito": "https://g.co/kgs/UbrgKcx",
+  "Universitas Gadjah Mada": "https://g.co/kgs/GFCD6ZW",
 };
 
 const Location = () => {
