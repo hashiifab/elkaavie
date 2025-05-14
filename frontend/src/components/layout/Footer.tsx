@@ -70,7 +70,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="#home"
+                  href="/#home"
                   className="text-gray-600 hover:text-elkaavie-700 transition"
                 >
                   {translations.navigation.home}
@@ -108,17 +108,34 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex">
                 <MapPin className="flex-shrink-0 w-5 h-5 text-elkaavie-500 mt-0.5" />
-                <span className="ml-3 text-gray-600">
+                <a
+                  href="https://www.google.com/maps?ll=-7.766295,110.364676&z=16&t=m&hl=en&gl=ID&mapclient=embed&cid=17357526855797455034"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-3 text-gray-600 no-underline"
+                >
                   Mlati, Kabupaten Sleman, Jogja
-                </span>
+                </a>
               </li>
               <li className="flex">
                 <Phone className="flex-shrink-0 w-5 h-5 text-elkaavie-500 mt-0.5" />
-                <span className="ml-3 text-gray-600">+62 817-9370-631</span>
+                <a
+                  href="https://wa.me/628179370631"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-3 text-gray-600 no-underline"
+                >
+                  +62 817-9370-631
+                </a>
               </li>
               <li className="flex">
                 <Mail className="flex-shrink-0 w-5 h-5 text-elkaavie-500 mt-0.5" />
-                <span className="ml-3 text-gray-600">dbayuaji@gmail.com</span>
+                <a
+                  href="mailto:dbayuaji@gmail.com"
+                  className="ml-3 text-gray-600 no-underline"
+                >
+                  dbayuaji@gmail.com
+                </a>
               </li>
             </ul>
           </div>

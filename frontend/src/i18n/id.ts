@@ -140,7 +140,7 @@ export const id = {
         title: 'Peraturan Kamar',
         items: {
           maxOccupancy: 'Maksimal 1 orang/kamar',
-          noUnmarried: 'Tidak menerima pasangan belum kawin',
+          noUnmarried: 'Tidak menerima pasangan yang belum menikah',
           noChildren: 'Tidak boleh membawa anak',
           occupationType: 'Untuk karyawan dan mahasiswa',
           parking: 'Parkir motor & mobil tersedia',

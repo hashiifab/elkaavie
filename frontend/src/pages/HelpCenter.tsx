@@ -590,8 +590,15 @@ const HelpCenter = () => {
                           <Mail className="h-4 w-4" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{translations.helpCenter.otherContact.email}</p>
-                          <p className="text-sm text-gray-600">{translations.helpCenter.otherContact.emailAddress}</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {translations.helpCenter.otherContact.email}
+                          </p>
+                          <a
+                            href={`mailto:${translations.helpCenter.otherContact.emailAddress}`}
+                            className="text-sm text-gray-600 no-underline"
+                          >
+                            {translations.helpCenter.otherContact.emailAddress}
+                          </a>
                         </div>
                       </div>
 
@@ -600,8 +607,15 @@ const HelpCenter = () => {
                           <Phone className="h-4 w-4" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{translations.helpCenter.otherContact.phone}</p>
-                          <p className="text-sm text-gray-600">{translations.helpCenter.otherContact.phoneNumber}</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {translations.helpCenter.otherContact.phone}
+                          </p>
+                          <a
+                            href={`https://wa.me/${translations.helpCenter.otherContact.phoneNumber.replace(/[^+\d]/g, '')}`}
+                            className="text-sm text-gray-600 no-underline"
+                          >
+                            {translations.helpCenter.otherContact.phoneNumber}
+                          </a>
                         </div>
                       </div>
 
@@ -610,8 +624,16 @@ const HelpCenter = () => {
                           <MapPin className="h-4 w-4" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{translations.helpCenter.otherContact.visit}</p>
-                          <p className="text-sm text-gray-600">{translations.helpCenter.otherContact.address}</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {translations.helpCenter.otherContact.visit}
+                          </p>
+                          <a
+                            href="https://www.google.com/maps?ll=-7.766295,110.364676&z=16&t=m&hl=en&gl=ID&mapclient=embed&cid=17357526855797455034"
+                            className="text-sm text-gray-600 no-underline"
+                          ></a>
+                          <p className="text-sm text-gray-600">
+                            {translations.helpCenter.otherContact.address}
+                          </p>
                         </div>
                       </div>
                     </div>
