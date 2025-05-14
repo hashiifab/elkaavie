@@ -3,7 +3,7 @@
 > vite
 
 
-  VITE v5.4.10  ready in 227 ms
+  VITE v5.4.10  ready in 256 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: http://192.192.2.181:3000/
@@ -17,18 +17,79 @@ Instead of /public/main/parkir.png, use /main/parkir.png.
 Files in the public directory are served at the root path.
 Instead of /public/main/rooms.png, use /main/rooms.png.
 Files in the public directory are served at the root path.
-Instead of /public/main/rooms.png, use /main/rooms.png.
-Files in the public directory are served at the root path.
 Instead of /public/main/parkir.png, use /main/parkir.png.
 Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.
+Files in the public directory are served at the root path.
 Instead of /public/main/hero-img.png, use /main/hero-img.png.
-7:57:25 AM [vite] hmr update /src/components/home/Location.tsx, /src/index.css
-8:01:57 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
-8:02:04 AM [vite] hmr update /src/components/home/RoomDetails.tsx, /src/index.css
-8:24:27 AM [vite] hmr update /src/pages/RoomBooking.tsx, /src/index.css
 Files in the public directory are served at the root path.
 Instead of /public/main/hero-img.png, use /main/hero-img.png.
 Files in the public directory are served at the root path.
 Instead of /public/main/rooms.png, use /main/rooms.png.
 Files in the public directory are served at the root path.
 Instead of /public/main/parkir.png, use /main/parkir.png.
+11:02:11 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:03:13 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:08:19 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:10:26 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:11:03 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:11:08 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:11:13 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:11:38 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:11:41 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:12:35 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:14:26 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+11:14:26 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+11:14:26 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/Login.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/ForgotPassword.tsx, /src/pages/Rooms.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Reviews.tsx, /src/components/layout/Header.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx
+11:14:30 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+11:14:30 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+11:14:30 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/Login.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/ForgotPassword.tsx, /src/pages/Rooms.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Reviews.tsx, /src/components/layout/Header.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx
+11:15:11 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:15:47 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:16:02 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:16:22 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:16:33 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:16:51 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:17:06 AM [vite] hmr update /src/pages/Profile.tsx, /src/index.css
+11:18:44 AM [vite] hmr update /src/pages/Register.tsx, /src/index.css, /src/pages/Settings.tsx, /src/pages/RoomBooking.tsx, /src/pages/GoogleCallback.tsx, /src/pages/Login.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/ResetPassword.tsx, /src/pages/EmailVerification.tsx, /src/pages/ForgotPassword.tsx, /src/pages/Rooms.tsx, /src/components/layout/Header.tsx, /src/components/home/Hero.tsx
+11:19:04 AM [vite] hmr update /src/pages/Settings.tsx, /src/index.css
+11:19:21 AM [vite] hmr update /src/pages/Settings.tsx, /src/index.css
+11:19:38 AM [vite] hmr update /src/pages/Settings.tsx, /src/index.css
+11:20:04 AM [vite] hmr update /src/pages/Settings.tsx, /src/index.css
+11:20:24 AM [vite] hmr update /src/pages/Settings.tsx, /src/index.css
+11:22:00 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+11:22:01 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+11:22:01 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/Login.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/ForgotPassword.tsx, /src/pages/Rooms.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Reviews.tsx, /src/components/layout/Header.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/pages/Settings.tsx
+11:22:34 AM [vite] hmr update /src/contexts/language-context.tsx, /src/index.css
+11:22:34 AM [vite] hmr invalidate /src/contexts/language-context.tsx Could not Fast Refresh ("useLanguage" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react-swc#consistent-components-exports
+11:22:34 AM [vite] hmr update /src/App.tsx, /src/index.css, /src/pages/Index.tsx, /src/pages/HelpCenter.tsx, /src/pages/Gallery.tsx, /src/pages/Register.tsx, /src/pages/RoomBooking.tsx, /src/pages/Login.tsx, /src/pages/PaymentGuide.tsx, /src/pages/Profile.tsx, /src/pages/BookingDetails.tsx, /src/pages/ForgotPassword.tsx, /src/pages/Rooms.tsx, /src/components/layout/Footer.tsx, /src/components/home/Location.tsx, /src/components/home/RoomDetails.tsx, /src/components/home/Reviews.tsx, /src/components/layout/Header.tsx, /src/components/home/Hero.tsx, /src/components/home/Facilities.tsx, /src/pages/Settings.tsx
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/parkir.png, use /main/parkir.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/parkir.png, use /main/parkir.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/parkir.png, use /main/parkir.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/parkir.png, use /main/parkir.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/hero-img.png, use /main/hero-img.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/parkir.png, use /main/parkir.png.
+Files in the public directory are served at the root path.
+Instead of /public/main/rooms.png, use /main/rooms.png.

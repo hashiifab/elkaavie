@@ -30,7 +30,7 @@ class RoomController extends Controller
             'capacity' => 'required|integer|min:1',
             'is_available' => 'boolean',
         ]);
-        
+
         // Check if room number already exists
         $existingRoom = Room::where('number', $validated['number'])->first();
         if ($existingRoom) {
@@ -38,7 +38,7 @@ class RoomController extends Controller
                 'message' => 'Room with this number already exists',
             ], 422);
         }
-        
+
         // Create room with standardized info
         $room = new Room();
         $room->number = $validated['number'];
@@ -48,7 +48,7 @@ class RoomController extends Controller
         $room->status = 'available';
         $room->is_available = $validated['is_available'] ?? true;
         $room->save();
-        
+
         return response()->json($room, 201);
     }
 
@@ -59,55 +59,57 @@ class RoomController extends Controller
             'capacity' => 'sometimes|integer|min:1',
             'is_available' => 'sometimes|boolean',
         ]);
-        
+
         // Update room fields directly
         if (isset($validated['price'])) {
             $room->price = $validated['price'];
         }
-        
+
         if (isset($validated['capacity'])) {
             $room->capacity = $validated['capacity'];
         }
-        
+
         if (isset($validated['is_available'])) {
             $room->is_available = $validated['is_available'];
         }
-        
+
         $room->save();
-        
+
         return response()->json($room);
     }
 
-    public function destroy(Room $room): JsonResponse
-    {
-        $room->delete();
-        
-        return response()->json(['message' => 'Room deleted successfully']);
-    }
+    // Delete functionality removed to avoid ambiguity
+    // Rooms should only be managed through the admin interface with clear status changes
 
     public function toggleAvailability(Room $room): JsonResponse
     {
         $room->is_available = !$room->is_available;
         $room->save();
-        
+
         return response()->json(['is_available' => $room->is_available]);
     }
-    
+
     public function initialize(): JsonResponse
     {
-        // Delete existing rooms first to avoid conflicts
-        Room::query()->delete();
-        
+        // Check if rooms already exist
+        $existingRoomsCount = Room::count();
+        if ($existingRoomsCount > 0) {
+            return response()->json([
+                'message' => 'Rooms already initialized',
+                'count' => $existingRoomsCount
+            ]);
+        }
+
         // Create rooms using the floor-based naming scheme (A1-A5, B1-B5)
         $rooms = [];
         $floorPrefixes = [1 => 'A', 2 => 'B'];
-        
+
         for ($floor = 1; $floor <= 2; $floor++) {
             $prefix = $floorPrefixes[$floor];
-            
+
             for ($i = 1; $i <= 5; $i++) {
                 $roomNumber = $prefix . $i; // This creates A1, A2, ..., B1, B2, etc.
-                
+
                 $room = Room::create([
                     'number' => $roomNumber,
                     'floor' => $floor,
@@ -119,9 +121,9 @@ class RoomController extends Controller
                 $rooms[] = $room;
             }
         }
-        
+
         return response()->json([
-            'message' => 'Rooms initialized successfully', 
+            'message' => 'Rooms initialized successfully',
             'count' => count($rooms)
         ]);
     }

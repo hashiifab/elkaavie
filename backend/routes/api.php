@@ -34,12 +34,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // User profile and authentication
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [AuthController::class, 'update']);
+    Route::delete('/user', [AuthController::class, 'destroy']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // User bookings - with full data but filtered by user
     Route::get('/bookings/user', [BookingController::class, 'userBookings']);
     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
-    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
     Route::post('/bookings/associate', [BookingController::class, 'associateBookingsWithUser']);
     Route::post('/bookings/{booking}/payment-proof', [BookingController::class, 'uploadPaymentProof']);
 
@@ -55,7 +55,6 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Rooms management
     Route::post('/rooms', [RoomController::class, 'store']);
     Route::put('/rooms/{room}', [RoomController::class, 'update']);
-    Route::delete('/rooms/{room}', [RoomController::class, 'destroy']);
     Route::post('/rooms/{room}/toggle-availability', [RoomController::class, 'toggleAvailability']);
 
     // Bookings management

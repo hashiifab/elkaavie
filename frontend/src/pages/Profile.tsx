@@ -29,6 +29,7 @@ interface Booking {
   payment_method?: string;
   identity_card?: string;
   payment_due_at?: string;
+  payment_proof?: string;
   room?: {
     id: number;
     number: string;
@@ -337,7 +338,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      {translations.auth.profile.bookings.filters.all} ({userBookings.length})
+                      {translations.common.all} ({userBookings.length})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("pending")}
@@ -347,7 +348,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      {translations.auth.profile.bookings.filters.pending} ({getStatusCount("pending")})
+                      {translations.auth.bookingDetails.status.pending} ({getStatusCount("pending")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("approved")}
@@ -357,7 +358,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      {translations.auth.profile.bookings.filters.approved} ({getStatusCount("approved")})
+                      {translations.auth.bookingDetails.status.approved} ({getStatusCount("approved")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("rejected")}
@@ -367,7 +368,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      {translations.auth.profile.bookings.filters.rejected} ({getStatusCount("rejected")})
+                      {translations.auth.bookingDetails.status.rejected} ({getStatusCount("rejected")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("cancelled")}
@@ -377,7 +378,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      {translations.auth.profile.bookings.filters.cancelled} ({getStatusCount("cancelled")})
+                      {translations.auth.bookingDetails.status.cancelled} ({getStatusCount("cancelled")})
                     </button>
                     <button
                       onClick={() => setSelectedStatus("completed")}
@@ -387,7 +388,7 @@ const Profile = () => {
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
-                      {translations.auth.profile.bookings.filters.completed} ({getStatusCount("completed")})
+                      {translations.auth.bookingDetails.status.completed} ({getStatusCount("completed")})
                     </button>
                   </div>
                 </div>
@@ -423,7 +424,7 @@ const Profile = () => {
                                 booking.status
                               )}`}
                             >
-                              {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                              {translations.auth.bookingDetails.status[booking.status as keyof typeof translations.auth.bookingDetails.status]}
                             </div>
                           </div>
 
@@ -491,12 +492,23 @@ const Profile = () => {
                               </div>
                               <div className="flex flex-col sm:flex-row gap-2">
                                 {booking.status === "approved" && (
-                                  <button
-                                    onClick={() => navigate(`/bookings/${booking.id}/payment-guide`)}
-                                    className="w-full sm:w-auto text-sm px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                                  >
-                                    {translations.auth.profile.actions.continuePayment}
-                                  </button>
+                                  <>
+                                    {booking.payment_proof ? (
+                                      <div className="bg-yellow-50 px-3 py-2 rounded-lg">
+                                        <div className="flex items-center">
+                                          <Clock className="h-4 w-4 text-yellow-600 mr-1.5" />
+                                          <p className="text-xs font-medium text-yellow-800">{translations.paymentGuide.notifications.verificationPending.title}</p>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <button
+                                        onClick={() => navigate(`/bookings/${booking.id}/payment-guide`)}
+                                        className="w-full sm:w-auto text-sm px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                                      >
+                                        {translations.auth.profile.actions.continuePayment}
+                                      </button>
+                                    )}
+                                  </>
                                 )}
                                 <button
                                   onClick={() => navigate(`/bookings/${booking.id}`)}

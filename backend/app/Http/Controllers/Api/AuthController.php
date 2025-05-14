@@ -136,6 +136,45 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Delete the authenticated user's account and all related data
+     *
+     * @return JsonResponse
+     */
+    public function destroy(): JsonResponse
+    {
+        try {
+            $user = Auth::user();
+
+            // Get all bookings associated with this user to update room status
+            $bookings = $user->bookings()->with('room')->get();
+
+            // Update room status for each booking
+            foreach ($bookings as $booking) {
+                if ($booking->room) {
+                    $booking->room->update(['is_available' => true]);
+                }
+            }
+
+            // Delete all bookings associated with this user
+            $user->bookings()->delete();
+
+            // Delete the user
+            $user->tokens()->delete(); // Delete all tokens
+            $user->delete();
+
+            return response()->json([
+                'message' => 'Account deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Account deletion failed: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Failed to delete account',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function resendVerificationEmail(): JsonResponse
     {
         try {

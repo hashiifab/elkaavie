@@ -235,19 +235,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     }
   }
 
-  Future<void> _deleteRoom(int id) async {
-    try {
-      await _apiService.deleteRoom(id);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room deleted successfully')),
-      );
-      _loadRooms();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete room: ${e.toString()}')),
-      );
-    }
-  }
+  // Delete room functionality removed to avoid ambiguity
+  // Rooms should be managed through availability toggles instead of deletion
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +295,6 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   onRefresh: _loadRooms,
                   onInitializeRooms: _initializeRooms,
                   onToggleRoomAvailability: _toggleRoomAvailability,
-                  onDeleteRoom: _deleteRoom,
                   bookings: _bookings,
                   tabController: _tabController,
                 ),

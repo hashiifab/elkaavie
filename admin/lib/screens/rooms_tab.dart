@@ -10,7 +10,7 @@ class RoomsTab extends StatelessWidget {
   final Future<void> Function() onRefresh;
   final Future<void> Function() onInitializeRooms;
   final Future<bool> Function(int) onToggleRoomAvailability;
-  final Future<void> Function(int) onDeleteRoom;
+  // Delete room functionality removed to avoid ambiguity
   final List<dynamic> bookings;
   final TabController? tabController;
 
@@ -21,7 +21,6 @@ class RoomsTab extends StatelessWidget {
     required this.onRefresh,
     required this.onInitializeRooms,
     required this.onToggleRoomAvailability,
-    required this.onDeleteRoom,
     required this.bookings,
     this.tabController,
   });

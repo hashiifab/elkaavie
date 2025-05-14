@@ -167,6 +167,15 @@ export const authApi = {
     return response.data;
   },
 
+  deleteAccount: async () => {
+    const response = await api.delete("/user");
+    // Clear all auth data after account deletion
+    localStorage.removeItem("auth_token");
+    sessionStorage.removeItem("auth_token");
+    localStorage.removeItem("user_data");
+    return response.data;
+  },
+
   associateBookings: async (email: string, phoneNumber: string) => {
     const response = await api.post("/bookings/associate", { email, phone_number: phoneNumber });
     return response.data;

@@ -406,6 +406,13 @@ export const en = {
     language: 'Language',
     privacy: 'Privacy',
     help: 'Help',
+    deleteAccount: 'Delete Account',
+    deleteAccountConfirm: {
+      title: 'Delete Your Account?',
+      message: 'This action cannot be undone. All your data including bookings will be permanently deleted.',
+      confirm: 'Yes, Delete My Account',
+      deleting: 'Deleting...'
+    }
   },
   footer: {
     description: 'Exclusive boarding house with strategic location in the city center. Comfortable, peaceful, and close to various facilities.',

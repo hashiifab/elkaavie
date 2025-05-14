@@ -85,7 +85,7 @@ export const id = {
         message: 'Gagal mengirim notifikasi WhatsApp. Silakan hubungi dukungan.'
       },
       verificationPending: {
-        title: 'Verifikasi Pembayaran Tertunda',
+        title: 'Verifikasi Pembayaran Dalam Proses',
         message: 'Bukti pembayaran Anda telah diunggah dan sedang menunggu verifikasi. Kami akan memberi tahu Anda setelah diverifikasi.'
       }
     }
@@ -406,6 +406,13 @@ export const id = {
     language: 'Bahasa',
     privacy: 'Privasi',
     help: 'Bantuan',
+    deleteAccount: 'Hapus Akun',
+    deleteAccountConfirm: {
+      title: 'Hapus Akun Anda?',
+      message: 'Tindakan ini tidak dapat dibatalkan. Semua data Anda termasuk pemesanan akan dihapus secara permanen.',
+      confirm: 'Ya, Hapus Akun Saya',
+      deleting: 'Menghapus...'
+    }
   },
   footer: {
     description: 'Kos eksklusif dengan lokasi strategis di tengah kota. Nyaman, tenang, dan dekat dengan berbagai fasilitas.',

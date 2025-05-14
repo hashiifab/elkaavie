@@ -278,23 +278,10 @@ class BookingController extends Controller
     }
 
     /**
-     * Delete a booking
-     * Can be performed by admin or booking owner
-     *
-     * @param Booking $booking - The booking to delete
-     * @return JsonResponse - Success message
+     * Delete functionality removed to avoid ambiguity
+     * Bookings should be managed through status changes (cancelled, rejected, etc.)
+     * rather than being deleted from the system
      */
-    public function destroy(Booking $booking): JsonResponse
-    {
-        // Authorization check - only admin or booking owner can delete
-        if (!auth()->user()->isAdmin() && auth()->id() !== $booking->user_id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        // Delete the booking
-        $booking->delete();
-        return response()->json(['message' => 'Booking deleted successfully']);
-    }
 
     public function userBookings(): JsonResponse
     {

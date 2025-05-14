@@ -296,24 +296,8 @@ class WebEnabledApiService {
     }
   }
 
-  // Delete room
-  Future<void> deleteRoom(int id) async {
-    try {
-      final headers = await _getAuthHeaders();
-      final response = await http.delete(
-        Uri.parse('$baseUrl/rooms/$id'),
-        headers: headers,
-      );
-
-      if (response.statusCode != 200 && response.statusCode != 204) {
-        final error = jsonDecode(response.body);
-        throw Exception(error['message'] ?? 'Failed to delete room');
-      }
-    } catch (e) {
-      print('Delete room error: ${e.toString()}');
-      throw Exception('Failed to delete room: ${e.toString()}');
-    }
-  }
+  // Delete room functionality removed to avoid ambiguity
+  // Rooms should be managed through availability toggles instead of deletion
 
   // BOOKINGS API
 
@@ -428,24 +412,9 @@ class WebEnabledApiService {
     }
   }
 
-  // Delete booking
-  Future<void> deleteBooking(int id) async {
-    try {
-      final headers = await _getAuthHeaders();
-      final response = await http.delete(
-        Uri.parse('$baseUrl/bookings/$id'),
-        headers: headers,
-      );
-
-      if (response.statusCode != 200 && response.statusCode != 204) {
-        final error = jsonDecode(response.body);
-        throw Exception(error['message'] ?? 'Failed to delete booking');
-      }
-    } catch (e) {
-      print('Delete booking error: ${e.toString()}');
-      throw Exception('Failed to delete booking: ${e.toString()}');
-    }
-  }
+  // Delete booking functionality removed to avoid ambiguity
+  // Bookings should be managed through status changes (cancelled, rejected, etc.)
+  // rather than being deleted from the system
 
   // Create room with image
   Future<Map<String, dynamic>> createRoomWithImage(Map<String, dynamic> roomData, Uint8List imageBytes, String filename) async {

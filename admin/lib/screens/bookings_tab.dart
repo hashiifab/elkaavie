@@ -55,6 +55,29 @@ class _BookingsTabState extends State<BookingsTab> {
     );
   }
 
+  /// Builds a compact action button for booking actions
+  Widget _buildActionButton({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 16),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        minimumSize: const Size(0, 36),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -675,102 +698,117 @@ class _BookingsTabState extends State<BookingsTab> {
       case 'approved':
         // For approved bookings, show different actions based on payment proof
         if (hasPaymentProof) {
-          // If payment proof is uploaded, show verify/reject payment buttons
-          return Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: AdminButtons.primaryButton(
-                      label: 'Verify Payment',
-                      icon: Icons.check_circle_outline,
-                      backgroundColor: AppColors.success,
-                      onPressed: () async {
-                        final bool? confirm = await AdminDialogs.showConfirmationDialog(
-                          context: context,
-                          title: 'Konfirmasi Verifikasi Pembayaran',
-                          message: 'Apakah Anda yakin ingin memverifikasi pembayaran ini? Status booking akan berubah menjadi "PAID".',
-                          cancelText: 'Batal',
-                          confirmText: 'Ya, Verifikasi',
-                          icon: Icons.check_circle_outline,
-                        );
-
-                        if (confirm == true) {
-                          await widget.onUpdateBookingStatus(
-                            booking['id'].toString(),
-                            'paid',
-                          );
-                        }
-                      },
+          // Compact, professional UI for payment verification actions
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title for the action section
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    'Payment Actions',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[700],
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: AdminButtons.secondaryButton(
-                      label: 'Reject Payment',
-                      icon: Icons.cancel_outlined,
-                      foregroundColor: AppColors.error,
-                      onPressed: () async {
-                        final bool? confirm = await AdminDialogs.showConfirmationDialog(
-                          context: context,
-                          title: 'Konfirmasi Penolakan Pembayaran',
-                          message: 'Apakah Anda yakin ingin menolak pembayaran ini? Status booking akan tetap "APPROVED" tapi user perlu upload ulang bukti pembayaran.',
-                          cancelText: 'Batal',
-                          confirmText: 'Ya, Tolak',
-                          isDestructive: true,
-                          icon: Icons.cancel_outlined,
-                        );
+                ),
+                // Compact row of action buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildActionButton(
+                        label: 'Verify',
+                        icon: Icons.check_circle_outline,
+                        color: AppColors.success,
+                        onPressed: () async {
+                          final bool? confirm = await AdminDialogs.showConfirmationDialog(
+                            context: context,
+                            title: 'Konfirmasi Verifikasi Pembayaran',
+                            message: 'Apakah Anda yakin ingin memverifikasi pembayaran ini? Status booking akan berubah menjadi "PAID".',
+                            cancelText: 'Batal',
+                            confirmText: 'Ya, Verifikasi',
+                            icon: Icons.check_circle_outline,
+                          );
 
-                        if (confirm == true) {
-                          try {
-                            // Delete payment proof but keep status as approved
-                            // This will be handled by the backend
+                          if (confirm == true) {
                             await widget.onUpdateBookingStatus(
                               booking['id'].toString(),
-                              'payment_rejected',
+                              'paid',
                             );
+                          }
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildActionButton(
+                        label: 'Reject',
+                        icon: Icons.cancel_outlined,
+                        color: Colors.orange,
+                        onPressed: () async {
+                          final bool? confirm = await AdminDialogs.showConfirmationDialog(
+                            context: context,
+                            title: 'Konfirmasi Penolakan Pembayaran',
+                            message: 'Apakah Anda yakin ingin menolak pembayaran ini? Status booking akan tetap "APPROVED" tapi user perlu upload ulang bukti pembayaran.',
+                            cancelText: 'Batal',
+                            confirmText: 'Ya, Tolak',
+                            isDestructive: true,
+                            icon: Icons.cancel_outlined,
+                          );
 
-                            // Show success message
-                            if (mounted) {
-                              _showSuccessSnackBar('Payment proof rejected. User can upload a new one.');
-                            }
-                          } catch (e) {
-                            // Show error message
-                            if (mounted) {
-                              _showErrorSnackBar('Error rejecting payment: ${e.toString()}');
+                          if (confirm == true) {
+                            try {
+                              await widget.onUpdateBookingStatus(
+                                booking['id'].toString(),
+                                'payment_rejected',
+                              );
+
+                              if (mounted) {
+                                _showSuccessSnackBar('Payment proof rejected. User can upload a new one.');
+                              }
+                            } catch (e) {
+                              if (mounted) {
+                                _showErrorSnackBar('Error rejecting payment: ${e.toString()}');
+                              }
                             }
                           }
-                        }
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              AdminButtons.secondaryButton(
-                label: 'Cancel Booking',
-                icon: Icons.cancel,
-                foregroundColor: Colors.red,
-                onPressed: () async {
-                  final bool? confirm = await AdminDialogs.showConfirmationDialog(
-                    context: context,
-                    title: 'Konfirmasi Pembatalan Booking',
-                    message: 'Apakah Anda yakin ingin membatalkan booking ini? Status akan berubah menjadi "CANCELLED".',
-                    cancelText: 'Batal',
-                    confirmText: 'Ya, Batalkan',
-                    isDestructive: true,
-                    icon: Icons.cancel,
-                  );
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildActionButton(
+                        label: 'Cancel',
+                        icon: Icons.cancel,
+                        color: Colors.red,
+                        onPressed: () async {
+                          final bool? confirm = await AdminDialogs.showConfirmationDialog(
+                            context: context,
+                            title: 'Konfirmasi Pembatalan Booking',
+                            message: 'Apakah Anda yakin ingin membatalkan booking ini? Status akan berubah menjadi "CANCELLED".',
+                            cancelText: 'Batal',
+                            confirmText: 'Ya, Batalkan',
+                            isDestructive: true,
+                            icon: Icons.cancel,
+                          );
 
-                  if (confirm == true) {
-                    await widget.onUpdateBookingStatus(
-                      booking['id'].toString(),
-                      'cancelled',
-                    );
-                  }
-                },
-              ),
-            ],
+                          if (confirm == true) {
+                            await widget.onUpdateBookingStatus(
+                              booking['id'].toString(),
+                              'cancelled',
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
         } else {
           // If no payment proof yet, just show cancel button
