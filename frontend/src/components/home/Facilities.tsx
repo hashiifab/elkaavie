@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "../ui/Container";
 import CustomBadge from "../ui/CustomBadge";
-import { Check } from "lucide-react";
+import { Ban, Bike, Car, Check, Clock, PawPrint, User } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 
 const Facilities = () => {
@@ -22,7 +22,7 @@ const Facilities = () => {
 
   const parkingFacilities = [
     { name: translations.home.facilities.parking.items.car, icon: "car" },
-    { name: translations.home.facilities.parking.items.motorcycle, icon: "motorcycle" },
+    { name: translations.home.facilities.parking.items.motorcycle, icon: "bike" },
     { name: translations.home.facilities.parking.items.bicycle, icon: "bicycle" },
   ];
 
@@ -32,6 +32,16 @@ const Facilities = () => {
     { name: translations.home.facilities.rules.items.noOpposite, icon: "restriction" },
     { name: translations.home.facilities.rules.items.maxOccupancy, icon: "person" },
   ];
+
+  const iconMap = {
+    car: Car,
+    bike: Bike,
+    bicycle: Bike,
+    clock: Clock,
+    pet: PawPrint,
+    restriction: Ban,
+    person: User,
+  };
 
   return (
     <section id="facilities" className="py-20 bg-gray-50">
@@ -89,12 +99,15 @@ const Facilities = () => {
                 <h3 className="text-xl font-bold text-gray-900">{translations.home.facilities.parking.title}</h3>
               </div>
               <div className="space-y-4">
-                {parkingFacilities.map((facility, index) => (
-                  <div key={index} className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-2" />
-                    <span className="text-gray-700">{facility.name}</span>
-                  </div>
-                ))}
+                {parkingFacilities.map((facility, index) => {
+                  const IconComponent = iconMap[facility.icon];
+                  return (
+                    <div key={index} className="flex items-center">
+                      {IconComponent && <IconComponent className="w-5 h-5 text-green-500 mr-2" />}
+                      <span className="text-gray-700">{facility.name}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -108,12 +121,15 @@ const Facilities = () => {
                 <h3 className="text-xl font-bold text-gray-900">{translations.home.facilities.rules.title}</h3>
               </div>
               <div className="space-y-4">
-                {koskosanRules.map((rule, index) => (
-                  <div key={index} className="flex items-center">
-                    <Check className="w-5 h-5 text-green-500 mr-2" />
-                    <span className="text-gray-700">{rule.name}</span>
-                  </div>
-                ))}
+                {koskosanRules.map((rule, index) => {
+                  const IconComponent = iconMap[rule.icon];
+                  return (
+                    <div key={index} className="flex items-center">
+                      {IconComponent && <IconComponent className="w-5 h-5 text-green-500 mr-2" />}
+                      <span className="text-gray-700">{rule.name}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

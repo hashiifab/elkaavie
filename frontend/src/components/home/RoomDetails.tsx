@@ -26,10 +26,10 @@ const RoomDetails = () => {
 
   const roomRules = [
     { rule: translations.home.room.rules.items.maxOccupancy, allowed: false },
-    { rule: translations.home.room.rules.items.noUnmarried, allowed: false },
-    { rule: translations.home.room.rules.items.noChildren, allowed: false },
     { rule: translations.home.room.rules.items.occupationType, allowed: true },
+    { rule: translations.home.room.rules.items.noChildren, allowed: false },
     { rule: translations.home.room.rules.items.parking, allowed: true },
+    { rule: translations.home.room.rules.items.noUnmarried, allowed: false },
   ];
 
   return (

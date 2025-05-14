@@ -109,7 +109,7 @@ const Location = () => {
                       href={placeLinks[place.name] || "#"}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center bg-white p-3 rounded-lg border border-gray-100 shadow-sm hover:shadow-md hover:bg-elkaavie-50 transition-all cursor-pointer group"
+                      className="flex items-center bg-white p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-md hover:bg-elkaavie-50 transition-all cursor-pointer group"
                     >
                       <div className="w-10 h-10 rounded-full bg-elkaavie-100 flex items-center justify-center mr-3 text-elkaavie-700 group-hover:bg-elkaavie-200 transition-colors">
                         {getIconForType(place.type)}
