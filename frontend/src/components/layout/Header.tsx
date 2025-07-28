@@ -20,12 +20,6 @@ interface UserData {
   updated_at?: string;
 }
 
-const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Rooms", href: "/rooms" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Help Center", href: "/help-center" },
-];
 
 const Header = () => {
   const navigate = useNavigate();
@@ -37,6 +31,13 @@ const Header = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+
+  const navItems: NavItem[] = [
+    { label: translations.navigation.home, href: "/" },
+    { label: translations.navigation.rooms, href: "/rooms" },
+    { label: translations.navigation.gallery, href: "/gallery" },
+    { label: translations.navigation.helpCenter, href: "/help-center" },
+  ];
 
   useEffect(() => {
     const checkAuth = async () => {
